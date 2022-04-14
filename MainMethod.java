@@ -18,11 +18,14 @@ public class MainMethod extends Run {
     public static void main(String[] args) {
 
         try {
+
+            Socket socket = new Socket("localhost", 4242);
+
             Scanner s = new Scanner(System.in);
-            String username = runQuiz(s);
+            String username = runQuiz(socket);
             String[] splited = username.split(" ");
             if (splited[0].equals("Teacher")) {
-                Teacher teacher = new Teacher(splited[1]);
+                Teacher teacher = new Teacher(splited[31]);
                 teacher.teacherInterface(s);
             } else if (splited[0].equals("Student")) {
                 Student student = new Student(splited[1], s);
