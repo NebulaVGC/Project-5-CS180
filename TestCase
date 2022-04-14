@@ -1,0 +1,108 @@
+Test 1: Student Kevin making an account
+
+Steps:
+User launches MainServer.
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
+User type in username "Kevin" in the text box, then select "OK" button.
+User type in password "123" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt, 
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin" printed, 
+and in the StudentPassword.txt, there should be "123" printed.
+
+Test Status: Passed. 
+
+Test 2: Teacher Cloud9 making an account
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
+User type in username "Cloud9" in the text box, then select "OK" button.
+User type in password "234" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin" printed,
+and in the StudentPassword.txt, there should be "123" printed. In the TeacherAccount.txt, there should be "Cloud9" printed,
+and in the StudentPassword.txt, there should be "234" printed.
+
+Test Status: Passed. 
+
+Test 3: Student Charlie making an account
+
+Steps:
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
+User type in username "KevCin" in the text box, then select "OK" button.
+Error message shown "This Username already exist", then select "OK" button.
+User type in username "Charlie" in the text box, then select "OK" button.
+User type in password "123" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nCharlie" printed,
+and in the StudentPassword.txt, there should be "123\n123" printed. In the TeacherAccount.txt, there should be "Cloud9" printed,
+and in the StudentPassword.txt, there should be "234" printed.
+
+Test Status: Passed.
+
+Test 4: Teacher Frank making an account
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
+User type in username "Cloud9" in the text box, then select "OK" button.
+Error message shown "This Username already exist", then select "OK" button.
+User type in username "Frank" in the text box, then select "OK" button.
+User type in password "FL23" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nCharlie" printed,
+and in the StudentPassword.txt, there should be "123\n123" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrank" printed,
+and in the StudentPassword.txt, there should be "234\nFL23" printed.
+
+Test Status: Passed. 
+
+Test 5: Student Charlie editing account
+
+Steps:
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "3. Edit existing account" in the dropdown menu, then select "OK" button.
+User type in username "Charlie" in the text box, then select "OK" button.
+User type in password "123" in the text box, then select "OK" button.
+User type in username "Whitewolf" in the text box, then select "OK" button.
+User type in password "5256" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrank" printed,
+and in the StudentPassword.txt, there should be "234\nFL23" printed.
+
+Test Status: Passed.
+
+Test 6: Teacher Frank editing account
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "3. Edit existing account" in the dropdown menu, then select "OK" button.
+User type in username "Frank1" in the text box, then select "OK" button.
+Error message shown "This Username does not exist", then select "OK" button.
+User type in username "Frank" in the text box, then select "OK" button.
+User type in password "123" in the text box, then select "OK" button.
+Error message shown "password does not match", then select "OK" button.
+User type in password "FL23" in the text box, then select "OK" button.
+User type in username "FrankLinLin" in the text box, then select "OK" button.
+User type in password "lemon" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrankLinLin" printed,
+and in the StudentPassword.txt, there should be "234\nlemon" printed.
+
+Test Status: Passed.
+
