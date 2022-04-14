@@ -17,68 +17,69 @@ public class MainServer {
 
     public static void main(String[] args) {
         checkFile();
-        try {
+        int i = 0;
+        while (i == 0) {
+            try {
 
-            ServerSocket serverSocket = new ServerSocket(4242);
+                ServerSocket serverSocket = new ServerSocket(4242);
 
-            System.out.println("Waiting for the client to connect...");
-            Socket socket = serverSocket.accept();
-            System.out.println("Client connected!");
+                Socket socket = serverSocket.accept();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
-            String action = reader.readLine();
-            if (action.equals("create")) {
-                String type = reader.readLine();
-                if (type.equals("teacher")) {
-                    String username = reader.readLine();
-                    String password = reader.readLine();
-                    File teacherAccount = new File("TeacherAccount.txt");
-                    FileOutputStream fos = new FileOutputStream(teacherAccount, true);
-                    PrintWriter pw = new PrintWriter(fos);
-                    pw.println(username);
-                    File teacherPassword = new File("TeacherPassword.txt");
-                    FileOutputStream fos2 = new FileOutputStream(teacherPassword, true);
-                    PrintWriter pw2 = new PrintWriter(fos2);
-                    pw2.println(password);
-                    pw.close();
-                    pw2.close();
-                } else if (type.equals("student")) {
-                    String username = reader.readLine();
-                    String password = reader.readLine();
-                    File studentAccount = new File("StudentAccount.txt");
-                    FileOutputStream fos = new FileOutputStream(studentAccount, true);
-                    PrintWriter pw = new PrintWriter(fos);
-                    pw.println(username);
-                    File studentPassword = new File("StudentPassword.txt");
-                    FileOutputStream fos2 = new FileOutputStream(studentPassword, true);
-                    PrintWriter pw2 = new PrintWriter(fos2);
-                    pw2.println(password);
-                    pw.close();
-                    pw2.close();
+                String action = reader.readLine();
+                if (action.equals("create")) {
+                    String type = reader.readLine();
+                    if (type.equals("teacher")) {
+                        String username = reader.readLine();
+                        String password = reader.readLine();
+                        File teacherAccount = new File("TeacherAccount.txt");
+                        FileOutputStream fos = new FileOutputStream(teacherAccount, true);
+                        PrintWriter pw = new PrintWriter(fos);
+                        pw.println(username);
+                        File teacherPassword = new File("TeacherPassword.txt");
+                        FileOutputStream fos2 = new FileOutputStream(teacherPassword, true);
+                        PrintWriter pw2 = new PrintWriter(fos2);
+                        pw2.println(password);
+                        pw.close();
+                        pw2.close();
+                    } else if (type.equals("student")) {
+                        String username = reader.readLine();
+                        String password = reader.readLine();
+                        File studentAccount = new File("StudentAccount.txt");
+                        FileOutputStream fos = new FileOutputStream(studentAccount, true);
+                        PrintWriter pw = new PrintWriter(fos);
+                        pw.println(username);
+                        File studentPassword = new File("StudentPassword.txt");
+                        FileOutputStream fos2 = new FileOutputStream(studentPassword, true);
+                        PrintWriter pw2 = new PrintWriter(fos2);
+                        pw2.println(password);
+                        pw.close();
+                        pw2.close();
+                    }
+                } else if (action.equals("edit")) {
+                    String type = reader.readLine();
+                    if (type.equals("teacher")) {
+                        String editUsername = reader.readLine();
+                        String editPassword = reader.readLine();
+                        String newUsername = reader.readLine();
+                        String newPassword = reader.readLine();
+
+                        editTeacherInformation(editUsername, editPassword, newUsername, newPassword);
+                    } else if (type.equals("student")) {
+                        String editUsername = reader.readLine();
+                        String editPassword = reader.readLine();
+                        String newUsername = reader.readLine();
+                        String newPassword = reader.readLine();
+
+                        editStudentInformation(editUsername, editPassword, newUsername, newPassword);
+                    }
+
                 }
-            } else if (action.equals("edit")) {
-                String type = reader.readLine();
-                if (type.equals("teacher")) {
-                    String editUsername = reader.readLine();
-                    String editPassword = reader.readLine();
-                    String newUsername = reader.readLine();
-                    String newPassword = reader.readLine();
-
-                    editTeacherInformation(editUsername, editPassword, newUsername, newPassword);
-                } else if (type.equals("student")) {
-                    String editUsername = reader.readLine();
-                    String editPassword = reader.readLine();
-                    String newUsername = reader.readLine();
-                    String newPassword = reader.readLine();
-
-                    editStudentInformation(editUsername, editPassword, newUsername, newPassword);
-                }
-
+            } catch (IOException e) {
+                //e.printStackTrace();
             }
-        } catch (IOException e) {
-            //e.printStackTrace();
         }
     }
 
