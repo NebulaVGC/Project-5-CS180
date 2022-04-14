@@ -323,7 +323,7 @@ public class Run {
                                 ArrayList<String> accountList = new ArrayList<>();
                                 ArrayList<String> passwordList = new ArrayList<>();
 
-                                File f = new File("TeacherAccount.txt");
+                                File f = new File("StudentAccount.txt");
                                 FileReader fr = new FileReader(f);
                                 BufferedReader bfr = new BufferedReader(fr);
                                 String line = bfr.readLine();
@@ -334,7 +334,7 @@ public class Run {
                                 }
                                 bfr.close();
 
-                                File f2 = new File("TeacherPassword.txt");
+                                File f2 = new File("StudentPassword.txt");
                                 FileReader fr2 = new FileReader(f2);
                                 BufferedReader bfr2 = new BufferedReader(fr2);
                                 String line2 = bfr2.readLine();
