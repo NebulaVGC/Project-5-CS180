@@ -143,7 +143,7 @@ public class Student {
             String line = bfrCourse.readLine();
             ArrayList<String> quizList = new ArrayList<>();
             while (line != null) {
-                quizList.add(line); //prints a number in front of each quiz
+                quizList.add(line);
                 line = bfrCourse.readLine();
             }
             String[] quizOptions = new String[quizList.size()];
@@ -182,16 +182,19 @@ public class Student {
                 if (teacher.equals("-1")) {
                     return;
                 }
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
-                String checkLine = bufferedReader.readLine();
-                bufferedReader.close();
-                if (!new File(teacher + "_Courses.txt").exists()) {
+                String checkLine = null;
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
+                    checkLine = bufferedReader.readLine();
+                    bufferedReader.close();
+                } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Your teacher has not created any courses",
                             "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (checkLine == null) {
+                }
+                if (checkLine == null && new File(teacher + "_Courses.txt").exists()) {
                     JOptionPane.showMessageDialog(null, "Your teacher has not created any courses",
                             "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
+                } else if (checkLine != null && new File(teacher + "_Courses.txt").exists()) {
                     n++;
                 }
             }
