@@ -22,10 +22,24 @@ public class Student {
     /*
     method that runs the quiz and gives the user an option to attach a file to the quiz
      */
-    public void runQuizNew() {
+    public void runQuizNew(String quizName, String username, String teacherName, String courseName, String plainQuizName) throws IOException{
         String[] options = {"Active", "Import File"};
         int quizType = JOptionPane.showOptionDialog(null, "Select how you would like to take the quiz",
                 "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null);
+        if (quizType == 0) {
+            BufferedReader br = new BufferedReader(new FileReader(quizName));
+            String shuffleStatus = br.readLine();
+            String firstLine = "";
+            String answer = "";
+            int questionNum = 1;
+            String[] answerOptions = {"A", "B", "C", "D"};
+            while ((firstLine = br.readLine()) != null) {
+                answer = answer + JOptionPane.showInputDialog(null,
+                        firstLine + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine(),
+                        "Question " + questionNum, JOptionPane.QUESTION_MESSAGE, null, answerOptions, answerOptions[0]) + "\n";
+            }
+            System.out.println(answer);
+        }
     }
 
     public void runQuiz(String quizName, String username, String teacherName, String courseName, String plainQuizName,
@@ -238,8 +252,8 @@ public class Student {
                         if (!new File(student.userName + "_" + teacher + "_"
                                 + course + "_" + quiz + ".txt").exists()) {
                             //checks if quiz has already been taken. if not then runs the quiz
-                            student.runQuiz(teacher + "_" + course + "_" + quiz + ".txt",
-                                    student.userName, teacher, course, quiz, scanner);
+                            student.runQuizNew(teacher + "_" + course + "_" + quiz + ".txt",
+                                    student.userName, teacher, course, quiz);
                         } else {
                             System.out.println("Quiz already taken");
                             int optionLoop = 0;
