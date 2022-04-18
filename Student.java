@@ -37,6 +37,7 @@ public class Student {
                 answer = answer + JOptionPane.showInputDialog(null,
                         firstLine + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine(),
                         "Question " + questionNum, JOptionPane.QUESTION_MESSAGE, null, answerOptions, answerOptions[0]) + "\n";
+                questionNum++;
             }
             System.out.println(answer);
         }
