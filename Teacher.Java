@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,9 +12,17 @@ import java.util.Scanner;
  * @author Chase Thompsion, Kacey Atkins L09
  * @version March 8, 2022
  */
-public class Teacher {
+public class Teacher implements Runnable {
     private final String name;      //The teachers name
     private Scanner scan;    //Scanner for this class
+    private JButton createCourseButton;
+    private JButton deleteCourseButton;
+    private JButton createQuizButton;
+    private JButton editQuizButton;
+    private JButton deleteQuizButton;
+    private JButton viewSubmissionButton;
+    private JButton gradeSubmissionButton;
+    private JButton exitButton;
 
     /**
      * Constructor for Teacher. THe constructor creates a new empty file that is used to hold the courses
@@ -789,5 +799,43 @@ public class Teacher {
             }
         }
         System.out.println("Goodbye!");
+    }
+
+    public void run() {
+
+        JFrame frame = new JFrame("Teacher");
+        Container content = frame.getContentPane();
+        content.setLayout(new BorderLayout());
+
+        createCourseButton = new JButton("Create Course");
+        deleteCourseButton = new JButton("Delete Course");
+        createQuizButton = new JButton("Create Quiz");
+        editQuizButton = new JButton("Edit Quiz");
+        deleteQuizButton = new JButton("Delete Course");
+        viewSubmissionButton = new JButton("View Student Submission");
+        gradeSubmissionButton = new JButton("Grade Student Submission");
+        exitButton = new JButton("Exit");
+
+        JPanel menuPanel = new JPanel(new GridLayout(8,1));
+        menuPanel.add(createCourseButton);
+        menuPanel.add(deleteCourseButton);
+        menuPanel.add(createQuizButton);
+        menuPanel.add(editQuizButton);
+        menuPanel.add(deleteQuizButton);
+        menuPanel.add(viewSubmissionButton);
+        menuPanel.add(gradeSubmissionButton);
+        menuPanel.add(exitButton);
+
+        content.add(menuPanel);
+
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        Teacher teacher = new Teacher("Joe");
+        teacher.run();
     }
 }
