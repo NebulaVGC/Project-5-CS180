@@ -22,6 +22,7 @@ public class MainServer {
         ArrayList<String> teacherPasswordStore = new ArrayList<>();
         ArrayList<String> studentAccountStore = new ArrayList<>();
         ArrayList<String> studentPasswordStore = new ArrayList<>();
+        ArrayList<String> listOfCompletedQuizzes = new ArrayList<>();
 
         while (i == 0) {
             try {
@@ -99,7 +100,15 @@ public class MainServer {
                         //run teacher
                     }
                     if (type.equals("student")) {
-                        //run student
+                        String addQuizComplete = reader.readLine();
+                        if (addQuizComplete.equals("Add Completed Quiz")) {
+                            String completedQuiz = "";
+                            String newLine;
+                            while ((newLine = reader.readLine()) != null) {
+                                completedQuiz = completedQuiz + newLine + "\n";
+                            }
+                            listOfCompletedQuizzes.add(completedQuiz);
+                        }
                     }
                 }
             } catch (IOException e) {
