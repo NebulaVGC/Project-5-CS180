@@ -18,6 +18,11 @@ public class MainServer {
     public static void main(String[] args) {
         checkFile();
         int i = 0;
+        ArrayList<String> teacherAccountStore = new ArrayList<>();
+        ArrayList<String> teacherPasswordStore = new ArrayList<>();
+        ArrayList<String> studentAccountStore = new ArrayList<>();
+        ArrayList<String> studentPasswordStore = new ArrayList<>();
+
         while (i == 0) {
             try {
 
@@ -34,25 +39,34 @@ public class MainServer {
                     if (type.equals("teacher")) {
                         String username = reader.readLine();
                         String password = reader.readLine();
+                        teacherAccountStore.add(username);
+                        teacherPasswordStore.add(password);
+
+                        System.out.println(teacherAccountStore.toString());
+
                         File teacherAccount = new File("TeacherAccount.txt");
                         FileOutputStream fos = new FileOutputStream(teacherAccount, true);
                         PrintWriter pw = new PrintWriter(fos);
-                        pw.println(username);
+                        for (int j = 0; j < teacherAccountStore.size(); j++) {
+                            pw.println(teacherAccountStore.get(j));
+                        }
                         File teacherPassword = new File("TeacherPassword.txt");
                         FileOutputStream fos2 = new FileOutputStream(teacherPassword, true);
                         PrintWriter pw2 = new PrintWriter(fos2);
-                        pw2.println(password);
+                        for (int j = 0; j < teacherPasswordStore.size(); j++) {
+                            pw2.println(teacherPasswordStore.get(j));
+                        }
                         pw.close();
                         pw2.close();
                     } else if (type.equals("student")) {
                         String username = reader.readLine();
                         String password = reader.readLine();
                         File studentAccount = new File("StudentAccount.txt");
-                        FileOutputStream fos = new FileOutputStream(studentAccount, true);
+                        FileOutputStream fos = new FileOutputStream(studentAccount, false);
                         PrintWriter pw = new PrintWriter(fos);
                         pw.println(username);
                         File studentPassword = new File("StudentPassword.txt");
-                        FileOutputStream fos2 = new FileOutputStream(studentPassword, true);
+                        FileOutputStream fos2 = new FileOutputStream(studentPassword, false);
                         PrintWriter pw2 = new PrintWriter(fos2);
                         pw2.println(password);
                         pw.close();
