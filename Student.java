@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.io.*;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 /**
@@ -12,7 +13,7 @@ import java.util.*;
  */
 
 public class Student {
-    private Scanner scan;
+    private Socket socket;
     private String userName;
 
     public Student(String userName) { //creates a new student obj with the username from login
@@ -22,35 +23,58 @@ public class Student {
     /*
     method that runs the quiz and gives the user an option to attach a file to the quiz
      */
-    public void runQuizNew(String quizName, String username, String teacherName, String courseName, String plainQuizName) throws IOException{
+    public void runQuizNew(String quizName, String username, String teacherName, String courseName, String plainQuizName, Socket socket) throws IOException{
         String[] options = {"Active", "Import File"};
         int quizType = JOptionPane.showOptionDialog(null, "Select how you would like to take the quiz",
                 "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null);
         System.out.println(quizType);
+        String copyQuiz = "";
+        PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+        printWriter.write("Add Completed Quiz");
+        printWriter.println();
+        printWriter.flush();
         if (quizType == 0) {
             BufferedReader br = new BufferedReader(new FileReader(quizName));
-            String shuffleStatus = br.readLine();
+            copyQuiz = br.readLine();
             String firstLine = "";
+            String firstQ; //stores answer a
+            String secondQ; //stores answer b
+            String thirdQ; //stores answer c
+            String fourthQ; //stores answer d
             String answer = "";
             int questionNum = 1;
             String[] answerOptions = {"A", "B", "C", "D"};
             while ((firstLine = br.readLine()) != null) {
+                firstQ = br.readLine();
+                secondQ = br.readLine();
+                thirdQ = br.readLine();
+                fourthQ = br.readLine();
                 answer = answer + JOptionPane.showInputDialog(null,
-                        firstLine + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine(),
+                        firstLine + "\n" + firstQ + "\n" + secondQ + "\n" + thirdQ + "\n" + fourthQ,
                         "Question " + questionNum, JOptionPane.QUESTION_MESSAGE, null, answerOptions, answerOptions[0]) + "\n";
+                copyQuiz = copyQuiz + firstLine + "\n" + firstQ + "\n" + secondQ + "\n" + thirdQ + "\n" + fourthQ + "\n";
                 questionNum++;
             }
             br.close();
         } else if (quizType == 1) {
             BufferedReader br = new BufferedReader(new FileReader(quizName));
-            String shuffleStatus = br.readLine();
+            copyQuiz = br.readLine();
             String firstLine = "";
             String answer = "";
             int questionNum = 1;
+            String firstQ; //stores answer a
+            String secondQ; //stores answer b
+            String thirdQ; //stores answer c
+            String fourthQ; //stores answer d
             while ((firstLine = br.readLine()) != null) {
+                firstQ = br.readLine();
+                secondQ = br.readLine();
+                thirdQ = br.readLine();
+                fourthQ = br.readLine();
                 JOptionPane.showMessageDialog(null, firstLine + "\n" + br.readLine()
                                 + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine(),
                         "Question " + questionNum, JOptionPane.QUESTION_MESSAGE);
+                copyQuiz = copyQuiz + firstLine + "\n" + firstQ + "\n" + secondQ + "\n" + thirdQ + "\n" + fourthQ + "\n";
                 questionNum++;
             }
             br.close();
@@ -62,6 +86,12 @@ public class Student {
             }
             answer = answer.substring(0, answer.length()-1);
             bufferedReader.close();
+            String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").format(Calendar.getInstance().getTime());
+            String identifier = (username + "_" + teacherName + "_" + courseName + "_" + quizName);
+            printWriter.write(identifier + "\n" + copyQuiz + username + "\n" + answer + timeStamp);
+            printWriter.println();
+            printWriter.flush();
+            printWriter.close();
         }
     }
 
@@ -133,8 +163,7 @@ public class Student {
     /*
     method that returns the course the student picks
      */
-    public String pickCourse(String filename, Scanner scan) {
-        this.scan = scan;
+    public String pickCourse(String filename, Socket socket) {
         String courseName = null; //the coursename
         try {
             int loop = 0;
@@ -169,8 +198,8 @@ public class Student {
     method that allows the student to choose which quiz to take. If they have already taken the quiz, it
     will say already taken and give them the option to see their grades and response for each answer
      */
-    public String pickQuiz(String filename, Scanner scan) {
-        this.scan = scan;
+    public String pickQuiz(String filename, Socket socket) {
+        this.socket = socket;
         String courseName = null;
         try {
             File course = new File(filename);
@@ -196,9 +225,9 @@ public class Student {
     }
 
 
-    public void mainStudent(Scanner scanner) throws IOException {
-        scan = scanner;
+    public void mainStudent(Socket socket) throws IOException {
         //takes place after login
+        this.socket = socket;
         try {
             Student student = new Student(this.userName); //creates Student object
             int n = 0;
@@ -238,7 +267,7 @@ public class Student {
             int loop = 0; //initiates looping variable
 
             do {
-                String course = student.pickCourse(teacher + "_Courses.txt", scanner);
+                String course = student.pickCourse(teacher + "_Courses.txt", socket);
                 //runs method to have student pick a course
                 String checkLine = null;
                 try {
@@ -252,7 +281,7 @@ public class Student {
                     JOptionPane.showMessageDialog(null, "No quizzes exist in this course",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 } else if (checkLine != null && new File(teacher + "_" + course + ".txt").exists()) { //CONTINUE HERE
-                    String quiz = student.pickQuiz(teacher + "_" + course + ".txt", scanner);
+                    String quiz = student.pickQuiz(teacher + "_" + course + ".txt", socket);
 
                     try {
                         BufferedReader br = new BufferedReader(new FileReader(teacher + "_" + course + "_" + quiz + ".txt"));
@@ -269,14 +298,14 @@ public class Student {
                         BufferedReader bufferedReader2 = new BufferedReader(fr);
                         String shuffleStatus = bufferedReader2.readLine(); //whether or not to shuffle the quiz
                         if (shuffleStatus.equalsIgnoreCase("True")) {
-                            student.shuffle(teacher + "_" + course + "_" + quiz + ".txt", scanner);
+                            student.shuffle(teacher + "_" + course + "_" + quiz + ".txt");
                             //shuffles quiz
                         }
                         if (!new File(student.userName + "_" + teacher + "_"
                                 + course + "_" + quiz + ".txt").exists()) {
                             //checks if quiz has already been taken. if not then runs the quiz
                             student.runQuizNew(teacher + "_" + course + "_" + quiz + ".txt",
-                                    student.userName, teacher, course, quiz);
+                                    student.userName, teacher, course, quiz, socket);
                         } else {
                             System.out.println("Quiz already taken");
                             int optionLoop = 0;
@@ -336,8 +365,7 @@ public class Student {
 
     }
 
-    public void shuffle(String filename, Scanner scan) throws IOException {
-        this.scan = scan;
+    public void shuffle(String filename) throws IOException {
         //Shuffles the question order and the answer order of the quiz file
         ArrayList<String> questions = new ArrayList<>();   //array that stores full questions with answers attached
         File f = new File(filename);
