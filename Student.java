@@ -26,6 +26,7 @@ public class Student {
         String[] options = {"Active", "Import File"};
         int quizType = JOptionPane.showOptionDialog(null, "Select how you would like to take the quiz",
                 "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null);
+        System.out.println(quizType);
         if (quizType == 0) {
             BufferedReader br = new BufferedReader(new FileReader(quizName));
             String shuffleStatus = br.readLine();
@@ -39,7 +40,28 @@ public class Student {
                         "Question " + questionNum, JOptionPane.QUESTION_MESSAGE, null, answerOptions, answerOptions[0]) + "\n";
                 questionNum++;
             }
-            System.out.println(answer);
+            br.close();
+        } else if (quizType == 1) {
+            BufferedReader br = new BufferedReader(new FileReader(quizName));
+            String shuffleStatus = br.readLine();
+            String firstLine = "";
+            String answer = "";
+            int questionNum = 1;
+            while ((firstLine = br.readLine()) != null) {
+                JOptionPane.showMessageDialog(null, firstLine + "\n" + br.readLine()
+                                + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine(),
+                        "Question " + questionNum, JOptionPane.QUESTION_MESSAGE);
+                questionNum++;
+            }
+            br.close();
+            String fileName = JOptionPane.showInputDialog(null,
+                    "Enter the name of the file you would like to input", "File Input", JOptionPane.QUESTION_MESSAGE);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+            while ((firstLine = bufferedReader.readLine()) != null) {
+                answer = answer + firstLine + "\n";
+            }
+            answer = answer.substring(0, answer.length()-1);
+            bufferedReader.close();
         }
     }
 
