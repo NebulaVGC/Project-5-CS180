@@ -33,6 +33,9 @@ public class MainServer {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
+                String refresh = reader.readLine();
+
+
                 String action = reader.readLine();
                 if (action.equals("create")) {
                     String type = reader.readLine();
@@ -90,6 +93,14 @@ public class MainServer {
                         editStudentInformation(editUsername, editPassword, newUsername, newPassword);
                     }
 
+                } else if (action.equals("login")) {
+                    String type = reader.readLine();
+                    if (type.equals("teacher")) {
+                        //run teacher
+                    }
+                    if (type.equals("student")) {
+                        //run student
+                    }
                 }
             } catch (IOException e) {
                 //e.printStackTrace();
@@ -196,57 +207,113 @@ public class MainServer {
     }
 
 
-        public static int editStudentInformation(String editUsername, String editPassword, String newUsername, String newPassword) {
-            ArrayList<String> accountList = new ArrayList<>();
-            ArrayList<String> passwordList = new ArrayList<>();
-            int status = 0;
-            try {
-                File f = new File("StudentAccount.txt");
-                FileReader fr = new FileReader(f);
-                BufferedReader bfr = new BufferedReader(fr);
-                String line = bfr.readLine();
-                while (line != null) {
-                    accountList.add(line);
-                    line = bfr.readLine();
-                }
-                bfr.close();
-
-                File f2 = new File("StudentPassword.txt");
-                FileReader fr2 = new FileReader(f2);
-                BufferedReader bfr2 = new BufferedReader(fr2);
-                String line2 = bfr2.readLine();
-
-                while (line2 != null) {
-                    passwordList.add(line2);
-                    line2 = bfr2.readLine();
-                }
-                bfr2.close();
-
-                accountList.set(accountList.indexOf(editUsername), newUsername);
-                passwordList.set(passwordList.indexOf(editPassword), newPassword);
-
-                File studentAccountFile = new File("StudentAccount.txt");
-                FileOutputStream fos = new FileOutputStream(studentAccountFile,
-                        false);
-                PrintWriter pw = new PrintWriter(fos);
-                for (int i = 0; i < accountList.size(); i++) {
-                    pw.println(accountList.get(i));
-                }
-                pw.close();
-
-                File studentPasswordFile = new File("StudentPassword.txt");
-                FileOutputStream fos2 = new FileOutputStream(studentPasswordFile,
-                        false);
-                PrintWriter pw2 = new PrintWriter(fos2);
-                for (int i = 0; i < accountList.size(); i++) {
-                    pw2.println(passwordList.get(i));
-                }
-                pw2.close();
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static int editStudentInformation(String editUsername, String editPassword, String newUsername, String newPassword) {
+        ArrayList<String> accountList = new ArrayList<>();
+        ArrayList<String> passwordList = new ArrayList<>();
+        int status = 0;
+        try {
+            File f = new File("StudentAccount.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            while (line != null) {
+                accountList.add(line);
+                line = bfr.readLine();
             }
-            return status;
+            bfr.close();
+
+            File f2 = new File("StudentPassword.txt");
+            FileReader fr2 = new FileReader(f2);
+            BufferedReader bfr2 = new BufferedReader(fr2);
+            String line2 = bfr2.readLine();
+
+            while (line2 != null) {
+                passwordList.add(line2);
+                line2 = bfr2.readLine();
+            }
+            bfr2.close();
+
+            accountList.set(accountList.indexOf(editUsername), newUsername);
+            passwordList.set(passwordList.indexOf(editPassword), newPassword);
+
+            File studentAccountFile = new File("StudentAccount.txt");
+            FileOutputStream fos = new FileOutputStream(studentAccountFile,
+                    false);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw.println(accountList.get(i));
+            }
+            pw.close();
+
+            File studentPasswordFile = new File("StudentPassword.txt");
+            FileOutputStream fos2 = new FileOutputStream(studentPasswordFile,
+                    false);
+            PrintWriter pw2 = new PrintWriter(fos2);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw2.println(passwordList.get(i));
+            }
+            pw2.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return status;
+    }
+
+    public static void updateInformation(BufferedReader reader, ArrayList<String> teacherAccountStore, ArrayList<String> teacherPasswordStore, ArrayList<String> studentAccountStore, ArrayList<String> studentPasswordStore) {
+
+        int status = 0;
+        try {
+            writer.write("refresh");
+            writer.println();
+            writer.flush();
+            File f = new File("StudentAccount.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            while (line != null) {
+                accountList.add(line);
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            File f2 = new File("StudentPassword.txt");
+            FileReader fr2 = new FileReader(f2);
+            BufferedReader bfr2 = new BufferedReader(fr2);
+            String line2 = bfr2.readLine();
+
+            while (line2 != null) {
+                passwordList.add(line2);
+                line2 = bfr2.readLine();
+            }
+            bfr2.close();
+
+            accountList.set(accountList.indexOf(editUsername), newUsername);
+            passwordList.set(passwordList.indexOf(editPassword), newPassword);
+
+            File studentAccountFile = new File("StudentAccount.txt");
+            FileOutputStream fos = new FileOutputStream(studentAccountFile,
+                    false);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw.println(accountList.get(i));
+            }
+            pw.close();
+
+            File studentPasswordFile = new File("StudentPassword.txt");
+            FileOutputStream fos2 = new FileOutputStream(studentPasswordFile,
+                    false);
+            PrintWriter pw2 = new PrintWriter(fos2);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw2.println(passwordList.get(i));
+            }
+            pw2.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
 }
