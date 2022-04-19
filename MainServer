@@ -133,6 +133,26 @@ public class MainServer {
                     String type = reader.readLine();
                     if (type.equals("teacher")) {
                         //run teacher
+                        int choice = 0;
+                        while (choice != 8) {
+                            choice = Integer.parseInt(reader.readLine());
+                            if (choice == 1) {
+                                createCourse(reader, writer);
+                            } else if (choice == 2) {
+                                deleteCourse(reader, writer);
+                            } else if (choice == 3) {
+                                createQuiz();
+                            } else if (choice == 4) {
+                                editQuiz();
+                            } else if (choice == 5) {
+                                deleteQuiz();
+                            } else if (choice == 6) {
+                                viewSubmission();
+                            } else if (choice == 7) {
+                                gradeSubmission();
+                            }
+                        }
+
                     }
                     if (type.equals("student")) {
                         if (reader.readLine().equals("get teacher")) {
@@ -317,4 +337,60 @@ public class MainServer {
         return status;
     }
 
+    private static void createCourse(BufferedReader newReader, PrintWriter newWriter) {
+        try {
+            String courseName = newReader.readLine();
+            String teacherName = newReader.readLine();
+            System.out.println("Working");
+            if(courseName.equals("")) {
+                return;
+            }
+            File f1 = new File(teacherName + "_Courses.txt");  //The courses file for the teacher
+            PrintWriter pw = new PrintWriter(new FileOutputStream(f1, true));   //Printer writer for the f1
+            File f2 = new File(teacherName + "_" + courseName + ".txt");   //File that holds the quizzes for the
+            //given course
+            f2.createNewFile();
+            pw.println(courseName);
+            pw.close();
+        } catch(IOException e) {
+
+        }
+    }
+
+    private static void deleteCourse(BufferedReader newReader, PrintWriter newWriter) {
+
+        try{
+            String teacherName = newReader.readLine();
+            BufferedReader fileReader = new BufferedReader(new FileReader(teacherName + "_Courses.txt"));
+            String line = fileReader.readLine();
+            while(line != null) {
+                newWriter.write(line);
+                newWriter.println();
+                newWriter.flush();
+                line = fileReader.readLine();
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private static void createQuiz() {
+
+    }
+
+    private static void editQuiz() {
+
+    }
+
+    private static void deleteQuiz() {
+
+    }
+
+    private static void viewSubmission() {
+
+    }
+
+    private static void gradeSubmission() {
+
+    }
 }
