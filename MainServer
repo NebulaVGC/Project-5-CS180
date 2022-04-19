@@ -135,6 +135,18 @@ public class MainServer {
                         //run teacher
                     }
                     if (type.equals("student")) {
+                        if (reader.readLine().equals("get teacher")) {
+                            int sendSize = teacherAccountStore.size();
+                            writer.write(sendSize);
+                            writer.println();
+                            writer.flush();
+                            String teacherDropList = "";
+                            for (int k = 0; k < teacherAccountStore.size(); k++) {
+                                teacherDropList = teacherDropList + teacherAccountStore.get(k) + "\n";
+                            }
+                            teacherDropList = teacherDropList.substring(0, teacherDropList.length()-1);
+                            writer.write(teacherDropList);
+                        }
                         String addQuizComplete = reader.readLine();
                         if (addQuizComplete.equals("Add Completed Quiz")) {
                             String completedQuiz = "";
