@@ -34,8 +34,38 @@ public class MainServer {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
-                String refresh = reader.readLine();
-
+                writer.write(String.valueOf(teacherAccountStore.size()));
+                writer.println();
+                writer.flush();
+                for (int k = 0; k < teacherAccountStore.size(); k++) {
+                    writer.write(String.valueOf(teacherAccountStore.get(k)));
+                    writer.println();
+                    writer.flush();
+                }
+                writer.write(String.valueOf(teacherPasswordStore.size()));
+                writer.println();
+                writer.flush();
+                for (int k = 0; k < teacherPasswordStore.size(); k++) {
+                    writer.write(String.valueOf(teacherPasswordStore.get(k)));
+                    writer.println();
+                    writer.flush();
+                }
+                writer.write(String.valueOf(studentAccountStore.size()));
+                writer.println();
+                writer.flush();
+                for (int k = 0; k < studentAccountStore.size(); k++) {
+                    writer.write(String.valueOf(studentAccountStore.get(k)));
+                    writer.println();
+                    writer.flush();
+                }
+                writer.write(String.valueOf(studentPasswordStore.size()));
+                writer.println();
+                writer.flush();
+                for (int k = 0; k < studentPasswordStore.size(); k++) {
+                    writer.write(String.valueOf(studentPasswordStore.get(k)));
+                    writer.println();
+                    writer.flush();
+                }
 
                 String action = reader.readLine();
                 if (action.equals("create")) {
@@ -46,16 +76,14 @@ public class MainServer {
                         teacherAccountStore.add(username);
                         teacherPasswordStore.add(password);
 
-                        System.out.println(teacherAccountStore.toString());
-
                         File teacherAccount = new File("TeacherAccount.txt");
-                        FileOutputStream fos = new FileOutputStream(teacherAccount, true);
+                        FileOutputStream fos = new FileOutputStream(teacherAccount, false);
                         PrintWriter pw = new PrintWriter(fos);
                         for (int j = 0; j < teacherAccountStore.size(); j++) {
                             pw.println(teacherAccountStore.get(j));
                         }
                         File teacherPassword = new File("TeacherPassword.txt");
-                        FileOutputStream fos2 = new FileOutputStream(teacherPassword, true);
+                        FileOutputStream fos2 = new FileOutputStream(teacherPassword, false);
                         PrintWriter pw2 = new PrintWriter(fos2);
                         for (int j = 0; j < teacherPasswordStore.size(); j++) {
                             pw2.println(teacherPasswordStore.get(j));
@@ -65,14 +93,21 @@ public class MainServer {
                     } else if (type.equals("student")) {
                         String username = reader.readLine();
                         String password = reader.readLine();
+                        studentAccountStore.add(username);
+                        studentPasswordStore.add(password);
+
                         File studentAccount = new File("StudentAccount.txt");
                         FileOutputStream fos = new FileOutputStream(studentAccount, false);
                         PrintWriter pw = new PrintWriter(fos);
-                        pw.println(username);
+                        for (int j = 0; j < studentAccountStore.size(); j++) {
+                            pw.println(studentAccountStore.get(j));
+                        }
                         File studentPassword = new File("StudentPassword.txt");
                         FileOutputStream fos2 = new FileOutputStream(studentPassword, false);
                         PrintWriter pw2 = new PrintWriter(fos2);
-                        pw2.println(password);
+                        for (int j = 0; j < studentPasswordStore.size(); j++) {
+                            pw2.println(studentPasswordStore.get(j));
+                        }
                         pw.close();
                         pw2.close();
                     }
