@@ -46,6 +46,11 @@ public class Run {
             int[] accountChoice = new int[1];
             int[] login = new int[1];
 
+            ArrayList<String> teacherAccountStore = new ArrayList<>();
+            ArrayList<String> teacherPasswordStore = new ArrayList<>();
+            ArrayList<String> studentAccountStore = new ArrayList<>();
+            ArrayList<String> studentPasswordStore = new ArrayList<>();
+
             String username1; //initiates username of current user
             int welcomeChoice = 0;
             while (welcome == 0) {
@@ -78,6 +83,25 @@ public class Run {
                             e.printStackTrace();
                         }
                     }
+
+
+                    int teacherAccountCount = Integer.parseInt(reader.readLine());
+                    for (int i = 0; i < teacherAccountCount; i++) {
+                        teacherAccountStore.add(reader.readLine());
+                    }
+                    int teacherPasswordCount = Integer.parseInt(reader.readLine());
+                    for (int i = 0; i < teacherPasswordCount; i++) {
+                        teacherPasswordStore.add(reader.readLine());
+                    }
+                    int studentAccountCount = Integer.parseInt(reader.readLine());
+                    for (int i = 0; i < studentAccountCount; i++) {
+                        studentAccountStore.add(reader.readLine());
+                    }
+                    int studentPasswordCount = Integer.parseInt(reader.readLine());
+                    for (int i = 0; i < studentPasswordCount; i++) {
+                        studentPasswordStore.add(reader.readLine());
+                    }
+
                     if (proceed == 1) {
                         username1 = makeTeacherUsername();
                         while (usernameStatus == 0) {
