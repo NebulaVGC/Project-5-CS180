@@ -182,7 +182,6 @@ public class Student {
                     writer.write(teacher);
                     writer.println();
                     writer.flush();
-                    String checkLine = null;
                     int coursesCounter = Integer.parseInt(reader.readLine());
                     int currentCourse = 0;
                     if (coursesCounter == 0) {
@@ -204,94 +203,94 @@ public class Student {
                 }
             }
 
-            while (loop == 0) {
-                String course = student.pickCourse(coursesList, socket);
-                //runs method to have student pick a course
-                String checkLine = null;
+            String course = student.pickCourse(coursesList, socket); //runs method to have student pick a course
+            writer.write(course);
+            writer.println();
+            writer.flush();
+            String checkLine = null;
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(teacher + "_" + course + ".txt"));
+                checkLine = bufferedReader.readLine();
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(null, "No quizzes exist in this course",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            if (checkLine == null && new File(teacher + "_" + course + ".txt").exists()) {
+                JOptionPane.showMessageDialog(null, "No quizzes exist in this course",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (checkLine != null && new File(teacher + "_" + course + ".txt").exists()) { //CONTINUE HERE
+                String quiz = student.pickQuiz(teacher + "_" + course + ".txt", socket);
+
                 try {
-                    BufferedReader bufferedReader = new BufferedReader(new FileReader(teacher + "_" + course + ".txt"));
-                    checkLine = bufferedReader.readLine();
-                } catch (Exception exception) {
-                    JOptionPane.showMessageDialog(null, "No quizzes exist in this course",
+                    BufferedReader br = new BufferedReader(new FileReader(teacher + "_" + course + "_" + quiz + ".txt"));
+                    checkLine = br.readLine();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Quiz is empty",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                if (checkLine == null && new File(teacher + "_" + course + ".txt").exists()) {
-                    JOptionPane.showMessageDialog(null, "No quizzes exist in this course",
+                if (checkLine == null && new File(teacher + "_" + course + "_" + quiz + ".txt").exists()) {
+                    JOptionPane.showMessageDialog(null, "Quiz is empty",
                             "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (checkLine != null && new File(teacher + "_" + course + ".txt").exists()) { //CONTINUE HERE
-                    String quiz = student.pickQuiz(teacher + "_" + course + ".txt", socket);
-
-                    try {
-                        BufferedReader br = new BufferedReader(new FileReader(teacher + "_" + course + "_" + quiz + ".txt"));
-                        checkLine = br.readLine();
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, "Quiz is empty",
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (checkLine != null && new File(teacher + "_" + course + "_" + quiz + ".txt").exists()) {
+                    FileReader fr = new FileReader(teacher + "_" + course + "_" + quiz + ".txt");
+                    BufferedReader bufferedReader2 = new BufferedReader(fr);
+                    String shuffleStatus = bufferedReader2.readLine(); //whether or not to shuffle the quiz
+                    if (shuffleStatus.equalsIgnoreCase("True")) {
+                        student.shuffle(teacher + "_" + course + "_" + quiz + ".txt");
+                        //shuffles quiz
                     }
-                    if (checkLine == null && new File(teacher + "_" + course + "_" + quiz + ".txt").exists()) {
-                        JOptionPane.showMessageDialog(null, "Quiz is empty",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                    } else if (checkLine != null && new File(teacher + "_" + course + "_" + quiz + ".txt").exists()) {
-                        FileReader fr = new FileReader(teacher + "_" + course + "_" + quiz + ".txt");
-                        BufferedReader bufferedReader2 = new BufferedReader(fr);
-                        String shuffleStatus = bufferedReader2.readLine(); //whether or not to shuffle the quiz
-                        if (shuffleStatus.equalsIgnoreCase("True")) {
-                            student.shuffle(teacher + "_" + course + "_" + quiz + ".txt");
-                            //shuffles quiz
-                        }
-                        if (!new File(student.userName + "_" + teacher + "_"
-                                + course + "_" + quiz + ".txt").exists()) {
-                            //checks if quiz has already been taken. if not then runs the quiz
-                            student.runQuizNew(teacher + "_" + course + "_" + quiz + ".txt",
-                                    student.userName, teacher, course, quiz, socket);
-                        } else {
-                            System.out.println("Quiz already taken");
-                            int optionLoop = 0;
-                            while (optionLoop == 0) {
-                                System.out.println("1. View Quiz Grade\n2. Exit Back to Courses");
-                                String viewGrade = scan.nextLine();
-                                if (viewGrade.equals("1")) {
-                                    File f = new File(student.userName + "_" + teacher +
-                                            "_" + course + "_" + quiz + ".txt");
-                                    BufferedReader brquiz = new BufferedReader(new FileReader(f));
-                                    String quizLine = brquiz.readLine();
-                                    int cline = 0;
-                                    while (quizLine != null) {
-                                        cline++;
-                                        quizLine = brquiz.readLine(); //reads through all line
-                                    }
-                                    BufferedReader brquiz2 = new BufferedReader(new FileReader(f));
-                                    //reads the same quiz with new bfr
-                                    BufferedReader gradeSetter = new BufferedReader(new FileReader(f));
-                                    String lastLine = "";
-                                    String grade = "";
-                                    for (int i = 0; i < cline; i++) {
-                                        lastLine = brquiz2.readLine();
-                                    }
-                                    brquiz.close();
-                                    String nextLine1 = "";
+                    if (!new File(student.userName + "_" + teacher + "_"
+                            + course + "_" + quiz + ".txt").exists()) {
+                        //checks if quiz has already been taken. if not then runs the quiz
+                        student.runQuizNew(teacher + "_" + course + "_" + quiz + ".txt",
+                                student.userName, teacher, course, quiz, socket);
+                    } else {
+                        System.out.println("Quiz already taken");
+                        int optionLoop = 0;
+                        while (optionLoop == 0) {
+                            System.out.println("1. View Quiz Grade\n2. Exit Back to Courses");
+                            String viewGrade = scan.nextLine();
+                            if (viewGrade.equals("1")) {
+                                File f = new File(student.userName + "_" + teacher +
+                                        "_" + course + "_" + quiz + ".txt");
+                                BufferedReader brquiz = new BufferedReader(new FileReader(f));
+                                String quizLine = brquiz.readLine();
+                                int cline = 0;
+                                while (quizLine != null) {
+                                    cline++;
+                                    quizLine = brquiz.readLine(); //reads through all line
+                                }
+                                BufferedReader brquiz2 = new BufferedReader(new FileReader(f));
+                                //reads the same quiz with new bfr
+                                BufferedReader gradeSetter = new BufferedReader(new FileReader(f));
+                                String lastLine = "";
+                                String grade = "";
+                                for (int i = 0; i < cline; i++) {
+                                    lastLine = brquiz2.readLine();
+                                }
+                                brquiz.close();
+                                String nextLine1 = "";
+                                nextLine1 = gradeSetter.readLine();
+                                while (!(nextLine1).equals(userName)) {
                                     nextLine1 = gradeSetter.readLine();
-                                    while (!(nextLine1).equals(userName)) {
+                                }
+
+
+                                if (lastLine.substring(lastLine.length() - 1).equals("%")) {
+                                    while (nextLine1 != null) {
+                                        grade = grade + nextLine1 + "\n";
                                         nextLine1 = gradeSetter.readLine();
                                     }
-
-
-                                    if (lastLine.substring(lastLine.length() - 1).equals("%")) {
-                                        while (nextLine1 != null) {
-                                            grade = grade + nextLine1 + "\n";
-                                            nextLine1 = gradeSetter.readLine();
-                                        }
-                                    } else {
-                                        grade = "Grade not yet entered";
-                                    }
-                                    System.out.println(grade);
-                                    loop++;
-                                    optionLoop++;
-                                } else if (viewGrade.equals("2")) {
-                                    optionLoop++;
                                 } else {
-                                    System.out.println("Invalid Input. Try again.");
+                                    grade = "Grade not yet entered";
                                 }
+                                System.out.println(grade);
+                                loop++;
+                                optionLoop++;
+                            } else if (viewGrade.equals("2")) {
+                                optionLoop++;
+                            } else {
+                                System.out.println("Invalid Input. Try again.");
                             }
                         }
                     }
