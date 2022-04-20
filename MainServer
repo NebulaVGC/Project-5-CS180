@@ -156,6 +156,7 @@ public class MainServer {
                     }
                     if (type.equals("student")) {
                         int looping = 0;
+                        String teacher = null;
                         while (looping == 0) {
                             if (reader.readLine().equals("get teacher")) {
                                 BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
@@ -177,7 +178,7 @@ public class MainServer {
                                     writer.flush();
 
                                     String checkLine = "";
-                                    String teacher = reader.readLine();
+                                    teacher = reader.readLine();
                                     try {
                                         BufferedReader bufferedReader2 = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
                                         checkLine = bufferedReader2.readLine();
@@ -211,6 +212,36 @@ public class MainServer {
                                 }
                             }
                         }
+                        String courseSelection = reader.readLine();
+                        String checkLine = "";
+                        try {
+                            BufferedReader bufferedReader = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
+                            checkLine = bufferedReader.readLine();
+                            bufferedReader.close();
+                        } catch (Exception e) {
+                            writer.write("0"); //tells client theres an error
+                            writer.println();
+                            writer.flush();
+                        }
+                        if (checkLine == null && new File(teacher + "_" + courseSelection + ".txt").exists()) {
+                            writer.write("0"); //tells client theres an error
+                            writer.println();
+                            writer.flush();
+                        } else if (checkLine != null && new File(teacher + "_" + courseSelection + ".txt").exists()) {
+                            String quizList = "";
+                            BufferedReader bufferedReader1 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
+                            int coursesCounter = 0;
+                            String newLine = "";
+                            while ((newLine = bufferedReader1.readLine()) != null) {
+                                quizList = quizList + newLine + "\n";
+                                coursesCounter++;
+                            }
+                            quizList = quizList.substring(0, quizList.length() - 1);
+                            writer.write(coursesCounter + "\n" + quizList); //writes size of list and list of qizzes
+                            writer.println();
+                            writer.flush();
+                        }
+                        
                     }
                 }
             } catch (IOException e) {
