@@ -272,10 +272,16 @@ public class Teacher implements Runnable {
         DefaultListModel dlm = new DefaultListModel();
         int i = 0;
         while(line != null) {
-        dlm.add(i,line);
-        line = bfr.readLine();
-        i++;
+        if(!line.equals("")) {
+            dlm.add(i,line);
+            line = bfr.readLine();
+            i++;
+            System.out.println(line);
+        } else {
+            break;
         }
+        }
+
 
         menuFrame.dispose();
         deleteCourseFrame = new JFrame("Delete Course");
@@ -305,7 +311,12 @@ public class Teacher implements Runnable {
         c.gridwidth = 3;
         c.gridx = 0;
         c.gridy = 1;
-        deleteCoursePanel.add(new JScrollPane(list), c);
+        if(dlm.size() >= 8) {
+            JScrollPane scroll = new JScrollPane(list);
+            deleteCoursePanel.add(scroll, c);
+        } else {
+            deleteCoursePanel.add(list, c);
+        }
 
 
         JButton enterButton = new JButton("Enter");
@@ -321,6 +332,9 @@ public class Teacher implements Runnable {
                 int index = list.getSelectedIndex();
                 if(index > -1) {
                     String courseDeleted = (String) dlm.get(index);
+                    writer.write(courseDeleted);
+                    writer.println();
+                    writer.flush();
                     JOptionPane.showMessageDialog(null, "Course Deleted Successfully",
                             "Success", JOptionPane.INFORMATION_MESSAGE);
                     //TODO Send deleted course name to server
