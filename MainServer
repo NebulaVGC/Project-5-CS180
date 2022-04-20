@@ -22,7 +22,6 @@ public class MainServer {
         ArrayList<String> teacherPasswordStore = new ArrayList<>();
         ArrayList<String> studentAccountStore = new ArrayList<>();
         ArrayList<String> studentPasswordStore = new ArrayList<>();
-        ArrayList<String> listOfCompletedQuizzes = new ArrayList<>();
 
         while (i == 0) {
             try {
@@ -156,25 +155,26 @@ public class MainServer {
                     }
                     if (type.equals("student")) {
                         if (reader.readLine().equals("get teacher")) {
-                            int sendSize = teacherAccountStore.size();
-                            writer.write(sendSize);
-                            writer.println();
-                            writer.flush();
-                            String teacherDropList = "";
-                            for (int k = 0; k < teacherAccountStore.size(); k++) {
-                                teacherDropList = teacherDropList + teacherAccountStore.get(k) + "\n";
+                            BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
+                            String newLine = "";
+                            String teacherFileCopy = "";
+                            int n = 0;
+                            while ((newLine = bufferedReader.readLine()) != null) {
+                                teacherFileCopy = teacherFileCopy + newLine + "\n";
+                                n++;
                             }
-                            teacherDropList = teacherDropList.substring(0, teacherDropList.length()-1);
-                            writer.write(teacherDropList);
-                        }
-                        String addQuizComplete = reader.readLine();
-                        if (addQuizComplete.equals("Add Completed Quiz")) {
-                            String completedQuiz = "";
-                            String newLine;
-                            while ((newLine = reader.readLine()) != null) {
-                                completedQuiz = completedQuiz + newLine + "\n";
+                            if (n == 0) {
+                                writer.write("0");
+                                writer.println();
+                                writer.flush();
+                            } else {
+                                teacherFileCopy = teacherFileCopy.substring(0, teacherFileCopy.length() - 1);
+                                writer.write(n + "\n" + teacherFileCopy);
+                                writer.println();
+                                writer.flush();
+
+
                             }
-                            listOfCompletedQuizzes.add(completedQuiz);
                         }
                     }
                 }
