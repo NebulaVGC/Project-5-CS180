@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -154,26 +155,60 @@ public class MainServer {
 
                     }
                     if (type.equals("student")) {
-                        if (reader.readLine().equals("get teacher")) {
-                            BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
-                            String newLine = "";
-                            String teacherFileCopy = "";
-                            int n = 0;
-                            while ((newLine = bufferedReader.readLine()) != null) {
-                                teacherFileCopy = teacherFileCopy + newLine + "\n";
-                                n++;
-                            }
-                            if (n == 0) {
-                                writer.write("0");
-                                writer.println();
-                                writer.flush();
-                            } else {
-                                teacherFileCopy = teacherFileCopy.substring(0, teacherFileCopy.length() - 1);
-                                writer.write(n + "\n" + teacherFileCopy);
-                                writer.println();
-                                writer.flush();
+                        int looping = 0;
+                        while (looping == 0) {
+                            if (reader.readLine().equals("get teacher")) {
+                                BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
+                                String newLine = "";
+                                String teacherFileCopy = "";
+                                int n = 0;
+                                while ((newLine = bufferedReader.readLine()) != null) {
+                                    teacherFileCopy = teacherFileCopy + newLine + "\n";
+                                    n++;
+                                }
+                                if (n == 0) {
+                                    writer.write("0");
+                                    writer.println();
+                                    writer.flush();
+                                } else {
+                                    teacherFileCopy = teacherFileCopy.substring(0, teacherFileCopy.length() - 1);
+                                    writer.write(n + "\n" + teacherFileCopy);
+                                    writer.println();
+                                    writer.flush();
 
-
+                                    String checkLine = "";
+                                    String teacher = reader.readLine();
+                                    try {
+                                        BufferedReader bufferedReader2 = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
+                                        checkLine = bufferedReader2.readLine();
+                                        bufferedReader.close();
+                                    } catch (Exception e) {
+                                        writer.write("0");
+                                        writer.println();
+                                        writer.flush();
+                                    }
+                                    if (checkLine == null && new File(teacher + "_Courses.txt").exists()) {
+                                        writer.write("0");
+                                        writer.println();
+                                        writer.flush();
+                                    } else if (checkLine != null && new File(teacher + "_Courses.txt").exists()) {
+                                        String coursesList = "";
+                                        BufferedReader bufferedReader1 = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
+                                        int coursesCounter = 0;
+                                        while ((newLine = bufferedReader1.readLine()) != null) {
+                                            coursesList = coursesList + newLine + "\n";
+                                            coursesCounter++;
+                                        }
+                                        coursesList = coursesList.substring(0, coursesList.length() - 1);
+                                        writer.write(coursesCounter + "\n" + coursesList);
+                                        writer.println();
+                                        writer.flush();
+                                    }
+                                    String loopStatus = reader.readLine();
+                                    if (loopStatus.equals("end loop")) {
+                                        looping++;
+                                    }
+                                }
                             }
                         }
                     }
