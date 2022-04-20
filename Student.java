@@ -184,6 +184,7 @@ public class Student {
                     ArrayList<String> teacherList = new ArrayList<>();
                     while (lineCount < listSize) {
                         teacherList.add(reader.readLine());
+                        lineCount++;
                     }
                     String[] teacherOptions = new String[teacherList.size()];
                     for (int i = 0; i < teacherList.size(); i++) {
