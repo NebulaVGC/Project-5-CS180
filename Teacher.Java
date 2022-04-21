@@ -469,6 +469,109 @@ public class Teacher implements Runnable {
     }
 
     public void newDeleteQuiz() {
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+    PrintWriter writer = new PrintWriter(socket.getOutputStream());
+        writer.write(name);
+        writer.println();
+        writer.flush();
+    String line = bfr.readLine();
+    DefaultListModel dlm = new DefaultListModel();
+    int i = 0;
+        while(line != null) {
+        if(!line.equals("")) {
+            dlm.add(i,line);
+            line = bfr.readLine();
+            i++;
+            System.out.println(line);
+        } else {
+            break;
+        }
+    }
+
+
+        menuFrame.dispose();
+    deleteQuizFrame = new JFrame("Delete Quiz");
+    Container content = deleteQuizFrame.getContentPane();
+        content.setLayout(new GridBagLayout());
+
+    JPanel deleteQuizPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+
+    JLabel deleteQuizName = new JLabel("Select the Quiz you would like to delete");
+    c.fill = GridBagConstraints.NONE;
+    c.ipady = 2;
+    c.ipadx = 2;
+    c.weightx = 0.5;
+    c.gridwidth = 3;
+    c.gridx = 0;
+    c.gridy = 0;
+    c.insets = new Insets(10, 0, 0,0);
+        deleteQuizPanel.add(deleteQuizName,c);
+
+
+    JList list = new JList(dlm);
+    c.fill = GridBagConstraints.NONE;
+    c.ipady = 1;
+    c.ipadx = 2;
+    c.weightx = 0.5;
+    c.gridwidth = 3;
+    c.gridx = 0;
+    c.gridy = 1;
+        if(dlm.size() >= 8) {
+        JScrollPane scroll = new JScrollPane(list);
+        deleteQuizPanel.add(scroll, c);
+    } else {
+        deleteQuizPanel.add(list, c);
+    }
+
+
+    JButton enterButton = new JButton("Enter");
+    c.fill = GridBagConstraints.NONE;
+    c.ipady = 5;
+    c.ipadx = 50;
+    c.weightx = 0.0;
+    c.gridwidth = 1;
+    c.gridx = 1;
+    c.gridy = 2;
+        enterButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent ae) {
+            int index = list.getSelectedIndex();
+            if(index > -1) {
+                String courseDeleted = (String) dlm.get(index);
+                writer.write(courseDeleted);
+                writer.println();
+                writer.flush();
+                JOptionPane.showMessageDialog(null, "Course Deleted Successfully",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                //TODO Send deleted course name to server
+                deleteQuizFrame.dispose();
+                createMenuGUI(socket);
+            }
+        }
+    });
+        deleteQuizPanel.add(enterButton, c);
+
+    JButton cancelButton = new JButton("Cancel");
+    c.fill = GridBagConstraints.NONE;
+    c.ipady = 5;      //make this component tall
+    c.weightx = 0;
+    c.gridwidth = 1;
+    c.gridx = 2;
+    c.gridy = 2;
+        cancelButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            deleteQuizFrame.dispose();
+            createMenuGUI(socket);
+        }
+    });
+        deleteQuizPanel.add(cancelButton, c);
+
+        content.add(deleteCoursePanel);
+        deleteQuizFrame.setSize(680, 420);
+        deleteQuizFrame.setLocationRelativeTo(null);
+        deleteQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        deleteQuizFrame.setVisible(true);
 
     }
 
