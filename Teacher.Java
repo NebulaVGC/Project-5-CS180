@@ -370,6 +370,97 @@ public class Teacher implements Runnable {
     }
 
     public void newCreateQuiz() {
+                menuFrame.dispose();
+        createQuizFrame = new JFrame("Create Quiz");
+        Container content = createQuizFrame.getContentPane();
+        content.setLayout(new GridBagLayout());
+
+        JPanel createQuizPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        JLabel enterQuizName = new JLabel("Enter the name of the Quiz you would like to create");
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 2;
+        c.ipadx = 2;
+        c.weightx = 0.5;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(10, 0, 0,0);
+        createQuizPanel.add(enterQuizName,c);
+        JTextField courseText = new JTextField("");
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 1;
+        c.ipadx = 100;
+        c.weightx = 0.0;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 1;
+        createQuizPanel.add(courseText,c);
+
+        JButton enterButton = new JButton("Enter");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 5;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.gridx = 0;
+        c.gridy = 2;
+        enterButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                if(!courseText.getText().equals("")) {
+                    String courseCreated = courseText.getText();
+                    writer.write(courseCreated);
+                    writer.println();
+                    writer.flush();
+                    writer.write(name);
+                    writer.println();
+                    writer.flush();
+                    JOptionPane.showMessageDialog(null, "Course Added Successfully",
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                    createQuizFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            }
+        });
+        createQuizPanel.add(enterButton, c);
+
+        JButton cancelButton = new JButton("Cancel");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 5;      //make this component tall
+        c.weightx = 0;
+        c.gridwidth = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writer.write("");
+                writer.println();
+                writer.flush();
+                writer.write("");
+                writer.println();
+                writer.flush();
+                createQuizFrame.dispose();
+                createMenuGUI(socket);
+            }
+        });
+        createQuizPanel.add(cancelButton, c);
+
+
+
+        content.add(createQuizPanel);
+        createQuizFrame.setSize(680, 420);
+        createQuizFrame.setLocationRelativeTo(null);
+        createQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        createQuizFrame.setVisible(true);
+
+
+        JLabel enterQuizQuestion = new JLabel("Enter the question you would like to ask");
+        JLabel enterAnswerA = new JLabel("Enter answer choice A");
+        JLabel enterAnswerB = new JLabel("Enter answer choice B");
+        JLabel enterAnswerC = new JLabel("Enter answer choice C");
+        JLabel enterAnswerD = new JLabel("Enter answer choice D");
 
     }
 
