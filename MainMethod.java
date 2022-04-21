@@ -16,12 +16,11 @@ import java.util.Scanner;
 
 public class MainMethod extends Run {
     public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
 
         try {
+            Socket socket = new Socket("10.186.135.216", 4242);
 
-            Socket socket = new Socket("localhost", 4242);
-
-            Scanner s = new Scanner(System.in);
             String username = runQuiz(socket);
             String[] splited = username.split(" ");
             if (splited[0].equals("Teacher")) {
