@@ -205,17 +205,10 @@ public class Student {
                                 writer.println();
                                 writer.flush();
 
-                                try {
-                                    BufferedReader br = new BufferedReader(new FileReader(teacher + "_" + course + "_" + quiz + ".txt"));
-                                    checkLine = br.readLine();
-                                } catch (Exception e) {
+                                if () {
                                     JOptionPane.showMessageDialog(null, "Quiz is empty",
                                             "Error", JOptionPane.ERROR_MESSAGE);
-                                }
-                                if (checkLine == null && new File(teacher + "_" + course + "_" + quiz + ".txt").exists()) {
-                                    JOptionPane.showMessageDialog(null, "Quiz is empty",
-                                            "Error", JOptionPane.ERROR_MESSAGE);
-                                } else if (checkLine != null && new File(teacher + "_" + course + "_" + quiz + ".txt").exists()) {
+                                } else {
                                     FileReader fr = new FileReader(teacher + "_" + course + "_" + quiz + ".txt");
                                     BufferedReader bufferedReader2 = new BufferedReader(fr);
                                     String shuffleStatus = bufferedReader2.readLine(); //whether or not to shuffle the quiz
@@ -387,5 +380,5 @@ public class Student {
         }
         bw.close();
     }
-    
+
 }
