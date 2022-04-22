@@ -323,6 +323,7 @@ public class MainServer {
 
                                         int looping = 0;
                                         String teacher = null;
+                                        String username = reader.readLine();
                                         while (looping == 0) {
                                             if (reader.readLine().equals("get teacher")) {
                                                 BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
@@ -416,21 +417,66 @@ public class MainServer {
                                                                 check = bufferedReader5.readLine();
                                                                 bufferedReader5.close();
                                                             } catch (Exception e) {
-                                                                writer.write("0"); //tells client theres an error
+                                                                writer.write("Empty Quiz"); //tells client theres an error
                                                                 writer.println();
                                                                 writer.flush();
                                                             }
 
                                                             if (check == null && new File(teacher + "_" + courseSelection + "_" + quizSelection + ".txt").exists()) {
-                                                                writer.write("0"); //tells client theres an error
+                                                                writer.write("Empty Quiz"); //tells client theres an error
                                                                 writer.println();
                                                                 writer.flush();
                                                             } else if (check != null && new File(teacher + "_" + courseSelection + "_" + quizSelection + ".txt").exists()) {
+                                                                writer.write("Quiz");
+                                                                writer.println();
+                                                                writer.flush();
                                                                 BufferedReader bufferedReader6 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + "_" + quizSelection + ".txt"));
                                                                 String shuffleStatus = bufferedReader6.readLine();
                                                                 if (shuffleStatus.equals("True")) {
                                                                     MainServer mainServer = new MainServer();
                                                                     mainServer.shuffle(teacher + "_" + courseSelection + "_" + quizSelection + ".txt");
+                                                                }
+                                                                if (!new File( username + "_" + teacher + "_"
+                                                                        + courseSelection + "_" + quizSelection + ".txt").exists()) {
+                                                                    writer.write("run quiz");
+                                                                    writer.println();
+                                                                    writer.flush();
+
+                                                                    int questionCounter = 0;
+                                                                    String nextLine = "";
+                                                                    ArrayList<String> quizContents = new ArrayList<>();
+                                                                    while ((nextLine = bufferedReader6.readLine()) != null) {
+                                                                        quizContents.add(nextLine);
+                                                                        questionCounter++;
+                                                                    }
+                                                                    questionCounter = questionCounter/5;
+                                                                    writer.write(questionCounter);
+                                                                    writer.println();
+                                                                    writer.flush();
+                                                                    writer.write(shuffleStatus);
+                                                                    writer.println();
+                                                                    writer.flush();
+
+                                                                    for (int l = 0; l < quizContents.size(); l++) {
+                                                                        writer.write(quizContents.get(l));
+                                                                        writer.println();
+                                                                        writer.flush();
+                                                                    }
+                                                                    int quizSize = Integer.parseInt(reader.readLine());
+                                                                    String completeQuizString = "";
+                                                                    for (int l = 0; l < quizSize; l++) {
+                                                                        completeQuizString = completeQuizString + reader.readLine() + "\n";
+                                                                    }
+                                                                    completeQuizString = completeQuizString.substring(0, completeQuizString.length()-1);
+                                                                    File file = new File(username + "_" + teacher + "_" + courseSelection + "_" + quizSelection + ".txt");
+                                                                    BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                                                                    bw.write(completeQuizString);
+                                                                    bw.close();
+
+                                                                } else {
+                                                                    writer.write("dont run");
+                                                                    writer.println();
+                                                                    writer.flush();
                                                                 }
                                                             }
 
