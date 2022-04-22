@@ -19,12 +19,12 @@ public class MainMethod extends Run {
         Scanner s = new Scanner(System.in);
 
         try {
-            Socket socket = new Socket("hostname", 4242);
+            Socket socket = new Socket("localHost", 4242);
 
             String username = runQuiz(socket);
             String[] splited = username.split(" ");
             if (splited[0].equals("Teacher")) {
-                Teacher teacher = new Teacher(splited[31]);
+                Teacher teacher = new Teacher(splited[1]);
                 teacher.teacherInterface(s);
             } else if (splited[0].equals("Student")) {
                 Student student = new Student(splited[1], s);
