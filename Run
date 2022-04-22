@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Project 04 -- Run
@@ -35,17 +33,7 @@ public class Run {
     /*
     method that runs the quiz and takes the scanner as a parameter
      */
-
-    public static void main(String[] args) {
-        Socket socket = null;
-        try {
-            socket = new Socket("localHost", 4242);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        runQuiz(socket);
-    }
-    public static void runQuiz(Socket socket) {
+    public static String runQuiz(Socket socket) {
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -95,7 +83,7 @@ public class Run {
                             writer.write("teacher");
                             writer.println();
                             writer.flush();
-                            return;
+                            return "";
                         }
                     } else if (proceed == 2) { //if user wants to login to existing account
                         synchronized (obj) {
@@ -105,7 +93,10 @@ public class Run {
                             writer.write("teacher");
                             writer.println();
                             writer.flush();
-                            return;
+
+                            String username = reader.readLine();
+
+                            return username;
                         }
                     } else if (proceed == 3) { //if teacher wants to edit account
                         synchronized (obj) {
@@ -115,7 +106,7 @@ public class Run {
                             writer.write("teacher");
                             writer.println();
                             writer.flush();
-                            return;
+                            return "";
                         }
                     }
                 }
@@ -146,7 +137,7 @@ public class Run {
                             writer.write("student");
                             writer.println();
                             writer.flush();
-                            return;
+                            return "";
                         }
                     } else if (proceed == 2) { //create account depending on whether student or teacher
                         synchronized (obj) {
@@ -156,7 +147,10 @@ public class Run {
                             writer.write("student");
                             writer.println();
                             writer.flush();
-                            return;
+
+                            String username = reader.readLine();
+
+                            return username;
                         }
                     } else if (proceed == 3) { //if teacher wants to edit account
                         synchronized (obj) {
@@ -166,7 +160,7 @@ public class Run {
                             writer.write("student");
                             writer.println();
                             writer.flush();
-                            return;
+                            return "";
                         }
                     }
                 }
@@ -178,6 +172,7 @@ public class Run {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     /*
