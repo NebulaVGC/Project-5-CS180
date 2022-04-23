@@ -266,12 +266,12 @@ public class Student {
                                 currentCourse++;
                             }
 
-                            String course = student.pickCourse(coursesList, socket); //runs method to have student pick a course
+                            String course = student.pickCourse(coursesList, socket);//runs method to have student pick a course
                             writer.write(course); //writes course to server
                             writer.println();
                             writer.flush();
                             String checkLine = null;
-                            int quizzesCounter = 0;
+                            int quizzesCounter = Integer.parseInt(reader.readLine());
                             int currentQuiz = 0;
                             ArrayList<String> quizzesList = new ArrayList<>();
                             if (quizzesCounter == 0) {
