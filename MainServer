@@ -27,6 +27,7 @@ public class MainServer {
         ArrayList<String> studentPasswordStore = new ArrayList<>();
 
         int usernameStatus = 0;
+
         while (i == 0) {
             int m = 0;
 
@@ -48,11 +49,19 @@ public class MainServer {
                         if (type.equals("teacher")) {
                             String username1;
                             username1 = makeTeacherUsername();
+                            if (username1.equals("")) {
+                                usernameStatus++;
+                                break;
+                            } else {
+                                usernameStatus = 0;
+                            }
                             while (usernameStatus == 0) {
                                 try {
                                     if (checkTeacherUsername(username1) == 1) {
                                         String teacherPassword = makePassword();
-
+                                        if (teacherPassword.equals("")) {
+                                            break;
+                                        }
                                         teacherAccountStore.add(username1);
                                         teacherPasswordStore.add(teacherPassword);
 
@@ -81,12 +90,19 @@ public class MainServer {
 
                             String username1;
                             username1 = makeStudentUsername();
-
+                            if (username1.equals("")) {
+                                usernameStatus++;
+                                break;
+                            } else {
+                                usernameStatus = 0;
+                            }
                             while (usernameStatus == 0) {
                                 try {
                                     if (checkStudentUsername(username1) == 1) {
                                         String studentPassword = makePassword();
-
+                                        if (studentPassword.equals("")) {
+                                            break;
+                                        }
                                         studentAccountStore.add(username1);
                                         studentPasswordStore.add(studentPassword);
 
@@ -114,6 +130,7 @@ public class MainServer {
                     } else if (action.equals("edit")) {
                         String type = reader.readLine();
                         if (type.equals("teacher")) {
+                            usernameStatus = 0;
                             while (usernameStatus == 0) {
                                 try {
                                     String editUsername = checkTeacherNameExist();
@@ -146,7 +163,13 @@ public class MainServer {
 
                                     if (passwordList.get(accountList.indexOf(editUsername)).equals(editPassword)) {
                                         String newUsername = makeTeacherUsername();
+                                        if (newUsername.equals("")) {
+                                            break;
+                                        }
                                         String newPassword = makePassword();
+                                        if (newPassword.equals("")) {
+                                            break;
+                                        }
 
                                         editTeacherInformation(editUsername, editPassword, newUsername, newPassword);
                                         break;
@@ -163,7 +186,7 @@ public class MainServer {
 
 
                         } else if (type.equals("student")) {
-
+                            usernameStatus = 0;
                             while (usernameStatus == 0) {
                                 try {
                                     String editUsername = checkStudentNameExist();
@@ -196,7 +219,13 @@ public class MainServer {
 
                                     if (passwordList.get(accountList.indexOf(editUsername)).equals(editPassword)) {
                                         String newUsername = makeStudentUsername();
+                                        if (newUsername.equals("")) {
+                                            break;
+                                        }
                                         String newPassword = makePassword();
+                                        if (newPassword.equals("")) {
+                                            break;
+                                        }
 
                                         editStudentInformation(editUsername, editPassword, newUsername, newPassword);
                                         break;
@@ -209,15 +238,11 @@ public class MainServer {
                                     e.printStackTrace();
                                 }
                             }
-
                         }
-
-
                     } else if (action.equals("login")) {
                         String type = reader.readLine();
                         if (type.equals("teacher")) {
-                            //run teacher
-
+                            usernameStatus = 0;
                             while (usernameStatus == 0) {
                                 try {
                                     String userName = checkTeacherNameExist();
@@ -246,6 +271,9 @@ public class MainServer {
                                         passwordList.add(line2);
                                         line2 = bfr2.readLine();
                                     }
+                                    writer.write(userName);
+                                    writer.println();
+                                    writer.flush();
                                     bfr2.close();
 
                                     if (passwordList.get(accountList.indexOf(userName)).equals(password)) {
@@ -286,6 +314,7 @@ public class MainServer {
 
                         }
                         if (type.equals("student")) {
+                            usernameStatus = 0;
                             while (usernameStatus == 0) {
                                 try {
 
@@ -315,15 +344,18 @@ public class MainServer {
                                         passwordList.add(line2);
                                         line2 = bfr2.readLine();
                                     }
+                                    writer.write(userName);
+                                    writer.println();
+                                    writer.flush();
                                     bfr2.close();
 
                                     if (passwordList.get(accountList.indexOf(userName)).equals(password)) {
 
                                         //run student
-
                                         int looping = 0;
                                         String teacher = null;
                                         String username = reader.readLine();
+                                        System.out.println(username);
                                         while (looping == 0) {
                                             if (reader.readLine().equals("get teacher")) {
                                                 BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
@@ -367,7 +399,8 @@ public class MainServer {
                                                             coursesList.add(newLine);
                                                             coursesCounter++;
                                                         }
-                                                        writer.write(coursesCounter);
+                                                        String coursesAmount = String.valueOf(coursesCounter);
+                                                        writer.write(coursesAmount);
                                                         writer.println();
                                                         writer.flush();
                                                         for (int l = 0; l < coursesList.size(); l++) {
@@ -868,13 +901,15 @@ public class MainServer {
             //if (Integer.parseInt(userName) == JOptionPane.CLOSED_OPTION || Integer.parseInt(userName) == JOptionPane.CANCEL_OPTION) {
             //  return "exit";
             //}
-            if ((userName == null) || (userName.isEmpty())) {
+            if (userName == null) {
+                return "";
+            } else if (userName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
                         JOptionPane.ERROR_MESSAGE);
             } else if (userName.contains(" ")) {
                 JOptionPane.showMessageDialog(null, "Username cannot contain space!", "Make username",
                         JOptionPane.ERROR_MESSAGE);
-            } else if (checkTeacherUsername(userName) != 1) {
+            }  else if (checkTeacherUsername(userName) != 1) {
                 JOptionPane.showMessageDialog(null, "Username already exist!", "Username error",
                         JOptionPane.ERROR_MESSAGE);
             } else {
@@ -913,7 +948,9 @@ public class MainServer {
         while (i == 0) {
             password = JOptionPane.showInputDialog(null, "Please enter your desired password",
                     "Make username", JOptionPane.QUESTION_MESSAGE);
-            if ((password == null) || (password.isEmpty())) {
+            if (password == null) {
+                return "";
+            } else if (password.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Password cannot be empty!", "Make password",
                         JOptionPane.ERROR_MESSAGE);
             } else if (password.contains(" ")) {
@@ -935,7 +972,9 @@ public class MainServer {
             //if (Integer.parseInt(userName) == JOptionPane.CLOSED_OPTION || Integer.parseInt(userName) == JOptionPane.CANCEL_OPTION) {
             //  return "exit";
             //}
-            if ((userName == null) || (userName.isEmpty())) {
+            if (userName == null) {
+                return "";
+            } else if (userName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
                         JOptionPane.ERROR_MESSAGE);
             } else if (userName.contains(" ")) {
@@ -980,7 +1019,9 @@ public class MainServer {
         while (i == 0) {
             userName = JOptionPane.showInputDialog(null, "Please enter your username",
                     "Verify username", JOptionPane.QUESTION_MESSAGE);
-            if ((userName == null) || (userName.isEmpty())) {
+            if (userName == null) {
+                return "";
+            } else if (userName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
                         JOptionPane.ERROR_MESSAGE);
             } else if (userName.contains(" ")) {
@@ -1002,7 +1043,9 @@ public class MainServer {
         while (i == 0) {
             userName = JOptionPane.showInputDialog(null, "Please enter your password",
                     "Verify password", JOptionPane.QUESTION_MESSAGE);
-            if ((userName == null) || (userName.isEmpty())) {
+            if (userName == null) {
+                return "";
+            } else if (userName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "password cannot be empty!", "Make password",
                         JOptionPane.ERROR_MESSAGE);
             } else if (userName.contains(" ")) {
@@ -1024,7 +1067,9 @@ public class MainServer {
         while (i == 0) {
             userName = JOptionPane.showInputDialog(null, "Please enter your username",
                     "Verify username", JOptionPane.QUESTION_MESSAGE);
-            if ((userName == null) || (userName.isEmpty())) {
+            if (userName == null) {
+                return "";
+            } else if (userName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
                         JOptionPane.ERROR_MESSAGE);
             } else if (userName.contains(" ")) {
@@ -1046,7 +1091,9 @@ public class MainServer {
         while (i == 0) {
             userName = JOptionPane.showInputDialog(null, "Please enter your password",
                     "Verify password", JOptionPane.QUESTION_MESSAGE);
-            if ((userName == null) || (userName.isEmpty())) {
+            if (userName == null) {
+                return "";
+            } else if (userName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "password cannot be empty!", "Make password",
                         JOptionPane.ERROR_MESSAGE);
             } else if (userName.contains(" ")) {
