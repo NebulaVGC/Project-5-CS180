@@ -95,8 +95,7 @@ public class Run {
                             writer.flush();
 
                             String username = reader.readLine();
-
-                            return username;
+                            return ("Teacher " + username);
                         }
                     } else if (proceed == 3) { //if teacher wants to edit account
                         synchronized (obj) {
@@ -149,8 +148,7 @@ public class Run {
                             writer.flush();
 
                             String username = reader.readLine();
-
-                            return username;
+                            return ("Student " + username);
                         }
                     } else if (proceed == 3) { //if teacher wants to edit account
                         synchronized (obj) {
