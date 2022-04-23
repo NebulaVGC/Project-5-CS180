@@ -433,7 +433,8 @@ public class MainServer {
                                                                 quizList.add(newLine);
                                                                 quizzesCounter++;
                                                             }
-                                                            writer.write(quizzesCounter); //writes size of list and list of qizzes
+                                                            String quizAmount = String.valueOf(quizzesCounter);
+                                                            writer.write(quizAmount); //writes size of list and list of qizzes
                                                             writer.println();
                                                             writer.flush();
 
