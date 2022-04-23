@@ -356,16 +356,18 @@ public class MainServer {
                                         String teacher = null;
                                         String username = reader.readLine();
                                         System.out.println(username);
+                                        String newLine = null;
                                         while (looping == 0) {
                                             if (reader.readLine().equals("get teacher")) {
                                                 BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
-                                                String newLine = "";
+                                                newLine = "";
                                                 String teacherFileCopy = "";
                                                 int n = 0;
                                                 while ((newLine = bufferedReader.readLine()) != null) {
                                                     teacherFileCopy = teacherFileCopy + newLine + "\n";
                                                     n++;
                                                 }
+                                                bufferedReader.close();
                                                 if (n == 0) {
                                                     writer.write("0");
                                                     writer.println();
@@ -399,6 +401,7 @@ public class MainServer {
                                                             coursesList.add(newLine);
                                                             coursesCounter++;
                                                         }
+                                                        bufferedReader1.close();
                                                         String coursesAmount = String.valueOf(coursesCounter);
                                                         writer.write(coursesAmount);
                                                         writer.println();
@@ -410,6 +413,7 @@ public class MainServer {
                                                         }
 
                                                         String courseSelection = reader.readLine(); //retrieves course name from client
+                                                        System.out.println(courseSelection);
                                                         checkLine = "";
                                                         try {
                                                             BufferedReader bufferedReader3 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
@@ -428,22 +432,22 @@ public class MainServer {
                                                             ArrayList<String> quizList = new ArrayList<>();
                                                             BufferedReader bufferedReader4 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
                                                             int quizzesCounter = 0;
-                                                            newLine = "";
-                                                            while ((newLine = bufferedReader4.readLine()) != null) {
-                                                                quizList.add(newLine);
+                                                            String newLine3 = "";
+                                                            while ((newLine3 = bufferedReader4.readLine()) != null) {
+                                                                quizList.add(newLine3);
                                                                 quizzesCounter++;
                                                             }
+                                                            bufferedReader4.close();
                                                             String quizAmount = String.valueOf(quizzesCounter);
                                                             writer.write(quizAmount); //writes size of list and list of qizzes
                                                             writer.println();
                                                             writer.flush();
 
-                                                            for (int l = 0; l < coursesList.size(); l++) {
-                                                                writer.write(coursesList.get(l));
+                                                            for (int l = 0; l < quizList.size(); l++) {
+                                                                writer.write(quizList.get(l));
                                                                 writer.println();
                                                                 writer.flush();
                                                             }
-
                                                             String quizSelection = reader.readLine();
                                                             String check = null;
                                                             try {
@@ -484,7 +488,8 @@ public class MainServer {
                                                                         questionCounter++;
                                                                     }
                                                                     questionCounter = questionCounter/5;
-                                                                    writer.write(questionCounter);
+                                                                    String questionAmount = String.valueOf(questionCounter);
+                                                                    writer.write(questionAmount);
                                                                     writer.println();
                                                                     writer.flush();
                                                                     writer.write(shuffleStatus);
