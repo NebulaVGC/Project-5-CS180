@@ -59,7 +59,8 @@ public class Student {
             }
             String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").format(Calendar.getInstance().getTime());
             copyQuizContents.add(timeStamp);
-            writer.write(copyQuizContents.size());
+            String contentsSize = String.valueOf(copyQuizContents.size());
+            writer.write(contentsSize);
             writer.println();
             writer.flush();
         } else if (quizType == 1) {
@@ -89,7 +90,8 @@ public class Student {
             }
             String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").format(Calendar.getInstance().getTime());
             copyQuizContents.add(timeStamp);
-            writer.write(copyQuizContents.size());
+            String contentsSize = String.valueOf(copyQuizContents.size());
+            writer.write(contentsSize);
             writer.println();
             writer.flush();
         }
