@@ -355,7 +355,6 @@ public class MainServer {
                                         int looping = 0;
                                         String teacher = null;
                                         String username = reader.readLine();
-                                        System.out.println(username);
                                         String newLine = null;
                                         while (looping == 0) {
                                             if (reader.readLine().equals("get teacher")) {
@@ -413,7 +412,6 @@ public class MainServer {
                                                         }
 
                                                         String courseSelection = reader.readLine(); //retrieves course name from client
-                                                        System.out.println(courseSelection);
                                                         checkLine = "";
                                                         try {
                                                             BufferedReader bufferedReader3 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
@@ -507,8 +505,8 @@ public class MainServer {
                                                                         completeQuizString = completeQuizString + reader.readLine() + "\n";
                                                                     }
                                                                     completeQuizString = completeQuizString.substring(0, completeQuizString.length()-1);
-                                                                    File file = new File(username + "_" + teacher + "_" + courseSelection + "_" + quizSelection + ".txt");
-                                                                    BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                                                                    File files = new File((username + "_" + teacher + "_" + courseSelection + "_" + quizSelection + ".txt"));
+                                                                    BufferedWriter bw = new BufferedWriter(new FileWriter(files));
                                                                     bw.write(completeQuizString);
                                                                     bw.close();
 
