@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Project 04 -- Teacher
@@ -95,7 +94,11 @@ public class Teacher implements Runnable {
                 writer.write("4");
                 writer.println();
                 writer.flush();
-                newEditQuiz();
+                try {
+                    newEditQuiz();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             if (e.getSource() == deleteQuizButton) {
@@ -494,7 +497,7 @@ public class Teacher implements Runnable {
                         createQuizFrame.dispose();
                         int randomized = JOptionPane.showConfirmDialog(null, "Do you want the questions to be randomized?",
                                 "Create Quiz", JOptionPane.YES_NO_OPTION);
-                        if(randomized == JOptionPane.YES_OPTION) {
+                        if (randomized == JOptionPane.YES_OPTION) {
                             writer.write("" + 0);
                             writer.println();
                             writer.flush();
@@ -588,8 +591,110 @@ public class Teacher implements Runnable {
 
     }
 
-    public void newEditQuiz() {
+    public void newEditQuiz() throws IOException {
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        PrintWriter writer = new PrintWriter(socket.getOutputStream());
+        writer.write(name);
+        writer.println();
+        writer.flush();
+        String line = bfr.readLine();
+        DefaultListModel dlm = new DefaultListModel();
+        int i = 0;
+        while (line != null) {
+            if (!line.equals("")) {
+                dlm.add(i, line);
+                line = bfr.readLine();
+                i++;
+            } else {
+                break;
+            }
+        }
 
+
+        menuFrame.dispose();
+        editQuizFrame = new JFrame("Edit Quiz");
+        Container content = editQuizFrame.getContentPane();
+        content.setLayout(new GridBagLayout());
+
+        JPanel editQuizPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        JLabel selectCourseName = new JLabel("Select the course the quiz is in");
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 2;
+        c.ipadx = 2;
+        c.weightx = 0.5;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(10, 0, 0, 0);
+        editQuizPanel.add(selectCourseName, c);
+
+
+        JList list = new JList(dlm);
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 1;
+        c.ipadx = 2;
+        c.weightx = 0.5;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 1;
+        if (dlm.size() >= 8) {
+            JScrollPane scroll = new JScrollPane(list);
+            editQuizPanel.add(scroll, c);
+        } else {
+            editQuizPanel.add(list, c);
+        }
+
+
+        JButton enterButton = new JButton("Enter");
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 5;
+        c.ipadx = 50;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        enterButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                int index = list.getSelectedIndex();
+                if (index > -1) {
+                    String courseSelected = (String) dlm.get(index);
+                    writer.write(courseSelected);
+                    writer.println();
+                    writer.flush();
+                    editQuizFrame.remove(editQuizPanel);
+                    editQuizFrame.dispose();
+                    askForQuiz();
+                }
+            }
+        });
+        editQuizPanel.add(enterButton, c);
+
+        JButton cancelButton = new JButton("Cancel");
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 5;      //make this component tall
+        c.weightx = 0;
+        c.gridwidth = 1;
+        c.gridx = 2;
+        c.gridy = 2;
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writer.write("");
+                writer.println();
+                writer.flush();
+                editQuizFrame.dispose();
+                createMenuGUI(socket);
+            }
+        });
+        editQuizPanel.add(cancelButton, c);
+
+        content.add(editQuizPanel);
+        editQuizFrame.setSize(680, 420);
+        editQuizFrame.setLocationRelativeTo(null);
+        editQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        editQuizFrame.setVisible(true);
     }
 
     public void newDeleteQuiz() {
@@ -644,14 +749,14 @@ public class Teacher implements Runnable {
                 if (!fileText.getText().equals("")) {
                     String filePath = fileText.getText();
                     File f = new File(filePath);
-                    if(f.exists()) {
+                    if (f.exists()) {
                         try {
                             writer.write("Go");
                             writer.println();
                             writer.flush();
                             BufferedReader bfr = new BufferedReader(new FileReader(f));
                             String line = bfr.readLine();
-                            while(line != null) {
+                            while (line != null) {
                                 writer.write(line);
                                 writer.println();
                                 writer.flush();
@@ -910,5 +1015,245 @@ public class Teacher implements Runnable {
         }
     }
 
+    public void askForQuiz() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
 
-}
+            Container content = editQuizFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel editQuizPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel quizName = new JLabel("Select the quiz you would like to edit");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            editQuizPanel.add(quizName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                editQuizPanel.add(scroll, c);
+            } else {
+                editQuizPanel.add(list, c);
+            }
+
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 2;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String quizSelected = (String) dlm.get(index);
+                        writer.write(quizSelected);
+                        writer.println();
+                        writer.flush();
+                        editQuizFrame.remove(editQuizPanel);
+                        editQuizFrame.dispose();
+                        editQuizGui();
+                    }
+                }
+            });
+            editQuizPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 2;
+            c.gridy = 2;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    editQuizFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            });
+            editQuizPanel.add(cancelButton, c);
+
+            content.add(editQuizPanel);
+            editQuizFrame.setSize(680, 420);
+            editQuizFrame.setLocationRelativeTo(null);
+            editQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            editQuizFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void editQuizGui() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("///")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            Container content = editQuizFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel editQuizPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel editQuizName = new JLabel("Select the line to change and enter the new text for the line");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            editQuizPanel.add(editQuizName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                editQuizPanel.add(scroll, c);
+            } else {
+                editQuizPanel.add(list, c);
+            }
+
+            JTextField newText = new JTextField("");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 100;
+            c.weightx = 0.0;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 2;
+            editQuizPanel.add(newText, c);
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 3;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index;
+                    JList newList = new JList(dlm);
+                    if(list.isEnabled()) {
+                        index = list.getSelectedIndex();
+                    } else {
+                        index = newList.getSelectedIndex();
+                    }
+                    if (index > -1 && !newText.getText().equals("")) {
+                        String lineText = newText.getText();
+                        writer.write(lineText);
+                        writer.println();
+                        writer.flush();
+                        writer.write("" + index);
+                        writer.println();
+                        writer.flush();
+                        newText.setText("");
+                        list.setEnabled(false);
+                        editQuizPanel.remove(list);
+                        dlm.set(index, lineText);
+                        newList = new JList(dlm);
+                        c.fill = GridBagConstraints.NONE;
+                        c.ipady = 1;
+                        c.ipadx = 2;
+                        c.weightx = 0.5;
+                        c.gridwidth = 3;
+                        c.gridx = 0;
+                        c.gridy = 1;
+                        if (dlm.size() >= 8) {
+                            JScrollPane scroll = new JScrollPane(newList);
+                            editQuizPanel.add(scroll, c);
+                        } else {
+                            editQuizPanel.add(newList, c);
+                        }
+                        editQuizPanel.updateUI();
+                    }
+                }
+            });
+            editQuizPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Done");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;      //make this component tall
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 2;
+            c.gridy = 3;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("///");
+                    writer.println();
+                    writer.flush();
+                    editQuizFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            });
+            editQuizPanel.add(cancelButton, c);
+
+            content.add(editQuizPanel);
+            editQuizFrame.setSize(680, 420);
+            editQuizFrame.setLocationRelativeTo(null);
+            editQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            editQuizFrame.setVisible(true);
+        } catch(IOException e) {
+
+        }
+    }
+    }
