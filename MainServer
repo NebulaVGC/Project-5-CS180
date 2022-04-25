@@ -510,10 +510,66 @@ public class MainServer {
                                                                     bw.write(completeQuizString);
                                                                     bw.close();
 
+
                                                                 } else {
                                                                     writer.write("dont run");
                                                                     writer.println();
                                                                     writer.flush();
+
+                                                                    int viewGrade = Integer.parseInt(reader.readLine());
+
+                                                                    if (viewGrade == JOptionPane.YES_OPTION) {
+                                                                        File fileGrade = new File(username + "_" + teacher +
+                                                                                "_" + courseSelection + "_" + quizSelection + ".txt");
+                                                                        BufferedReader brquiz = new BufferedReader(new FileReader(fileGrade));
+                                                                        String quizLine = brquiz.readLine();
+                                                                        int cline = 0;
+                                                                        while (quizLine != null) {
+                                                                            cline++;
+                                                                            quizLine = brquiz.readLine(); //reads through all line
+                                                                        }
+                                                                        BufferedReader brquiz2 = new BufferedReader(new FileReader(fileGrade));
+                                                                        //reads the same quiz with new bfr
+                                                                        BufferedReader gradeSetter = new BufferedReader(new FileReader(fileGrade));
+                                                                        String lastLine = "";
+                                                                        String grade = "";
+                                                                        for (int l = 0; l < cline; l++) {
+                                                                            lastLine = brquiz2.readLine();
+                                                                        }
+                                                                        brquiz.close();
+                                                                        String nextLine1 = "";
+                                                                        nextLine1 = gradeSetter.readLine();
+                                                                        while (!(nextLine1).equals(userName)) {
+                                                                            nextLine1 = gradeSetter.readLine();
+                                                                        }
+
+
+                                                                        if (lastLine.substring(lastLine.length() - 1).equals("%")) {
+                                                                            ArrayList<String> gradeList = new ArrayList<>();
+                                                                            while (nextLine1 != null) {
+                                                                                gradeList.add(nextLine1);
+                                                                                nextLine1 = gradeSetter.readLine();
+                                                                            }
+                                                                            gradeSetter.close();
+                                                                            String size = String.valueOf(gradeList.size());
+                                                                            writer.write(size);
+                                                                            writer.println();
+                                                                            writer.flush();
+                                                                            for (int l = 0; l < gradeList.size(); l++) {
+                                                                                writer.write(gradeList.get(l));
+                                                                                writer.println();
+                                                                                writer.flush();
+                                                                            }
+                                                                        } else {
+                                                                            grade = "Grade not yet entered";
+                                                                            writer.write("0");
+                                                                            writer.println();
+                                                                            writer.flush();
+                                                                            writer.write(grade);
+                                                                            writer.println();
+                                                                            writer.flush();
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
 
