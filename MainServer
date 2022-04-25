@@ -33,7 +33,6 @@ public class MainServer {
 
             while (m == 0) {
                 try {
-
                     ServerSocket serverSocket = new ServerSocket(4242);
 
                     System.out.println("Waiting for the client to connect...");
@@ -44,48 +43,54 @@ public class MainServer {
                     PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
                     String action = reader.readLine();
+                    System.out.println(action);
                     if (action.equals("create")) {
                         String type = reader.readLine();
                         if (type.equals("teacher")) {
-                            String username1;
-                            username1 = makeTeacherUsername();
-                            if (username1.equals("")) {
-                                usernameStatus++;
-                                break;
-                            } else {
-                                usernameStatus = 0;
-                            }
-                            while (usernameStatus == 0) {
-                                try {
-                                    if (checkTeacherUsername(username1) == 1) {
-                                        String teacherPassword = makePassword();
-                                        if (teacherPassword.equals("")) {
-                                            break;
-                                        }
-                                        teacherAccountStore.add(username1);
-                                        teacherPasswordStore.add(teacherPassword);
+                            int k = 0;
+                            while (k == 0) {
+                                String username1 = reader.readLine();
 
-                                        File teacherAccountFile = new File("TeacherAccount.txt");
-                                        FileOutputStream fos = new FileOutputStream(teacherAccountFile, false);
-                                        PrintWriter pw = new PrintWriter(fos);
-                                        for (int j = 0; j < teacherAccountStore.size(); j++) {
-                                            pw.println(teacherAccountStore.get(j));
-                                        }
-                                        File teacherPasswordFile = new File("TeacherPassword.txt");
-                                        FileOutputStream fos2 = new FileOutputStream(teacherPasswordFile, false);
-                                        PrintWriter pw2 = new PrintWriter(fos2);
-                                        for (int j = 0; j < teacherPasswordStore.size(); j++) {
-                                            pw2.println(teacherPasswordStore.get(j));
-                                        }
-                                        pw.close();
-                                        pw2.close();
-                                        break;
+                                int check = checkTeacherUsername(username1);
+
+                                if (check == 1) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k++;
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                }
+
+
+                                try {
+                                    String teacherPassword = reader.readLine();
+
+                                    teacherAccountStore.add(username1);
+                                    teacherPasswordStore.add(teacherPassword);
+
+                                    File teacherAccountFile = new File("TeacherAccount.txt");
+                                    FileOutputStream fos = new FileOutputStream(teacherAccountFile, false);
+                                    PrintWriter pw = new PrintWriter(fos);
+                                    for (int j = 0; j < teacherAccountStore.size(); j++) {
+                                        pw.println(teacherAccountStore.get(j));
                                     }
+                                    File teacherPasswordFile = new File("TeacherPassword.txt");
+                                    FileOutputStream fos2 = new FileOutputStream(teacherPasswordFile, false);
+                                    PrintWriter pw2 = new PrintWriter(fos2);
+                                    for (int j = 0; j < teacherPasswordStore.size(); j++) {
+                                        pw2.println(teacherPasswordStore.get(j));
+                                    }
+                                    pw.close();
+                                    pw2.close();
+                                    break;
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-
                         } else if (type.equals("student")) {
 
                             String username1;
@@ -287,15 +292,15 @@ public class MainServer {
                                             } else if (choice == 2) {
                                                 deleteCourse(reader, writer);
                                             } else if (choice == 3) {
-                                                createQuiz();
+                                                createQuiz(reader, writer);
                                             } else if (choice == 4) {
-                                                editQuiz();
+                                                editQuiz(reader, writer);
                                             } else if (choice == 5) {
-                                                deleteQuiz();
+                                                //deleteQuiz();
                                             } else if (choice == 6) {
-                                                viewSubmission();
+                                                //viewSubmission();
                                             } else if (choice == 7) {
-                                                gradeSubmission();
+                                                //gradeSubmission();
                                             }
                                         }
 
@@ -360,10 +365,10 @@ public class MainServer {
                                             if (reader.readLine().equals("get teacher")) {
                                                 BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
                                                 newLine = "";
-                                                ArrayList<String> teacherFileCopy = new ArrayList<>();
+                                                String teacherFileCopy = "";
                                                 int n = 0;
                                                 while ((newLine = bufferedReader.readLine()) != null) {
-                                                    teacherFileCopy.add(newLine);
+                                                    teacherFileCopy = teacherFileCopy + newLine + "\n";
                                                     n++;
                                                 }
                                                 bufferedReader.close();
@@ -372,15 +377,10 @@ public class MainServer {
                                                     writer.println();
                                                     writer.flush();
                                                 } else {
-                                                    String nString = String.valueOf(n);
-                                                    writer.write(nString);
+                                                    teacherFileCopy = teacherFileCopy.substring(0, teacherFileCopy.length() - 1);
+                                                    writer.write(n + "\n" + teacherFileCopy);
                                                     writer.println();
                                                     writer.flush();
-                                                    for (int l = 0; l < teacherFileCopy.size(); l++) {
-                                                        writer.write(teacherFileCopy.get(l));
-                                                        writer.println();
-                                                        writer.flush();
-                                                    }
 
                                                     String checkLine = "";
                                                     teacher = reader.readLine();
@@ -477,7 +477,7 @@ public class MainServer {
                                                                     MainServer mainServer = new MainServer();
                                                                     mainServer.shuffle(teacher + "_" + courseSelection + "_" + quizSelection + ".txt");
                                                                 }
-                                                                if (!new File( username + "_" + teacher + "_"
+                                                                if (!new File(username + "_" + teacher + "_"
                                                                         + courseSelection + "_" + quizSelection + ".txt").exists()) {
                                                                     writer.write("run quiz");
                                                                     writer.println();
@@ -490,7 +490,7 @@ public class MainServer {
                                                                         quizContents.add(nextLine);
                                                                         questionCounter++;
                                                                     }
-                                                                    questionCounter = questionCounter/5;
+                                                                    questionCounter = questionCounter / 5;
                                                                     String questionAmount = String.valueOf(questionCounter);
                                                                     writer.write(questionAmount);
                                                                     writer.println();
@@ -509,7 +509,7 @@ public class MainServer {
                                                                     for (int l = 0; l < quizSize; l++) {
                                                                         completeQuizString = completeQuizString + reader.readLine() + "\n";
                                                                     }
-                                                                    completeQuizString = completeQuizString.substring(0, completeQuizString.length()-1);
+                                                                    completeQuizString = completeQuizString.substring(0, completeQuizString.length() - 1);
                                                                     File files = new File((username + "_" + teacher + "_" + courseSelection + "_" + quizSelection + ".txt"));
                                                                     BufferedWriter bw = new BufferedWriter(new FileWriter(files));
                                                                     bw.write(completeQuizString);
@@ -762,7 +762,6 @@ public class MainServer {
         try {
             String courseName = newReader.readLine();
             String teacherName = newReader.readLine();
-            System.out.println("Working");
             if (courseName.equals("")) {
                 return;
             }
@@ -796,6 +795,9 @@ public class MainServer {
             fileReader.close();
 
             String courseDeleted = newReader.readLine();
+            if (courseDeleted.equals("")) {
+                return;
+            }
             File f = new File(teacherName + "_Courses.txt");   //File that holds the courses for the teacher
             ArrayList<String> list = new ArrayList<>();
             try {
@@ -840,24 +842,195 @@ public class MainServer {
         }
     }
 
-    private static void createQuiz() {
+    private static void createQuiz(BufferedReader newReader, PrintWriter newWriter) {
+        ArrayList<String> questions = new ArrayList<>();
+        ArrayList<String> answersA = new ArrayList<>();
+        ArrayList<String> answersB = new ArrayList<>();
+        ArrayList<String> answersC = new ArrayList<>();
+        ArrayList<String> answersD = new ArrayList<>();
+        PrintWriter pw3 = null; //Print writer that writes the quiz name into the file that holds the quizzes
+        PrintWriter pw = null;
+        try {
+            String teacherName = newReader.readLine();
+            BufferedReader fileReader = new BufferedReader(new FileReader(teacherName + "_Courses.txt"));
+            String line = fileReader.readLine();
+            while (line != null) {
+                newWriter.write(line);
+                newWriter.println();
+                newWriter.flush();
+                line = fileReader.readLine();
+            }
+            newWriter.write("");
+            newWriter.println();
+            newWriter.flush();
+            fileReader.close();
 
+            String courseSelected = newReader.readLine();
+            if (courseSelected.equals("")) {
+                return;
+            }
+            String quizName = newReader.readLine();
+            if (quizName.equals("")) {
+                return;
+            }
+            int option = Integer.parseInt(newReader.readLine());
+            int randomChoice;
+            if (option == 1) {
+                randomChoice = Integer.parseInt(newReader.readLine());
+                String addQuestion = newReader.readLine();
+                while (addQuestion.equals("Yes")) {
+                    String cancelled = newReader.readLine();
+                    if (!cancelled.equals("")) {
+                        String question = newReader.readLine();
+                        String answerA = newReader.readLine();
+                        String answerB = newReader.readLine();
+                        String answerC = newReader.readLine();
+                        String answerD = newReader.readLine();
+                        questions.add(question);
+                        answersA.add(answerA);
+                        answersB.add(answerB);
+                        answersC.add(answerC);
+                        answersD.add(answerD);
+                        addQuestion = newReader.readLine();
+                    } else {
+                        return;
+                    }
+                }
+
+                File courseQuiz = new File(teacherName + "_" + courseSelected + ".txt");   //The file that holds the quizzes
+                try {
+                    pw3 = new PrintWriter(new FileOutputStream(courseQuiz, true));
+                    pw3.println(quizName);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    File f = new File(teacherName + "_" + courseSelected + "_" + quizName + ".txt");   //File for the quiz
+                    pw = new PrintWriter(new FileOutputStream(f));
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if (randomChoice == 1) {
+                    pw.println("true");
+                } else {
+                    pw.println("false");
+                }
+
+                for (int i = 0; i < answersA.size(); i++) {
+                    pw.println(questions.get(i));
+                    pw.println("A. " + answersA.get(i));
+                    pw.println("B. " + answersB.get(i));
+                    pw.println("C. " + answersC.get(i));
+                    pw.println("D. " + answersD.get(i));
+                }
+            } else if (option == 0) {
+                ArrayList<String> importList = new ArrayList<>();
+                String go = newReader.readLine();
+                if (!go.equals("")) {
+                    line = newReader.readLine();
+                    while (!line.equals("///")) {
+                        importList.add(line);
+                        line = newReader.readLine();
+
+                    }
+
+                    File f = new File(teacherName + "_" + courseSelected + "_" + quizName + ".txt");
+                    File f2 = new File(teacherName + "_" + courseSelected + ".txt");
+                    pw = new PrintWriter(new FileOutputStream(f));
+                    pw3 = new PrintWriter(new FileOutputStream(f2, true));
+                    pw3.println(teacherName + "_" + courseSelected + "_" + quizName + ".txt");
+
+                    for (int i = 0; i < importList.size(); i++) {
+                        pw.println(importList.get(i));
+                    }
+                } else {
+                    return;
+                }
+
+            } else {
+                return;
+            }
+            pw.close();
+            pw3.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void editQuiz() {
+    private static void editQuiz(BufferedReader newReader, PrintWriter newWriter) {
+        try {
+            String teacherName = newReader.readLine();
+            BufferedReader fileReader = new BufferedReader(new FileReader(teacherName + "_Courses.txt"));
+            String line = fileReader.readLine();
+            while (line != null) {
+                newWriter.write(line);
+                newWriter.println();
+                newWriter.flush();
+                line = fileReader.readLine();
+            }
+            newWriter.write("");
+            newWriter.println();
+            newWriter.flush();
+            fileReader.close();
 
-    }
+            String courseSelected = newReader.readLine();
+            if (courseSelected.equals("")) {
+                return;
+            }
 
-    private static void deleteQuiz() {
+            BufferedReader fileReader2 = new BufferedReader(new FileReader(teacherName + "_" + courseSelected + ".txt"));
+            line = fileReader2.readLine();
+            while (line != null) {
+                newWriter.write(line);
+                newWriter.println();
+                newWriter.flush();
+                line = fileReader2.readLine();
+            }
+            newWriter.write("");
+            newWriter.println();
+            newWriter.flush();
+            fileReader2.close();
+            String quizSelected = newReader.readLine();
+            if (quizSelected.equals("")) {
+                return;
+            }
+            File quizFile = new File(quizSelected);
+            BufferedReader quizReader = new BufferedReader(new FileReader(quizFile));
+            line = quizReader.readLine();
+            ArrayList<String> quizList = new ArrayList<>();
+            while (line != null) {
+                quizList.add(line);
+                newWriter.write(line);
+                newWriter.println();
+                newWriter.flush();
+                line = quizReader.readLine();
+            }
+            newWriter.write("///");
+            newWriter.println();
+            newWriter.flush();
+            quizReader.close();
 
-    }
+            String newLineText = newReader.readLine();
+            while (!newLineText.equals("///")) {
+                int index = Integer.parseInt(newReader.readLine());
+                quizList.set(index, newLineText);
+                newLineText = newReader.readLine();
+            }
 
-    private static void viewSubmission() {
+            PrintWriter pw = new PrintWriter(new FileOutputStream(quizFile));
+            for (int i = 0; i < quizList.size(); i++) {
+                pw.println(quizList.get(i));
+            }
+            pw.close();
+        } catch (IOException e) {
 
-    }
-
-    private static void gradeSubmission() {
-
+        }
     }
 
     public void shuffle(String filename) throws IOException {
@@ -974,7 +1147,7 @@ public class MainServer {
             } else if (userName.contains(" ")) {
                 JOptionPane.showMessageDialog(null, "Username cannot contain space!", "Make username",
                         JOptionPane.ERROR_MESSAGE);
-            }  else if (checkTeacherUsername(userName) != 1) {
+            } else if (checkTeacherUsername(userName) != 1) {
                 JOptionPane.showMessageDialog(null, "Username already exist!", "Username error",
                         JOptionPane.ERROR_MESSAGE);
             } else {
