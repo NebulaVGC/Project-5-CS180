@@ -102,77 +102,6 @@ public class Student {
         }
     }
 
-    public void runQuizNew(String quizName, String username, String teacherName, String courseName, String plainQuizName, Socket socket) throws IOException{
-        String[] options = {"Active", "Import File"};
-        int quizType = JOptionPane.showOptionDialog(null, "Select how you would like to take the quiz",
-                "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null);
-        System.out.println(quizType);
-        String copyQuiz = "";
-        PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-        printWriter.write("Add Completed Quiz");
-        printWriter.println();
-        printWriter.flush();
-        if (quizType == 0) {
-            BufferedReader br = new BufferedReader(new FileReader(quizName));
-            copyQuiz = br.readLine();
-            String firstLine = "";
-            String firstQ; //stores answer a
-            String secondQ; //stores answer b
-            String thirdQ; //stores answer c
-            String fourthQ; //stores answer d
-            String answer = "";
-            int questionNum = 1;
-            String[] answerOptions = {"A", "B", "C", "D"};
-            while ((firstLine = br.readLine()) != null) {
-                firstQ = br.readLine();
-                secondQ = br.readLine();
-                thirdQ = br.readLine();
-                fourthQ = br.readLine();
-                answer = answer + JOptionPane.showInputDialog(null,
-                        firstLine + "\n" + firstQ + "\n" + secondQ + "\n" + thirdQ + "\n" + fourthQ,
-                        "Question " + questionNum, JOptionPane.QUESTION_MESSAGE, null, answerOptions, answerOptions[0]) + "\n";
-                copyQuiz = copyQuiz + firstLine + "\n" + firstQ + "\n" + secondQ + "\n" + thirdQ + "\n" + fourthQ + "\n";
-                questionNum++;
-            }
-            br.close();
-        } else if (quizType == 1) {
-            BufferedReader br = new BufferedReader(new FileReader(quizName));
-            copyQuiz = br.readLine();
-            String firstLine = "";
-            String answer = "";
-            int questionNum = 1;
-            String firstQ; //stores answer a
-            String secondQ; //stores answer b
-            String thirdQ; //stores answer c
-            String fourthQ; //stores answer d
-            while ((firstLine = br.readLine()) != null) {
-                firstQ = br.readLine();
-                secondQ = br.readLine();
-                thirdQ = br.readLine();
-                fourthQ = br.readLine();
-                JOptionPane.showMessageDialog(null, firstLine + "\n" + br.readLine()
-                                + "\n" + br.readLine() + "\n" + br.readLine() + "\n" + br.readLine(),
-                        "Question " + questionNum, JOptionPane.QUESTION_MESSAGE);
-                copyQuiz = copyQuiz + firstLine + "\n" + firstQ + "\n" + secondQ + "\n" + thirdQ + "\n" + fourthQ + "\n";
-                questionNum++;
-            }
-            br.close();
-            String fileName = JOptionPane.showInputDialog(null,
-                    "Enter the name of the file you would like to input", "File Input", JOptionPane.QUESTION_MESSAGE);
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
-            while ((firstLine = bufferedReader.readLine()) != null) {
-                answer = answer + firstLine + "\n";
-            }
-            answer = answer.substring(0, answer.length()-1);
-            bufferedReader.close();
-            String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").format(Calendar.getInstance().getTime());
-            String identifier = (username + "_" + teacherName + "_" + courseName + "_" + quizName);
-            printWriter.write(identifier + "\n" + copyQuiz + username + "\n" + answer + timeStamp);
-            printWriter.println();
-            printWriter.flush();
-            printWriter.close();
-        }
-    }
 
     /*
     method that returns the course the student picks
@@ -297,53 +226,31 @@ public class Student {
                                         //checks if quiz has already been taken. if not then runs the quiz
                                         student.runNewQuiz(writer, reader);
                                     } else {
-                                        System.out.println("Quiz already taken");
-                                        int optionLoop = 0;
-                                        while (optionLoop == 0) {
-                                            System.out.println("1. View Quiz Grade\n2. Exit Back to Teacher Selection");
-                                            String viewGrade = "1";
-                                            if (viewGrade.equals("1")) {
-                                                File f = new File(student.userName + "_" + teacher +
-                                                        "_" + course + "_" + quiz + ".txt");
-                                                BufferedReader brquiz = new BufferedReader(new FileReader(f));
-                                                String quizLine = brquiz.readLine();
-                                                int cline = 0;
-                                                while (quizLine != null) {
-                                                    cline++;
-                                                    quizLine = brquiz.readLine(); //reads through all line
-                                                }
-                                                BufferedReader brquiz2 = new BufferedReader(new FileReader(f));
-                                                //reads the same quiz with new bfr
-                                                BufferedReader gradeSetter = new BufferedReader(new FileReader(f));
-                                                String lastLine = "";
-                                                String grade = "";
-                                                for (int i = 0; i < cline; i++) {
-                                                    lastLine = brquiz2.readLine();
-                                                }
-                                                brquiz.close();
-                                                String nextLine1 = "";
-                                                nextLine1 = gradeSetter.readLine();
-                                                while (!(nextLine1).equals(userName)) {
-                                                    nextLine1 = gradeSetter.readLine();
-                                                }
+                                        String viewGrade = String.valueOf(JOptionPane.showConfirmDialog(null, "Would you like to view your quiz grade?",
+                                                "QUIZ ALREADY TAKEN", JOptionPane.YES_NO_OPTION));
+                                        if (viewGrade.equals("-1") || viewGrade.equals("1")) {
+                                            return;
+                                        }
+                                        writer.write(viewGrade);
+                                        writer.println();
+                                        writer.flush();
 
+                                        int gradeSize = Integer.parseInt(reader.readLine());
+                                        int end = 0;
 
-                                                if (lastLine.substring(lastLine.length() - 1).equals("%")) {
-                                                    while (nextLine1 != null) {
-                                                        grade = grade + nextLine1 + "\n";
-                                                        nextLine1 = gradeSetter.readLine();
-                                                    }
-                                                } else {
-                                                    grade = "Grade not yet entered";
-                                                }
-                                                System.out.println(grade);
-                                                loop++;
-                                                optionLoop++;
-                                            } else if (viewGrade.equals("2")) {
-                                                optionLoop++;
-                                            } else {
-                                                System.out.println("Invalid Input. Try again.");
+                                        if (gradeSize == 0) {
+                                            end = JOptionPane.showConfirmDialog(null, reader.readLine(), "Quiz Results", JOptionPane.OK_CANCEL_OPTION);
+                                        } else {
+                                            String grade = "";
+                                            for (int l = 0; l < gradeSize; l++) {
+                                                grade = grade + reader.readLine() + "\n";
                                             }
+                                            grade = grade.substring(0, grade.length() - 1);
+                                            end = JOptionPane.showConfirmDialog(null, grade, "Quiz Results", JOptionPane.OK_CANCEL_OPTION);
+                                        }
+
+                                        if (end == -1 || end == JOptionPane.CANCEL_OPTION) {
+                                            return;
                                         }
                                     }
                                 }
