@@ -25,10 +25,10 @@ public class MainMethod extends Run {
             String[] splited = username.split(" ");
             if (splited[0].equals("Teacher")) {
                 Teacher teacher = new Teacher(splited[1]);
-                teacher.teacherInterface(s);
+                teacher.createMenuGUI(socket);
             } else if (splited[0].equals("Student")) {
-                Student student = new Student(splited[1], s);
-                student.mainStudent(s);
+                Student student = new Student(splited[1], socket);
+                student.mainStudent(socket);
             }
         } catch (Exception e) {
             e.printStackTrace();
