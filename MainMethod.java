@@ -19,7 +19,7 @@ public class MainMethod extends Run {
         Scanner s = new Scanner(System.in);
 
         try {
-            Socket socket = new Socket("localHost", 4242);
+            Socket socket = new Socket(10.186.93.71, 4242);
 
             String username = runQuiz(socket);
             String[] splited = username.split(" ");
