@@ -16,10 +16,9 @@ import java.util.Scanner;
 
 public class MainMethod extends Run {
     public static void main(String[] args) {
-        Scanner s = new Scanner(System.in);
 
         try {
-            Socket socket = new Socket("10.186.93.71", 4242);
+            Socket socket = new Socket("localhost", 4242);
 
             String username = runQuiz(socket);
             String[] splited = username.split(" ");
