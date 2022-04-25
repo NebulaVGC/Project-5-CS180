@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Project 04 -- Run
@@ -28,26 +31,36 @@ public class Run {
     final static String USERNAMEEXIST = "This username already existed!";
     final static String USERNAMEDOESNOTEXIST = "This username does not exist" + "!";
 
-    public static Object obj = new Object();
-
     /*
     method that runs the quiz and takes the scanner as a parameter
      */
+
+
     public static String runQuiz(Socket socket) {
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
+            int usernameStatus;
             int welcome = 0;
             int account;
+            int[] loginType = new int[1];
+            int[] accountChoice = new int[1];
             int[] login = new int[1];
 
+            ArrayList<String> teacherAccountStore = new ArrayList<>();
+            ArrayList<String> teacherPasswordStore = new ArrayList<>();
+            ArrayList<String> studentAccountStore = new ArrayList<>();
+            ArrayList<String> studentPasswordStore = new ArrayList<>();
+
+            String username1 = null; //initiates username of current user
             int welcomeChoice = 0;
             while (welcome == 0) {
                 welcomeChoice = showWelcomeMessageDialog();
                 try {
                     if (welcomeChoice == 10) {
+                        return "";
                     } else {
                         welcome++; //breaks out of loop
                     }
@@ -55,57 +68,166 @@ public class Run {
                     e.printStackTrace();
                 }
             }
-
             if (welcomeChoice == 1) {
                 while (login[0] == 0) {
                     account = 0;
+                    usernameStatus = 0;
                     int proceed = 0;
-                    synchronized (obj) {
-                        while (account == 0) {
-                            proceed = accountPrompt();
-                            try {
-                                if (proceed != 1 && proceed != 2 && proceed != 3) {
-                                    //throws error if account choice is invalid option
-                                } else {
-                                    account++; //breaks out of loop
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    while (account == 0) {
+                        proceed = accountPrompt();
+                        try {
+                            if (proceed != 1 && proceed != 2 && proceed != 3) {
+                                //throws error if account choice is invalid option
+                                return "";
+                            } else {
+                                account++; //breaks out of loop
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
 
                     if (proceed == 1) {
-                        synchronized (obj) {
+                        int i = 0;
+                        while (i == 0) {
                             writer.write("create");
                             writer.println();
                             writer.flush();
                             writer.write("teacher");
                             writer.println();
                             writer.flush();
-                            return "";
-                        }
-                    } else if (proceed == 2) { //if user wants to login to existing account
-                        synchronized (obj) {
-                            writer.write("login");
-                            writer.println();
-                            writer.flush();
-                            writer.write("teacher");
+                            username1 = makeTeacherUsername();
+                            writer.write(username1);
                             writer.println();
                             writer.flush();
 
-                            String username = reader.readLine();
-                            return ("Teacher " + username);
+                            String status = reader.readLine();
+                            if (status.equals("success")) {
+                                i++;
+                            } else {
+                                usernameExist();
+                            }
                         }
-                    } else if (proceed == 3) { //if teacher wants to edit account
-                        synchronized (obj) {
-                            writer.write("edit");
-                            writer.println();
-                            writer.flush();
-                            writer.write("teacher");
+                        try {
+                            String teacherPassword = makePassword();
+
+                            writer.write(teacherPassword);
                             writer.println();
                             writer.flush();
                             return "";
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (proceed == 2) { //if user wants to login to existing account
+                        while (usernameStatus == 0) {
+                            try {
+                                String userName = checkTeacherNameExist();
+                                String password = checkTeacherPasswordExist();
+
+                                ArrayList<String> accountList = new ArrayList<>();
+                                ArrayList<String> passwordList = new ArrayList<>();
+
+                                File f = new File("TeacherAccount.txt");
+                                FileReader fr = new FileReader(f);
+                                BufferedReader bfr = new BufferedReader(fr);
+                                String line = bfr.readLine();
+                                usernameStatus = 1;
+                                while (line != null) {
+                                    accountList.add(line);
+                                    line = bfr.readLine();
+                                }
+                                bfr.close();
+
+                                File f2 = new File("TeacherPassword.txt");
+                                FileReader fr2 = new FileReader(f2);
+                                BufferedReader bfr2 = new BufferedReader(fr2);
+                                String line2 = bfr2.readLine();
+
+                                while (line2 != null) {
+                                    passwordList.add(line2);
+                                    line2 = bfr2.readLine();
+                                }
+                                bfr2.close();
+
+                                if (passwordList.get(accountList.indexOf(userName)).equals(password)) {
+                                    writer.write("login");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("teacher");
+                                    writer.println();
+                                    writer.flush();
+                                    return "Teacher " + userName;
+                                } else {
+                                    informationMismatch();
+                                    break;
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else if (proceed == 3) { //if teacher wants to edit account
+                        while (usernameStatus == 0) {
+                            try {
+                                String editUsername = checkTeacherNameExist();
+                                String editPassword = checkTeacherPasswordExist();
+
+                                ArrayList<String> accountList = new ArrayList<>();
+                                ArrayList<String> passwordList = new ArrayList<>();
+
+                                File f = new File("TeacherAccount.txt");
+                                FileReader fr = new FileReader(f);
+                                BufferedReader bfr = new BufferedReader(fr);
+                                String line = bfr.readLine();
+                                usernameStatus = 1;
+                                while (line != null) {
+                                    accountList.add(line);
+                                    line = bfr.readLine();
+                                }
+                                bfr.close();
+
+                                File f2 = new File("TeacherPassword.txt");
+                                FileReader fr2 = new FileReader(f2);
+                                BufferedReader bfr2 = new BufferedReader(fr2);
+                                String line2 = bfr2.readLine();
+
+                                while (line2 != null) {
+                                    passwordList.add(line2);
+                                    line2 = bfr2.readLine();
+                                }
+                                bfr2.close();
+
+                                if (passwordList.get(accountList.indexOf(editUsername)).equals(editPassword)) {
+                                    String newUsername = makeTeacherUsername();
+                                    String newPassword = makePassword();
+                                    writer.write("edit");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("teacher");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(editUsername);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(editPassword);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(newUsername);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(newPassword);
+                                    writer.println();
+                                    writer.flush();
+                                    return "";
+                                } else {
+                                    informationMismatch();
+                                    break;
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -115,12 +237,14 @@ public class Run {
                 while (login[0] == 0) {
 
                     account = 0;
+                    usernameStatus = 0;
                     int proceed = 0;
                     while (account == 0) {
                         proceed = accountPrompt();
                         try {
                             if (proceed != 1 && proceed != 2 && proceed != 3) {
                                 //throws error if account choice is invalid option
+                                return "";
                             } else {
                                 account++; //breaks out of loop
                             }
@@ -129,48 +253,151 @@ public class Run {
                         }
                     }
                     if (proceed == 1) {
-                        synchronized (obj) {
-                            writer.write("create");
-                            writer.println();
-                            writer.flush();
-                            writer.write("student");
-                            writer.println();
-                            writer.flush();
-                            return "";
+                        username1 = makeStudentUsername();
+                        while (usernameStatus == 0) {
+                            try {
+                                if (checkStudentUsername(username1) == 1) {
+                                    String studentPassword = makePassword();
+
+                                    writer.write("create");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("student");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(username1);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(studentPassword);
+                                    writer.println();
+                                    writer.flush();
+                                    return "";
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     } else if (proceed == 2) { //create account depending on whether student or teacher
-                        synchronized (obj) {
-                            writer.write("login");
-                            writer.println();
-                            writer.flush();
-                            writer.write("student");
-                            writer.println();
-                            writer.flush();
+                        while (usernameStatus == 0) {
+                            try {
+                                String username = checkStudentNameExist();
+                                String password = checkStudentPasswordExist();
 
-                            String username = reader.readLine();
-                            return ("Student " + username);
+                                ArrayList<String> accountList = new ArrayList<>();
+                                ArrayList<String> passwordList = new ArrayList<>();
+
+                                File f = new File("StudentAccount.txt");
+                                FileReader fr = new FileReader(f);
+                                BufferedReader bfr = new BufferedReader(fr);
+                                String line = bfr.readLine();
+                                usernameStatus = 1;
+                                while (line != null) {
+                                    accountList.add(line);
+                                    line = bfr.readLine();
+                                }
+                                bfr.close();
+
+                                File f2 = new File("StudentPassword.txt");
+                                FileReader fr2 = new FileReader(f2);
+                                BufferedReader bfr2 = new BufferedReader(fr2);
+                                String line2 = bfr2.readLine();
+
+                                while (line2 != null) {
+                                    passwordList.add(line2);
+                                    line2 = bfr2.readLine();
+                                }
+                                bfr2.close();
+
+                                if (passwordList.get(accountList.indexOf(username)).equals(password)) {
+                                    writer.write("login");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("student");
+                                    writer.println();
+                                    writer.flush();
+                                    return "Student" + username;
+                                } else {
+                                    informationMismatch();
+                                    break;
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     } else if (proceed == 3) { //if teacher wants to edit account
-                        synchronized (obj) {
-                            writer.write("edit");
-                            writer.println();
-                            writer.flush();
-                            writer.write("student");
-                            writer.println();
-                            writer.flush();
-                            return "";
+                        while (usernameStatus == 0) {
+                            try {
+                                String editUsername = checkStudentNameExist();
+                                String editPassword = checkStudentPasswordExist();
+
+                                ArrayList<String> accountList = new ArrayList<>();
+                                ArrayList<String> passwordList = new ArrayList<>();
+
+                                File f = new File("StudentAccount.txt");
+                                FileReader fr = new FileReader(f);
+                                BufferedReader bfr = new BufferedReader(fr);
+                                String line = bfr.readLine();
+                                usernameStatus = 1;
+                                while (line != null) {
+                                    accountList.add(line);
+                                    line = bfr.readLine();
+                                }
+                                bfr.close();
+
+                                File f2 = new File("StudentPassword.txt");
+                                FileReader fr2 = new FileReader(f2);
+                                BufferedReader bfr2 = new BufferedReader(fr2);
+                                String line2 = bfr2.readLine();
+
+                                while (line2 != null) {
+                                    passwordList.add(line2);
+                                    line2 = bfr2.readLine();
+                                }
+                                bfr2.close();
+
+                                if (passwordList.get(accountList.indexOf(editUsername)).equals(editPassword)) {
+                                    String newUsername = makeStudentUsername();
+                                    String newPassword = makePassword();
+                                    writer.write("edit");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write("student");
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(editUsername);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(editPassword);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(newUsername);
+                                    writer.println();
+                                    writer.flush();
+                                    writer.write(newPassword);
+                                    writer.println();
+                                    writer.flush();
+                                    return "";
+                                } else {
+                                    informationMismatch();
+                                    break;
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
-            }
 
+            }
 
         } catch (
                 Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return "";
     }
 
     /*
@@ -220,4 +447,262 @@ public class Run {
             }
         } while (result.equals("true"));
     }
+
+    public static String makeTeacherUsername() {
+        String userName = null;
+        int i = 0;
+        while (i == 0) {
+            userName = JOptionPane.showInputDialog(null, "Please enter your desired username",
+                    "Make username", JOptionPane.QUESTION_MESSAGE);
+            //if (Integer.parseInt(userName) == JOptionPane.CLOSED_OPTION || Integer.parseInt(userName) == JOptionPane.CANCEL_OPTION) {
+            //  return "exit";
+            //}
+            if ((userName == null) || (userName.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (userName.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Username cannot contain space!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return userName;
+    }
+
+    public static String makeStudentUsername() {
+        String userName = null;
+        int i = 0;
+        while (i == 0) {
+            userName = JOptionPane.showInputDialog(null, "Please enter your desired username",
+                    "Make username", JOptionPane.QUESTION_MESSAGE);
+            //if (Integer.parseInt(userName) == JOptionPane.CLOSED_OPTION || Integer.parseInt(userName) == JOptionPane.CANCEL_OPTION) {
+            //  return "exit";
+            //}
+            if ((userName == null) || (userName.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (userName.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Username cannot contain space!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (checkStudentUsername(userName) != 1) {
+                JOptionPane.showMessageDialog(null, "Username already exist!", "Username error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return userName;
+    }
+
+    public static String makePassword() {
+        String password = null;
+        int i = 0;
+        while (i == 0) {
+            password = JOptionPane.showInputDialog(null, "Please enter your desired password",
+                    "Make username", JOptionPane.QUESTION_MESSAGE);
+            if ((password == null) || (password.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Password cannot be empty!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (password.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Password cannot contain space!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return password;
+    }
+
+    public static int checkTeacherUsername(String username1) {
+        String tUsername;
+        try {
+            File f = new File("TeacherAccount.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            int usernameStatus = 1;
+
+            while (line != null) { //checks if username already exists
+                if (username1.equals(line)) {
+                    return 2;
+                }
+                line = bfr.readLine();
+            }
+            return 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+    public static int checkTeacherPassword(String password1) {
+        String tUsername;
+        try {
+            File f = new File("TeacherPassword.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            int usernameStatus = 1;
+
+            while (line != null) { //checks if username already exists
+                if (password1.equals(line)) {
+                    return 2;
+                }
+                line = bfr.readLine();
+            }
+            return 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+    public static int checkStudentUsername(String username1) {
+        String tUsername;
+        try {
+            File f = new File("StudentAccount.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            int usernameStatus = 1;
+
+            while (line != null) { //checks if username already exists
+                if (username1.equals(line)) {
+                    return 2;
+                }
+                line = bfr.readLine();
+            }
+            return 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+    public static int checkStudentPassword(String password1) {
+        String tUsername;
+        try {
+            File f = new File("StudentPassword.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            int usernameStatus = 1;
+
+            while (line != null) { //checks if username already exists
+                if (password1.equals(line)) {
+                    return 2;
+                }
+                line = bfr.readLine();
+            }
+            return 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+    public static String checkTeacherNameExist() {
+        String userName = null;
+        int i = 0;
+        while (i == 0) {
+            userName = JOptionPane.showInputDialog(null, "Please enter your username",
+                    "Verify username", JOptionPane.QUESTION_MESSAGE);
+            if ((userName == null) || (userName.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (userName.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Username cannot contain space!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (checkTeacherUsername(userName) != 2) {
+                JOptionPane.showMessageDialog(null, "Username does not exist!", "Username error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return userName;
+    }
+
+    public static String checkTeacherPasswordExist() {
+        String userName = null;
+        int i = 0;
+        while (i == 0) {
+            userName = JOptionPane.showInputDialog(null, "Please enter your password",
+                    "Verify password", JOptionPane.QUESTION_MESSAGE);
+            if ((userName == null) || (userName.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "password cannot be empty!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (userName.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "password cannot contain space!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (checkTeacherPassword(userName) != 2) {
+                JOptionPane.showMessageDialog(null, "password does not match!", "password error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return userName;
+    }
+
+    public static String checkStudentNameExist() {
+        String userName = null;
+        int i = 0;
+        while (i == 0) {
+            userName = JOptionPane.showInputDialog(null, "Please enter your username",
+                    "Verify username", JOptionPane.QUESTION_MESSAGE);
+            if ((userName == null) || (userName.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (userName.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Username cannot contain space!", "Make username",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (checkStudentUsername(userName) != 2) {
+                JOptionPane.showMessageDialog(null, "Username does not exist!", "Username error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return userName;
+    }
+
+    public static String checkStudentPasswordExist() {
+        String userName = null;
+        int i = 0;
+        while (i == 0) {
+            userName = JOptionPane.showInputDialog(null, "Please enter your password",
+                    "Verify password", JOptionPane.QUESTION_MESSAGE);
+            if ((userName == null) || (userName.isEmpty())) {
+                JOptionPane.showMessageDialog(null, "password cannot be empty!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (userName.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "password cannot contain space!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (checkStudentPassword(userName) != 2) {
+                JOptionPane.showMessageDialog(null, "password does not match!", "password error",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                i++;
+            }
+        }
+        return userName;
+    }
+
+
+    public static void informationMismatch() {
+        JOptionPane.showMessageDialog(null, "Your information did not match with our record", "Button Game",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void usernameExist() {
+        JOptionPane.showMessageDialog(null, "Username already exist!", "Username error",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
 }
