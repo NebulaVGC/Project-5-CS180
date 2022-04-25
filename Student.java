@@ -256,7 +256,6 @@ public class Student {
                         writer.println();
                         writer.flush();
                         int coursesCounter = Integer.parseInt(reader.readLine());
-                        System.out.println(coursesCounter);
                         int currentCourse = 0;
                         if (coursesCounter == 0) {
                             JOptionPane.showMessageDialog(null, "Your teacher has not created any courses",
@@ -301,7 +300,7 @@ public class Student {
                                         System.out.println("Quiz already taken");
                                         int optionLoop = 0;
                                         while (optionLoop == 0) {
-                                            System.out.println("1. View Quiz Grade\n2. Exit Back to Courses");
+                                            System.out.println("1. View Quiz Grade\n2. Exit Back to Teacher Selection");
                                             String viewGrade = "1";
                                             if (viewGrade.equals("1")) {
                                                 File f = new File(student.userName + "_" + teacher +
