@@ -381,71 +381,298 @@ public class MainServer {
 
 
                         } else if (type.equals("student")) {
-                            k = 0;
-                            OldUsername = null;
-                            type = reader.readLine();
-                            if (type.equals("teacher")) {
-                                try {
-                                    while (k == 0) {
-                                        OldUsername = reader.readLine();
-                                        int status = checkTeacherUsername(OldUsername);
-                                        if (status == 2) {
-                                            writer.write("success");
-                                            writer.println();
-                                            writer.flush();
-                                            k++;
-                                        } else {
-                                            writer.write("fail");
-                                            writer.println();
-                                            writer.flush();
-                                        }
+                            try {
+                                while (k == 0) {
+                                    OldUsername = reader.readLine();
+                                    int status = checkStudentUsername(OldUsername);
+                                    if (status == 2) {
+                                        writer.write("success");
+                                        writer.println();
+                                        writer.flush();
+                                        k++;
+                                    } else {
+                                        writer.write("fail");
+                                        writer.println();
+                                        writer.flush();
                                     }
-
-                                    ArrayList<String> accountList = new ArrayList<>();
-                                    ArrayList<String> passwordList = new ArrayList<>();
-
-                                    String OldPassword = reader.readLine();
-
-                                    File f = new File("TeacherAccount.txt");
-                                    FileReader fr = new FileReader(f);
-                                    BufferedReader bfr = new BufferedReader(fr);
-                                    String line = bfr.readLine();
-                                    usernameStatus = 1;
-                                    while (line != null) {
-                                        accountList.add(line);
-                                        line = bfr.readLine();
-                                    }
-                                    bfr.close();
-
-                                    File f2 = new File("TeacherPassword.txt");
-                                    FileReader fr2 = new FileReader(f2);
-                                    BufferedReader bfr2 = new BufferedReader(fr2);
-                                    String line2 = bfr2.readLine();
-
-                                    while (line2 != null) {
-                                        passwordList.add(line2);
-                                        line2 = bfr2.readLine();
-                                    }
-                                    bfr2.close();
-
-                                    int l = 0;
-                                    while (l == 0) {
-                                        if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
-                                            writer.write("success");
-                                            writer.println();
-                                            writer.flush();
-                                        } else {
-                                            writer.write("fail");
-                                            writer.println();
-                                            writer.flush();
-                                        }
-                                    }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
 
+                                ArrayList<String> accountList = new ArrayList<>();
+                                ArrayList<String> passwordList = new ArrayList<>();
+
+                                String OldPassword = reader.readLine();
+
+                                File f = new File("StudentAccount.txt");
+                                FileReader fr = new FileReader(f);
+                                BufferedReader bfr = new BufferedReader(fr);
+                                String line = bfr.readLine();
+                                usernameStatus = 1;
+                                while (line != null) {
+                                    accountList.add(line);
+                                    line = bfr.readLine();
+                                }
+                                bfr.close();
+
+                                File f2 = new File("StudentPassword.txt");
+                                FileReader fr2 = new FileReader(f2);
+                                BufferedReader bfr2 = new BufferedReader(fr2);
+                                String line2 = bfr2.readLine();
+
+                                while (line2 != null) {
+                                    passwordList.add(line2);
+                                    line2 = bfr2.readLine();
+                                }
+                                bfr2.close();
+
+                                int l = 0;
+                                while (l == 0) {
+                                    if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+                                        writer.write("success");
+                                        writer.println();
+                                        writer.flush();
+                                        int looping = 0;
+                                        String teacher = null;
+                                        String username = reader.readLine();
+                                        String newLine = null;
+                                        while (looping == 0) {
+                                            if (reader.readLine().equals("get teacher")) {
+                                                BufferedReader bufferedReader = new BufferedReader(new FileReader("TeacherAccount.txt"));
+                                                newLine = "";
+                                                ArrayList<String> teacherFileCopy = new ArrayList<>();
+                                                int n = 0;
+                                                while ((newLine = bufferedReader.readLine()) != null) {
+                                                    teacherFileCopy.add(newLine);
+                                                    n++;
+                                                }
+                                                bufferedReader.close();
+                                                if (n == 0) {
+                                                    writer.write("0");
+                                                    writer.println();
+                                                    writer.flush();
+                                                } else {
+                                                    String nString = String.valueOf(n);
+                                                    writer.write(nString);
+                                                    writer.println();
+                                                    writer.flush();
+                                                    for (int j = 0; j < teacherFileCopy.size(); j++) {
+                                                        writer.write(teacherFileCopy.get(j));
+                                                        writer.println();
+                                                        writer.flush();
+                                                    }
+
+                                                    String checkLine = "";
+                                                    teacher = reader.readLine();
+                                                    try {
+                                                        BufferedReader bufferedReader2 = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
+                                                        checkLine = bufferedReader2.readLine();
+                                                        bufferedReader2.close();
+                                                    } catch (Exception e) {
+                                                        writer.write("0");
+                                                        writer.println();
+                                                        writer.flush();
+                                                    }
+                                                    if (checkLine == null && new File(teacher + "_Courses.txt").exists()) {
+                                                        writer.write("0");
+                                                        writer.println();
+                                                        writer.flush();
+                                                    } else if (checkLine != null && new File(teacher + "_Courses.txt").exists()) {
+                                                        ArrayList<String> coursesList = new ArrayList<>();
+                                                        BufferedReader bufferedReader1 = new BufferedReader(new FileReader(teacher + "_Courses.txt"));
+                                                        int coursesCounter = 0;
+                                                        while ((newLine = bufferedReader1.readLine()) != null) {
+                                                            coursesList.add(newLine);
+                                                            coursesCounter++;
+                                                        }
+                                                        bufferedReader1.close();
+                                                        String coursesAmount = String.valueOf(coursesCounter);
+                                                        writer.write(coursesAmount);
+                                                        writer.println();
+                                                        writer.flush();
+                                                        for (int j = 0; j < coursesList.size(); j++) {
+                                                            writer.write(coursesList.get(j));
+                                                            writer.println();
+                                                            writer.flush();
+                                                        }
+
+                                                        String courseSelection = reader.readLine(); //retrieves course name from client
+                                                        checkLine = "";
+                                                        try {
+                                                            BufferedReader bufferedReader3 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
+                                                            checkLine = bufferedReader3.readLine();
+                                                            bufferedReader3.close();
+                                                        } catch (Exception e) {
+                                                            writer.write("0"); //tells client theres an error
+                                                            writer.println();
+                                                            writer.flush();
+                                                        }
+                                                        if (checkLine == null && new File(teacher + "_" + courseSelection + ".txt").exists()) {
+                                                            writer.write("0"); //tells client theres an error
+                                                            writer.println();
+                                                            writer.flush();
+                                                        } else if (checkLine != null && new File(teacher + "_" + courseSelection + ".txt").exists()) {
+                                                            ArrayList<String> quizList = new ArrayList<>();
+                                                            BufferedReader bufferedReader4 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + ".txt"));
+                                                            int quizzesCounter = 0;
+                                                            String newLine3 = "";
+                                                            while ((newLine3 = bufferedReader4.readLine()) != null) {
+                                                                quizList.add(newLine3);
+                                                                quizzesCounter++;
+                                                            }
+                                                            bufferedReader4.close();
+                                                            String quizAmount = String.valueOf(quizzesCounter);
+                                                            writer.write(quizAmount); //writes size of list and list of qizzes
+                                                            writer.println();
+                                                            writer.flush();
+
+                                                            for (int j = 0; j < quizList.size(); j++) {
+                                                                writer.write(quizList.get(j));
+                                                                writer.println();
+                                                                writer.flush();
+                                                            }
+                                                            String quizSelection = reader.readLine();
+                                                            String check = null;
+                                                            try {
+                                                                BufferedReader bufferedReader5 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + "_" + quizSelection + ".txt"));
+                                                                check = bufferedReader5.readLine();
+                                                                bufferedReader5.close();
+                                                            } catch (Exception e) {
+                                                                writer.write("Empty Quiz"); //tells client theres an error
+                                                                writer.println();
+                                                                writer.flush();
+                                                            }
+
+                                                            if (check == null && new File(teacher + "_" + courseSelection + "_" + quizSelection + ".txt").exists()) {
+                                                                writer.write("Empty Quiz"); //tells client theres an error
+                                                                writer.println();
+                                                                writer.flush();
+                                                            } else if (check != null && new File(teacher + "_" + courseSelection + "_" + quizSelection + ".txt").exists()) {
+                                                                writer.write("Quiz");
+                                                                writer.println();
+                                                                writer.flush();
+                                                                BufferedReader bufferedReader6 = new BufferedReader(new FileReader(teacher + "_" + courseSelection + "_" + quizSelection + ".txt"));
+                                                                String shuffleStatus = bufferedReader6.readLine();
+                                                                if (shuffleStatus.equals("True")) {
+                                                                    MainServer mainServer = new MainServer();
+                                                                    mainServer.shuffle(teacher + "_" + courseSelection + "_" + quizSelection + ".txt");
+                                                                }
+                                                                if (!new File( username + "_" + teacher + "_"
+                                                                        + courseSelection + "_" + quizSelection + ".txt").exists()) {
+                                                                    writer.write("run quiz");
+                                                                    writer.println();
+                                                                    writer.flush();
+
+                                                                    int questionCounter = 0;
+                                                                    String nextLine = "";
+                                                                    ArrayList<String> quizContents = new ArrayList<>();
+                                                                    while ((nextLine = bufferedReader6.readLine()) != null) {
+                                                                        quizContents.add(nextLine);
+                                                                        questionCounter++;
+                                                                    }
+                                                                    questionCounter = questionCounter/5;
+                                                                    String questionAmount = String.valueOf(questionCounter);
+                                                                    writer.write(questionAmount);
+                                                                    writer.println();
+                                                                    writer.flush();
+                                                                    writer.write(shuffleStatus);
+                                                                    writer.println();
+                                                                    writer.flush();
+
+                                                                    for (int j = 0; j < quizContents.size(); j++) {
+                                                                        writer.write(quizContents.get(j));
+                                                                        writer.println();
+                                                                        writer.flush();
+                                                                    }
+                                                                    int quizSize = Integer.parseInt(reader.readLine());
+                                                                    String completeQuizString = "";
+                                                                    for (int j = 0; j < quizSize; j++) {
+                                                                        completeQuizString = completeQuizString + reader.readLine() + "\n";
+                                                                    }
+                                                                    completeQuizString = completeQuizString.substring(0, completeQuizString.length()-1);
+                                                                    File files = new File((username + "_" + teacher + "_" + courseSelection + "_" + quizSelection + ".txt"));
+                                                                    BufferedWriter bw = new BufferedWriter(new FileWriter(files));
+                                                                    bw.write(completeQuizString);
+                                                                    bw.close();
+
+
+                                                                } else {
+                                                                    writer.write("dont run");
+                                                                    writer.println();
+                                                                    writer.flush();
+
+                                                                    int viewGrade = Integer.parseInt(reader.readLine());
+
+                                                                    if (viewGrade == JOptionPane.YES_OPTION) {
+                                                                        File fileGrade = new File(username + "_" + teacher +
+                                                                                "_" + courseSelection + "_" + quizSelection + ".txt");
+                                                                        BufferedReader brquiz = new BufferedReader(new FileReader(fileGrade));
+                                                                        String quizLine = brquiz.readLine();
+                                                                        int cline = 0;
+                                                                        while (quizLine != null) {
+                                                                            cline++;
+                                                                            quizLine = brquiz.readLine(); //reads through all line
+                                                                        }
+                                                                        BufferedReader brquiz2 = new BufferedReader(new FileReader(fileGrade));
+                                                                        //reads the same quiz with new bfr
+                                                                        BufferedReader gradeSetter = new BufferedReader(new FileReader(fileGrade));
+                                                                        String lastLine = "";
+                                                                        String grade = "";
+                                                                        for (int j = 0; j < cline; j++) {
+                                                                            lastLine = brquiz2.readLine();
+                                                                        }
+                                                                        brquiz.close();
+                                                                        String nextLine1 = "";
+                                                                        nextLine1 = gradeSetter.readLine();
+                                                                        while (!(nextLine1).equals(username)) {
+                                                                            nextLine1 = gradeSetter.readLine();
+                                                                        }
+
+
+                                                                        if (lastLine.substring(lastLine.length() - 1).equals("%")) {
+                                                                            ArrayList<String> gradeList = new ArrayList<>();
+                                                                            while (nextLine1 != null) {
+                                                                                gradeList.add(nextLine1);
+                                                                                nextLine1 = gradeSetter.readLine();
+                                                                            }
+                                                                            gradeSetter.close();
+                                                                            String size = String.valueOf(gradeList.size());
+                                                                            writer.write(size);
+                                                                            writer.println();
+                                                                            writer.flush();
+                                                                            for (int j = 0; j < gradeList.size(); j++) {
+                                                                                writer.write(gradeList.get(j));
+                                                                                writer.println();
+                                                                                writer.flush();
+                                                                            }
+                                                                        } else {
+                                                                            grade = "Grade not yet entered";
+                                                                            writer.write("0");
+                                                                            writer.println();
+                                                                            writer.flush();
+                                                                            writer.write(grade);
+                                                                            writer.println();
+                                                                            writer.flush();
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+                                            }
+                                        } //end
+                                    } else {
+                                        writer.write("fail");
+                                        writer.println();
+                                        writer.flush();
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+
                         }
                     }
                 } catch (IOException e) {
