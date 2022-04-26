@@ -525,52 +525,6 @@ public class Run {
         return password;
     }
 
-    public static int checkTeacherUsername(String username1) {
-        String tUsername;
-        try {
-            File f = new File("TeacherAccount.txt");
-            FileReader fr = new FileReader(f);
-            BufferedReader bfr = new BufferedReader(fr);
-            String line = bfr.readLine();
-            int usernameStatus = 1;
-
-            while (line != null) { //checks if username already exists
-                if (username1.equals(line)) {
-                    return 2;
-                }
-                line = bfr.readLine();
-            }
-            return 1;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 1;
-    }
-
-    public static int checkTeacherPassword(String password1) {
-        String tUsername;
-        try {
-            File f = new File("TeacherPassword.txt");
-            FileReader fr = new FileReader(f);
-            BufferedReader bfr = new BufferedReader(fr);
-            String line = bfr.readLine();
-            int usernameStatus = 1;
-
-            while (line != null) { //checks if username already exists
-                if (password1.equals(line)) {
-                    return 2;
-                }
-                line = bfr.readLine();
-            }
-            return 1;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 1;
-    }
-
     public static int checkStudentUsername(String username1) {
         String tUsername;
         try {
@@ -582,29 +536,6 @@ public class Run {
 
             while (line != null) { //checks if username already exists
                 if (username1.equals(line)) {
-                    return 2;
-                }
-                line = bfr.readLine();
-            }
-            return 1;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 1;
-    }
-
-    public static int checkStudentPassword(String password1) {
-        String tUsername;
-        try {
-            File f = new File("StudentPassword.txt");
-            FileReader fr = new FileReader(f);
-            BufferedReader bfr = new BufferedReader(fr);
-            String line = bfr.readLine();
-            int usernameStatus = 1;
-
-            while (line != null) { //checks if username already exists
-                if (password1.equals(line)) {
                     return 2;
                 }
                 line = bfr.readLine();
@@ -703,11 +634,6 @@ public class Run {
 
     public static void usernameDoesNotExist() {
         JOptionPane.showMessageDialog(null, "Username does not exist!", "password error",
-                JOptionPane.ERROR_MESSAGE);
-    }
-
-    public static void passwordDoesNotMatch() {
-        JOptionPane.showMessageDialog(null, "Password does not match!", "password error",
                 JOptionPane.ERROR_MESSAGE);
     }
 
