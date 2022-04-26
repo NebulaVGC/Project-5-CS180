@@ -19,7 +19,6 @@ public class MainMethod extends Run {
 
         try {
             Socket socket = new Socket("localhost", 4242);
-
             String username = runQuiz(socket);
             String[] splited = username.split(" ");
             if (splited[0].equals("Teacher")) {
@@ -29,8 +28,10 @@ public class MainMethod extends Run {
                 Student student = new Student(splited[1], socket);
                 student.mainStudent(socket);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
