@@ -656,7 +656,7 @@ public class Run {
 
 
     public static void informationMismatch() {
-        JOptionPane.showMessageDialog(null, "Your information did not match with our record", "Info error",
+        JOptionPane.showMessageDialog(null, "Your information did not match with our record", "Button Game",
                 JOptionPane.ERROR_MESSAGE);
     }
 
