@@ -453,10 +453,6 @@ public class MainServer {
 
 
                         } else if (type.equals("student")) {
-                            k = 0;
-                            OldUsername = null;
-                            type = reader.readLine();
-                            if (type.equals("teacher")) {
                                 try {
                                     while (k == 0) {
                                         OldUsername = reader.readLine();
@@ -758,7 +754,7 @@ public class MainServer {
                                     e.printStackTrace();
                                 }
 
-                            }
+                            
                         }
                     }
                 } catch (IOException e) {
