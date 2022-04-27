@@ -418,6 +418,28 @@ public class MainServer {
                                         writer.write("success");
                                         writer.println();
                                         writer.flush();
+
+                                        int choice = 0;
+                                        while (choice != 8) {
+                                            choice = Integer.parseInt(reader.readLine());
+                                            if (choice == 1) {
+                                                createCourse(reader, writer);
+                                            } else if (choice == 2) {
+                                                deleteCourse(reader, writer);
+                                            } else if (choice == 3) {
+                                                createQuiz(reader, writer);
+                                            } else if (choice == 4) {
+                                                editQuiz(reader, writer);
+                                            } else if (choice == 5) {
+                                                //deleteQuiz();
+                                            } else if (choice == 6) {
+                                                //viewSubmission();
+                                            } else if (choice == 7) {
+                                                //gradeSubmission();
+                                            }
+                                        }
+
+                                        break;
                                     } else {
                                         writer.write("fail");
                                         writer.println();
@@ -724,7 +746,7 @@ public class MainServer {
                                                     }
                                                 }
                                             } //end
-                                            
+
                                         } else {
                                             writer.write("fail");
                                             writer.println();
