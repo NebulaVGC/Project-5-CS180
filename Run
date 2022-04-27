@@ -120,41 +120,45 @@ public class Run {
                                 writer.write("teacher");
                                 writer.println();
                                 writer.flush();
-                                while (i == 0) {
-                                    String teacherLoginUsername = checkTeacherOldName();
-                                    if (teacherLoginUsername.equals("fail")) {
+                                int u = 0;
+                                while (u == 0) {
+                                    while (i == 0) {
+                                        String teacherLoginUsername = checkTeacherOldName();
+                                        if (teacherLoginUsername.equals("fail")) {
+                                            return "";
+                                        }
+                                        writer.write(teacherLoginUsername);
+                                        writer.println();
+                                        writer.flush();
+                                        String status = reader.readLine();
+
+                                        if (status.equals("success")) {
+                                            i++;
+                                        } else if (status.equals("fail")) {
+                                            usernameDoesNotExist();
+                                        }
+                                    }
+
+                                    String editPassword = null;
+
+                                    String teacherLoginPassword = checkTeacherOldPassword();
+                                    if (teacherLoginPassword.equals("fail")) {
                                         return "";
                                     }
-                                    writer.write(teacherLoginUsername);
+                                    writer.write(teacherLoginPassword);
                                     writer.println();
                                     writer.flush();
+
                                     String status = reader.readLine();
-
                                     if (status.equals("success")) {
-                                        i++;
+                                        //run teacher
+                                        return "Teacher " + username1;
                                     } else {
-                                        usernameDoesNotExist();
+                                        informationMismatch();
+                                        i = 0;
                                     }
+
                                 }
-
-                                String editPassword = null;
-
-                                String teacherLoginPassword = checkTeacherOldPassword();
-                                if (teacherLoginPassword.equals("fail")) {
-                                    return "";
-                                }
-                                writer.write(teacherLoginPassword);
-                                writer.println();
-                                writer.flush();
-
-                                String status = reader.readLine();
-                                if (status.equals("success")) {
-                                    //run teacher
-                                    return "Teacher " + username1;
-                                } else {
-                                    informationMismatch();
-                                }
-
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -313,42 +317,45 @@ public class Run {
                                 writer.write("student");
                                 writer.println();
                                 writer.flush();
-                                while (i == 0) {
-                                    String studentLoginUsername = checkStudentOldName();
-                                    if (studentLoginUsername.equals("fail")) {
+                                int u = 0;
+                                while (u == 0) {
+                                    while (i == 0) {
+                                        String studentLoginUsername = checkStudentOldName();
+                                        if (studentLoginUsername.equals("fail")) {
+                                            return "";
+                                        }
+                                        writer.write(studentLoginUsername);
+                                        writer.println();
+                                        writer.flush();
+                                        String status = reader.readLine();
+
+                                        if (status.equals("success")) {
+                                            i++;
+                                        } else {
+                                            usernameDoesNotExist();
+                                        }
+                                    }
+
+                                    String editPassword = null;
+
+                                    String studentLoginPassword = checkStudentOldPassword();
+                                    if (studentLoginPassword.equals("fail")) {
                                         return "";
                                     }
-                                    writer.write(studentLoginUsername);
+                                    writer.write(studentLoginPassword);
                                     writer.println();
                                     writer.flush();
+
                                     String status = reader.readLine();
-
                                     if (status.equals("success")) {
-                                        i++;
+                                        //run student
+                                        return "Student " + username1;
                                     } else {
-                                        usernameDoesNotExist();
+                                        informationMismatch();
+                                        i = 0;
                                     }
+
                                 }
-
-                                String editPassword = null;
-
-                                String studentLoginPassword = checkStudentOldPassword();
-                                if (studentLoginPassword.equals("fail")) {
-                                    return "";
-                                }
-                                writer.write(studentLoginPassword);
-                                writer.println();
-                                writer.flush();
-
-                                String status = reader.readLine();
-                                if (status.equals("success")) {
-                                    //run student
-                                    return "Student " + username1;
-                                } else {
-                                    informationMismatch();
-                                }
-
-
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -627,21 +634,24 @@ public class Run {
     }
 
     public static String checkStudentOldPassword() {
-        String userName = null;
+        String password = null;
         int i = 0;
         while (i == 0) {
-            userName = JOptionPane.showInputDialog(null, "Please enter your password",
+            password = JOptionPane.showInputDialog(null, "Please enter your password",
                     "Verify password", JOptionPane.QUESTION_MESSAGE);
-            if (userName == null) {
+            if (password == null) {
                 return "fail";
-            } else if (userName.isEmpty()) {
+            } else if (password.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "password cannot be empty!", "Make password",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (password.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "password cannot contain space!", "Make password",
                         JOptionPane.ERROR_MESSAGE);
             } else {
                 i++;
             }
         }
-        return userName;
+        return password;
     }
 
 
