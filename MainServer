@@ -1091,9 +1091,9 @@ public class MainServer {
                 }
 
                 if (randomChoice == 1) {
-                    pw.println("true");
+                    pw.println("False");
                 } else {
-                    pw.println("false");
+                    pw.println("True");
                 }
 
                 for (int i = 0; i < answersA.size(); i++) {
