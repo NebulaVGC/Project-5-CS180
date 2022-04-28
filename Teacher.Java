@@ -710,12 +710,11 @@ public class Teacher implements Runnable {
         String line = bfr.readLine();
         DefaultListModel dlm = new DefaultListModel();
         int i = 0;
-        while(line != null) {
-            if(!line.equals("")) {
-                dlm.add(i,line);
+        while (line != null) {
+            if (!line.equals("")) {
+                dlm.add(i, line);
                 line = bfr.readLine();
                 i++;
-                System.out.println(line);
             } else {
                 break;
             }
@@ -730,7 +729,7 @@ public class Teacher implements Runnable {
         JPanel deleteQuizPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        JLabel deleteQuizName = new JLabel("Select the Quiz you would like to delete");
+        JLabel deleteQuizName = new JLabel("Select the course the quiz is in");
         c.fill = GridBagConstraints.NONE;
         c.ipady = 2;
         c.ipadx = 2;
@@ -738,8 +737,8 @@ public class Teacher implements Runnable {
         c.gridwidth = 3;
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(10, 0, 0,0);
-        deleteQuizPanel.add(deleteQuizName,c);
+        c.insets = new Insets(10, 0, 0, 0);
+        deleteQuizPanel.add(deleteQuizName, c);
 
 
         JList list = new JList(dlm);
@@ -750,7 +749,7 @@ public class Teacher implements Runnable {
         c.gridwidth = 3;
         c.gridx = 0;
         c.gridy = 1;
-        if(dlm.size() >= 8) {
+        if (dlm.size() >= 8) {
             JScrollPane scroll = new JScrollPane(list);
             deleteQuizPanel.add(scroll, c);
         } else {
@@ -769,16 +768,15 @@ public class Teacher implements Runnable {
         enterButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 int index = list.getSelectedIndex();
-                if(index > -1) {
-                    String courseDeleted = (String) dlm.get(index);
-                    writer.write(courseDeleted);
+                if (index > -1) {
+                    String courseSelected = (String) dlm.get(index);
+                    writer.write(courseSelected);
                     writer.println();
                     writer.flush();
-                    JOptionPane.showMessageDialog(null, "Course Deleted Successfully",
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                    //TODO Send deleted course name to server
+                    deleteQuizFrame.remove(deleteQuizPanel);
                     deleteQuizFrame.dispose();
-                    createMenuGUI(socket);
+                    askForQuiz2();
+
                 }
             }
         });
@@ -794,6 +792,9 @@ public class Teacher implements Runnable {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                writer.write("");
+                writer.println();
+                writer.flush();
                 deleteQuizFrame.dispose();
                 createMenuGUI(socket);
             }
@@ -808,11 +809,225 @@ public class Teacher implements Runnable {
     }
 
     public void newViewSubmission() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            writer.write(name);
+            writer.println();
+            writer.flush();
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
 
+
+            menuFrame.dispose();
+            viewSubmissionFrame = new JFrame("View Student Submission");
+            Container content = viewSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel viewSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel viewSubmissionName = new JLabel("Select the student whose submission you would like to view");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            viewSubmissionPanel.add(viewSubmissionName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                viewSubmissionPanel.add(scroll, c);
+            } else {
+                viewSubmissionPanel.add(list, c);
+            }
+
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            c.ipadx = 100;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 2;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String studentSelected = (String) dlm.get(index);
+                        writer.write(studentSelected);
+                        writer.println();
+                        writer.flush();
+                        viewSubmissionFrame.remove(viewSubmissionPanel);
+                        viewSubmissionFrame.dispose();
+                        askForCourse();
+
+                    }
+                }
+            });
+            viewSubmissionPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 2;
+            c.gridy = 2;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    viewSubmissionFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            });
+            viewSubmissionPanel.add(cancelButton, c);
+
+            content.add(viewSubmissionPanel);
+            viewSubmissionFrame.setSize(680, 420);
+            viewSubmissionFrame.setLocationRelativeTo(null);
+            viewSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSubmissionFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
     }
 
     public void newGradeSubmission() {
+        try{
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        PrintWriter writer = new PrintWriter(socket.getOutputStream());
+        writer.write(name);
+        writer.println();
+        writer.flush();
+        String line = bfr.readLine();
+        DefaultListModel dlm = new DefaultListModel();
+        int i = 0;
+        while (line != null) {
+            if (!line.equals("")) {
+                dlm.add(i, line);
+                line = bfr.readLine();
+                i++;
+            } else {
+                break;
+            }
+        }
 
+
+        menuFrame.dispose();
+        gradeSubmissionFrame = new JFrame("Grade Student Submission");
+        Container content = gradeSubmissionFrame.getContentPane();
+        content.setLayout(new GridBagLayout());
+
+        JPanel gradeSubmissionPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        JLabel gradeSubmissionName = new JLabel("Select the student whose submission you would like to grade");
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 2;
+        c.ipadx = 2;
+        c.weightx = 0.5;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(10, 0, 0, 0);
+        gradeSubmissionPanel.add(gradeSubmissionName, c);
+
+
+        JList list = new JList(dlm);
+        c.fill = GridBagConstraints.NONE;
+        c.ipady = 1;
+        c.ipadx = 2;
+        c.weightx = 0.5;
+        c.gridwidth = 3;
+        c.gridx = 0;
+        c.gridy = 1;
+        if (dlm.size() >= 8) {
+            JScrollPane scroll = new JScrollPane(list);
+            gradeSubmissionPanel.add(scroll, c);
+        } else {
+            gradeSubmissionPanel.add(list, c);
+        }
+
+
+        JButton enterButton = new JButton("Enter");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 5;
+        c.ipadx = 100;
+        c.weightx = 0.0;
+        c.gridwidth = 1;
+        c.gridx = 1;
+        c.gridy = 2;
+        enterButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                int index = list.getSelectedIndex();
+                if (index > -1) {
+                    String studentSelected = (String) dlm.get(index);
+                    writer.write(studentSelected);
+                    writer.println();
+                    writer.flush();
+                    gradeSubmissionFrame.remove(gradeSubmissionPanel);
+                    gradeSubmissionFrame.dispose();
+                    askForCourse2();
+
+                }
+            }
+        });
+        gradeSubmissionPanel.add(enterButton, c);
+
+        JButton cancelButton = new JButton("Cancel");
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipady = 5;
+        c.weightx = 0;
+        c.gridwidth = 1;
+        c.gridx = 2;
+        c.gridy = 2;
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                writer.write("");
+                writer.println();
+                writer.flush();
+                gradeSubmissionFrame.dispose();
+                createMenuGUI(socket);
+            }
+        });
+        gradeSubmissionPanel.add(cancelButton, c);
+
+        content.add(gradeSubmissionPanel);
+        gradeSubmissionFrame.setSize(680, 420);
+        gradeSubmissionFrame.setLocationRelativeTo(null);
+        gradeSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gradeSubmissionFrame.setVisible(true);
+    } catch (IOException e) {
+
+    }
     }
 
     public void askForImport() {
@@ -1289,17 +1504,17 @@ public class Teacher implements Runnable {
             editQuizPanel.add(newText, c);
 
             JButton enterButton = new JButton("Enter");
-            c.fill = GridBagConstraints.NONE;
+            c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
-            c.ipadx = 50;
+            //c.ipadx = 50;
             c.weightx = 0.0;
             c.gridwidth = 1;
-            c.gridx = 1;
+            c.gridx = 0;
             c.gridy = 3;
             enterButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     int index;
-                        index = list.getSelectedIndex();
+                    index = list.getSelectedIndex();
                     if (index > -1 && !newText.getText().equals("")) {
                         String lineText = newText.getText();
                         writer.write(lineText);
@@ -1320,16 +1535,16 @@ public class Teacher implements Runnable {
             editQuizPanel.add(enterButton, c);
 
             JButton cancelButton = new JButton("Done");
-            c.fill = GridBagConstraints.NONE;
+            c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;      //make this component tall
             c.weightx = 0;
             c.gridwidth = 1;
-            c.gridx = 2;
+            c.gridx = 1;
             c.gridy = 3;
             cancelButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    writer.write("///");
+                    writer.write("");
                     writer.println();
                     writer.flush();
                     editQuizFrame.dispose();
@@ -1343,8 +1558,748 @@ public class Teacher implements Runnable {
             editQuizFrame.setLocationRelativeTo(null);
             editQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             editQuizFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void askForQuiz2() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("///")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            Container content = deleteQuizFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel deleteQuizPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel deleteQuizName = new JLabel("Select the quiz to be deleted");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            deleteQuizPanel.add(deleteQuizName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                deleteQuizPanel.add(scroll, c);
+            } else {
+                deleteQuizPanel.add(list, c);
+            }
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            //c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 0;
+            c.gridy = 3;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index;
+                    index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String quizSelected = (String) dlm.get(index);
+                        writer.write(quizSelected);
+                        writer.println();
+                        writer.flush();
+                        deleteQuizFrame.dispose();
+                        JOptionPane.showMessageDialog(null, "Quiz Deleted Successfully",
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                        createMenuGUI(socket);
+
+                    }
+                }
+            });
+            deleteQuizPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;      //make this component tall
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 3;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    deleteQuizFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            });
+            deleteQuizPanel.add(cancelButton, c);
+
+            content.add(deleteQuizPanel);
+            deleteQuizFrame.setSize(680, 420);
+            deleteQuizFrame.setLocationRelativeTo(null);
+            deleteQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            deleteQuizFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void askForCourse() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+
+            viewSubmissionFrame = new JFrame("View Student Submission");
+            Container content = viewSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel viewSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel selectCourseName = new JLabel("Select the course the quiz is in");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            viewSubmissionPanel.add(selectCourseName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                viewSubmissionPanel.add(scroll, c);
+            } else {
+                viewSubmissionPanel.add(list, c);
+            }
+
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 2;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String courseSelected = (String) dlm.get(index);
+                        writer.write(courseSelected);
+                        writer.println();
+                        writer.flush();
+                        viewSubmissionFrame.remove(viewSubmissionPanel);
+                        viewSubmissionFrame.dispose();
+                        askForQuiz3();
+                    }
+                }
+            });
+            viewSubmissionPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;      //make this component tall
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 2;
+            c.gridy = 2;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    viewSubmissionFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            });
+            viewSubmissionPanel.add(cancelButton, c);
+
+            content.add(viewSubmissionPanel);
+            viewSubmissionFrame.setSize(680, 420);
+            viewSubmissionFrame.setLocationRelativeTo(null);
+            viewSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSubmissionFrame.setVisible(true);
         } catch(IOException e) {
 
         }
     }
+
+    public void askForQuiz3() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("///")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            Container content = viewSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel viewSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel viewSubmissionName = new JLabel("Select the quiz to be viewed");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            viewSubmissionPanel.add(viewSubmissionName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                viewSubmissionPanel.add(scroll, c);
+            } else {
+                viewSubmissionPanel.add(list, c);
+            }
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            //c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 0;
+            c.gridy = 3;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index;
+                    index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String quizSelected = (String) dlm.get(index);
+                        writer.write(quizSelected);
+                        writer.println();
+                        writer.flush();
+                        try {
+                            String exists = bfr.readLine();
+                            if(exists.equals("Yes")){
+                                viewSubmissionFrame.remove(viewSubmissionPanel);
+                                viewSubmissionFrame.dispose();
+                                showSubmission();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "That file does not exist",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                viewSubmissionFrame.dispose();
+                                createMenuGUI(socket);
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+            viewSubmissionPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;      //make this component tall
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 3;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    viewSubmissionFrame.dispose();
+                    createMenuGUI(socket);
+
+                }
+            });
+            viewSubmissionPanel.add(cancelButton, c);
+
+            content.add(viewSubmissionPanel);
+            viewSubmissionFrame.setSize(680, 420);
+            viewSubmissionFrame.setLocationRelativeTo(null);
+            viewSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSubmissionFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
     }
+
+    public void showSubmission() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("///")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            Container content = viewSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel viewSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel viewSubmissionName = new JLabel("View the submission and press done when you are done");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            viewSubmissionPanel.add(viewSubmissionName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                viewSubmissionPanel.add(scroll, c);
+            } else {
+                viewSubmissionPanel.add(list, c);
+            }
+
+            JButton cancelButton = new JButton("Done");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.ipadx = 50;
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 2;
+            c.gridy = 3;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    viewSubmissionFrame.dispose();
+                    createMenuGUI(socket);
+
+                }
+            });
+            viewSubmissionPanel.add(cancelButton, c);
+
+            content.add(viewSubmissionPanel);
+            viewSubmissionFrame.setSize(680, 420);
+            viewSubmissionFrame.setLocationRelativeTo(null);
+            viewSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            viewSubmissionFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
+    }
+    public void askForCourse2() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+
+            gradeSubmissionFrame = new JFrame("Grade Student Submission");
+            Container content = gradeSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel gradeSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel selectCourseName = new JLabel("Select the course the quiz is in");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            gradeSubmissionPanel.add(selectCourseName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                gradeSubmissionPanel.add(scroll, c);
+            } else {
+                gradeSubmissionPanel.add(list, c);
+            }
+
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 2;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String courseSelected = (String) dlm.get(index);
+                        writer.write(courseSelected);
+                        writer.println();
+                        writer.flush();
+                        gradeSubmissionFrame.remove(gradeSubmissionPanel);
+                        gradeSubmissionFrame.dispose();
+                        askForQuiz4();
+                    }
+                }
+            });
+            gradeSubmissionPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 5;
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 2;
+            c.gridy = 2;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    gradeSubmissionFrame.dispose();
+                    createMenuGUI(socket);
+                }
+            });
+            gradeSubmissionPanel.add(cancelButton, c);
+
+            content.add(gradeSubmissionPanel);
+            gradeSubmissionFrame.setSize(680, 420);
+            gradeSubmissionFrame.setLocationRelativeTo(null);
+            gradeSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            gradeSubmissionFrame.setVisible(true);
+        } catch(IOException e) {
+
+        }
+    }
+
+    public void askForQuiz4() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("///")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            Container content = gradeSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel gradeSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel gradeSubmissionName = new JLabel("Select the quiz to be graded");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            gradeSubmissionPanel.add(gradeSubmissionName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            if (dlm.size() >= 8) {
+                JScrollPane scroll = new JScrollPane(list);
+                gradeSubmissionPanel.add(scroll, c);
+            } else {
+                gradeSubmissionPanel.add(list, c);
+            }
+
+            JButton enterButton = new JButton("Enter");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            //c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 0;
+            c.gridy = 3;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    int index;
+                    index = list.getSelectedIndex();
+                    if (index > -1) {
+                        String quizSelected = (String) dlm.get(index);
+                        writer.write(quizSelected);
+                        writer.println();
+                        writer.flush();
+                        try {
+                            String exists = bfr.readLine();
+                            if(exists.equals("Yes")){
+                                String grade = reader.readLine();
+                                if(grade.equals("Graded")) {
+                                    JOptionPane.showMessageDialog(null, "That quiz has been graded",
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                                    gradeSubmissionFrame.dispose();
+                                    createMenuGUI(socket);
+                                } else {
+                                    gradeSubmissionFrame.remove(gradeSubmissionPanel);
+                                    gradeSubmissionFrame.dispose();
+                                    gradeSubmission();
+                                }
+
+
+                            } else {
+                                JOptionPane.showMessageDialog(null, "That file does not exist",
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                                gradeSubmissionFrame.dispose();
+                                createMenuGUI(socket);
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+            gradeSubmissionPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("Cancel");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 3;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("");
+                    writer.println();
+                    writer.flush();
+                    gradeSubmissionFrame.dispose();
+                    createMenuGUI(socket);
+
+                }
+            });
+            gradeSubmissionPanel.add(cancelButton, c);
+
+            content.add(gradeSubmissionPanel);
+            gradeSubmissionFrame.setSize(680, 420);
+            gradeSubmissionFrame.setLocationRelativeTo(null);
+            gradeSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            gradeSubmissionFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void gradeSubmission() {
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            PrintWriter writer = new PrintWriter(socket.getOutputStream());
+
+            String line = bfr.readLine();
+            DefaultListModel dlm = new DefaultListModel();
+            int i = 0;
+            while (line != null) {
+                if (!line.equals("///")) {
+                    dlm.add(i, line);
+                    line = bfr.readLine();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            Container content = gradeSubmissionFrame.getContentPane();
+            content.setLayout(new GridBagLayout());
+
+            JPanel gradeSubmissionPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            JLabel gradeSubmissionName = new JLabel("Is this answer correct?");
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 2;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10, 0, 0, 0);
+            gradeSubmissionPanel.add(gradeSubmissionName, c);
+
+
+            JList list = new JList(dlm);
+            c.fill = GridBagConstraints.NONE;
+            c.ipady = 1;
+            c.ipadx = 2;
+            c.weightx = 0.5;
+            c.gridwidth = 3;
+            c.gridx = 0;
+            c.gridy = 1;
+            gradeSubmissionPanel.add(list, c);
+
+
+            JButton enterButton = new JButton("Yes");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            //c.ipadx = 50;
+            c.weightx = 0.0;
+            c.gridwidth = 1;
+            c.gridx = 0;
+            c.gridy = 3;
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    writer.write("Yes");
+                    writer.println();
+                    writer.flush();
+                    gradeSubmissionFrame.remove(gradeSubmissionPanel);
+                    gradeSubmissionFrame.dispose();
+                    gradeSubmission();
+
+                }
+            });
+            gradeSubmissionPanel.add(enterButton, c);
+
+            JButton cancelButton = new JButton("No");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.ipady = 5;
+            c.weightx = 0;
+            c.gridwidth = 1;
+            c.gridx = 1;
+            c.gridy = 3;
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    writer.write("No");
+                    writer.println();
+                    writer.flush();
+                    gradeSubmissionFrame.remove(gradeSubmissionPanel);
+                    gradeSubmissionFrame.dispose();
+                    gradeSubmission();
+
+                }
+            });
+            gradeSubmissionPanel.add(cancelButton, c);
+
+            content.add(gradeSubmissionPanel);
+            gradeSubmissionFrame.setSize(680, 420);
+            gradeSubmissionFrame.setLocationRelativeTo(null);
+            gradeSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            gradeSubmissionFrame.setVisible(true);
+        } catch (IOException e) {
+
+        }
+    }
+}
