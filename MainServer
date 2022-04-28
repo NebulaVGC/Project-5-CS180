@@ -420,6 +420,9 @@ public class MainServer {
                                             writer.write("success");
                                             writer.println();
                                             writer.flush();
+                                            writer.write(OldUsername);
+                                            writer.println();
+                                            writer.flush();
 
                                             int choice = 0;
                                             while (choice != 8) {
@@ -462,6 +465,7 @@ public class MainServer {
                                 while (u == 0) {
                                     while (k == 0) {
                                         OldUsername = reader.readLine();
+                                        System.out.println(OldUsername);
                                         if (OldUsername == null) {
                                             break;
                                         }
@@ -512,6 +516,9 @@ public class MainServer {
                                     while (l == 0) {
                                         if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
                                             writer.write("success");
+                                            writer.println();
+                                            writer.flush();
+                                            writer.write(OldUsername);
                                             writer.println();
                                             writer.flush();
 
