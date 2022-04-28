@@ -1077,7 +1077,7 @@ public class MainServer {
                 File courseQuiz = new File(teacherName + "_" + courseSelected + ".txt");   //The file that holds the quizzes
                 try {
                     pw3 = new PrintWriter(new FileOutputStream(courseQuiz, true));
-                    pw3.println(teacherName + "_" + courseSelected + "_" + quizName + ".txt");
+                    pw3.println(quizName);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
