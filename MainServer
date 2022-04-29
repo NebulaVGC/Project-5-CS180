@@ -426,7 +426,11 @@ public class MainServer {
 
                                             int choice = 0;
                                             while (choice != 8) {
-                                                choice = Integer.parseInt(reader.readLine());
+                                                try {
+                                                    choice = Integer.parseInt(reader.readLine());
+                                                } catch(IOException e) {
+                                                    break;
+                                                }
                                                 if (choice == 1) {
                                                     createCourse(reader, writer);
                                                 } else if (choice == 2) {
@@ -1181,7 +1185,7 @@ public class MainServer {
             PrintWriter pw = null;
             BufferedReader quizReader = null;
             while (!continueEdit.equals("///")) {
-                File quizFile = new File(quizSelected);
+                File quizFile = new File(teacherName + "_" + courseSelected + "_" + quizSelected + ".txt");
                 quizReader = new BufferedReader(new FileReader(quizFile));
                 line = quizReader.readLine();
                 ArrayList<String> quizList = new ArrayList<>();
@@ -1257,7 +1261,7 @@ public class MainServer {
             if (quizSelected.equals("")) {
                 return;
             }
-            File f = new File(quizSelected);
+            File f = new File(teacherName + "_" + courseSelected + "_" + quizSelected + ".txt");
             File f2 = new File(teacherName + "_" + courseSelected + ".txt");
             f.delete();
             BufferedReader bfr = new BufferedReader(new FileReader(f2));
@@ -1347,7 +1351,7 @@ public class MainServer {
             if (quizSelected.equals("")) {
                 return;
             }
-            File f = new File(studentSelected + "_" + quizSelected);
+            File f = new File(studentSelected + "_" + teacherName + "_" + courseSelected + "_" + quizSelected + ".txt");
             if (f.exists()) {
                 newWriter.write("Yes");
                 newWriter.println();
@@ -1442,14 +1446,14 @@ public class MainServer {
             if (quizSelected.equals("")) {
                 return;
             }
-            File f = new File(studentSelected + "_" + quizSelected);
+            File f = new File(studentSelected + "_" + teacherName + "_" + courseSelected + "_" + quizSelected + ".txt");
             if (f.exists()) {
                 newWriter.write("Yes");
                 newWriter.println();
                 newWriter.flush();
                 BufferedReader bfr2 = new BufferedReader(new FileReader(f));
                 line = bfr2.readLine();
-                if (line.equals("true") || line.equals("false")) {
+                if (line.equals("True") || line.equals("False")) {
                     newWriter.write("Not");
                     newWriter.println();
                     newWriter.flush();
@@ -1474,7 +1478,7 @@ public class MainServer {
             ArrayList<String> entireFile = new ArrayList<>();   //List to hold the files entire contents
             ArrayList<String> correct = new ArrayList<>();  //List to hold the teachers yes or no answers
             String questionLine = bfrQuestions.readLine();  //Reads the next line in the question buffered reader
-            if (questionLine.equals("true") || questionLine.equals("false")) {
+            if (questionLine.equals("True") || questionLine.equals("False")) {
                 questionLine = bfrQuestions.readLine();
                 String answerLine = bfrAnswers.readLine();  //Reads the next line in the answer buffered reader
                 while (!answerLine.equals("A") && !answerLine.equals("B") && !answerLine.equals("C") &&
@@ -1519,6 +1523,10 @@ public class MainServer {
                     }
 
                 }
+                newWriter.write("///");
+                newWriter.println();
+                newWriter.flush();
+
                 BufferedReader bfr3 = new BufferedReader(new FileReader(f));  //Buffered reader for the
                 //student quiz
                 line = bfr3.readLine();  //Reads the next line in the buffered reader
