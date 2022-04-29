@@ -1,0 +1,48 @@
+import javax.swing.*;
+import java.io.*;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Scanner;
+
+/**
+ * CHALLENGE 11
+ * <p>
+ * Create a button pressing game
+ *
+ * @author Shih Kuan Chou, CS 180 - L09
+ * @version Apr 1, 2022
+ */
+
+public class MainServer {
+
+    public static void main(String[] args) {
+        Socket socket = null;
+        ServerSocket serverSocket = null;
+        System.out.println("Server Listening......");
+        try {
+            serverSocket = new ServerSocket(4242);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Server error");
+
+        }
+
+        while (true) {
+            try {
+                socket = serverSocket.accept();
+                System.out.println("Connection Established");
+                ServerThread st = new ServerThread(socket);
+                st.start();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Connection Error");
+
+
+            }
+        }
+    }
+}
