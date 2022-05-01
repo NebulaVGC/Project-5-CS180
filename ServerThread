@@ -66,17 +66,13 @@ public class ServerThread extends Thread {
                         teacherPasswordStore.add(teacherPassword);
 
                         File teacherAccountFile = new File("TeacherAccount.txt");
-                        FileOutputStream fos = new FileOutputStream(teacherAccountFile, false);
+                        FileOutputStream fos = new FileOutputStream(teacherAccountFile, true);
                         PrintWriter pw = new PrintWriter(fos);
-                        for (int j = 0; j < teacherAccountStore.size(); j++) {
-                            pw.println(teacherAccountStore.get(j));
-                        }
+                        pw.println(username1);
                         File teacherPasswordFile = new File("TeacherPassword.txt");
-                        FileOutputStream fos2 = new FileOutputStream(teacherPasswordFile, false);
+                        FileOutputStream fos2 = new FileOutputStream(teacherPasswordFile, true);
                         PrintWriter pw2 = new PrintWriter(fos2);
-                        for (int j = 0; j < teacherPasswordStore.size(); j++) {
-                            pw2.println(teacherPasswordStore.get(j));
-                        }
+                        pw2.println(teacherPassword);
                         pw.close();
                         pw2.close();
                         return;
@@ -119,17 +115,13 @@ public class ServerThread extends Thread {
                         studentPasswordStore.add(studentPassword);
 
                         File studentAccountFile = new File("StudentAccount.txt");
-                        FileOutputStream fos = new FileOutputStream(studentAccountFile, false);
+                        FileOutputStream fos = new FileOutputStream(studentAccountFile, true);
                         PrintWriter pw = new PrintWriter(fos);
-                        for (int j = 0; j < studentAccountStore.size(); j++) {
-                            pw.println(studentAccountStore.get(j));
-                        }
+                        pw.println(username1);
                         File studentPasswordFile = new File("StudentPassword.txt");
-                        FileOutputStream fos2 = new FileOutputStream(studentPasswordFile, false);
+                        FileOutputStream fos2 = new FileOutputStream(studentPasswordFile, true);
                         PrintWriter pw2 = new PrintWriter(fos2);
-                        for (int j = 0; j < studentPasswordStore.size(); j++) {
-                            pw2.println(studentPasswordStore.get(j));
-                        }
+                        pw2.println(studentPassword);
                         pw.close();
                         pw2.close();
                         return;
