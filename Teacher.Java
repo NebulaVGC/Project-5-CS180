@@ -15,23 +15,23 @@ import java.net.Socket;
  */
 public class Teacher implements Runnable {
     private final String name;      //The teachers name
-    private JButton createCourseButton;
-    private JButton deleteCourseButton;
-    private JButton createQuizButton;
-    private JButton editQuizButton;
-    private JButton deleteQuizButton;
-    private JButton viewSubmissionButton;
-    private JButton gradeSubmissionButton;
-    private JButton exitButton;
+    private JButton createCourseButton; //button to create course
+    private JButton deleteCourseButton; //button to delete course
+    private JButton createQuizButton; //button to create quiz
+    private JButton editQuizButton; //button to edit quiz
+    private JButton deleteQuizButton; //button to delete quiz
+    private JButton viewSubmissionButton; //button to view a submission
+    private JButton gradeSubmissionButton; //button to grade a submission
+    private JButton exitButton; //exit button
 
-    private JFrame menuFrame;
-    private JFrame createCourseFrame;
-    private JFrame deleteCourseFrame;
-    private JFrame createQuizFrame;
-    private JFrame editQuizFrame;
-    private JFrame deleteQuizFrame;
-    private JFrame viewSubmissionFrame;
-    private JFrame gradeSubmissionFrame;
+    private JFrame menuFrame; //creates frame of the GUI
+    private JFrame createCourseFrame; //creates frame for courses
+    private JFrame deleteCourseFrame; //creates frame to delete a course
+    private JFrame createQuizFrame; //creates frame to create a quiz
+    private JFrame editQuizFrame; //creates frame to delete a quiz
+    private JFrame deleteQuizFrame; //creates frame to delete a quiz
+    private JFrame viewSubmissionFrame; //creates frame to view a submission
+    private JFrame gradeSubmissionFrame; //creates frame to grade a submission
 
     private Socket socket;
     private BufferedReader reader;
@@ -51,24 +51,19 @@ public class Teacher implements Runnable {
 
     }
 
-    public static void main(String[] args) {
-        Teacher teacher = new Teacher("Joe");
-        SwingUtilities.invokeLater(teacher);
-    }
-
-    ActionListener actionListener = new ActionListener() {
+    ActionListener actionListener = new ActionListener() { //reads what button was selected
         @Override
         public void actionPerformed(ActionEvent e) {
 
             if (e.getSource() == createCourseButton) {
-                writer.write("1");
+                writer.write("1"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 newCreateCourse();
             }
 
             if (e.getSource() == deleteCourseButton) {
-                writer.write("2");
+                writer.write("2"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 try {
@@ -79,7 +74,7 @@ public class Teacher implements Runnable {
             }
 
             if (e.getSource() == createQuizButton) {
-                writer.write("3");
+                writer.write("3"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 try {
@@ -91,7 +86,7 @@ public class Teacher implements Runnable {
 
             if (e.getSource() == editQuizButton) {
 
-                writer.write("4");
+                writer.write("4"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 try {
@@ -102,7 +97,7 @@ public class Teacher implements Runnable {
             }
 
             if (e.getSource() == deleteQuizButton) {
-                writer.write("5");
+                writer.write("5"); //tells server what option was selected
                 writer.println();
                 writer.flush();
 
@@ -115,7 +110,7 @@ public class Teacher implements Runnable {
 
             if (e.getSource() == viewSubmissionButton) {
 
-                writer.write("6");
+                writer.write("6"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 newViewSubmission();
@@ -123,14 +118,14 @@ public class Teacher implements Runnable {
 
             if (e.getSource() == gradeSubmissionButton) {
 
-                writer.write("7");
+                writer.write("7"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 newGradeSubmission();
             }
 
             if (e.getSource() == exitButton) {
-                writer.write("8");
+                writer.write("8"); //tells server what option was selected
                 writer.println();
                 writer.flush();
                 menuFrame.dispose();
@@ -171,7 +166,7 @@ public class Teacher implements Runnable {
         exitButton = new JButton("Exit");
         exitButton.addActionListener(actionListener);
 
-        JPanel menuPanel = new JPanel(new GridLayout(8, 1));
+        JPanel menuPanel = new JPanel(new GridLayout(8, 1)); //panel with options displayed
         menuPanel.add(createCourseButton);
         menuPanel.add(deleteCourseButton);
         menuPanel.add(createQuizButton);
@@ -221,7 +216,7 @@ public class Teacher implements Runnable {
         c.gridy = 1;
         createCoursePanel.add(courseText, c);
 
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 5;
         c.weightx = 0.0;
@@ -247,7 +242,7 @@ public class Teacher implements Runnable {
         });
         createCoursePanel.add(enterButton, c);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -278,7 +273,7 @@ public class Teacher implements Runnable {
     }
 
     public void newDeleteCourse() throws IOException {
-        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         writer.write(name);
         writer.println();
@@ -298,7 +293,7 @@ public class Teacher implements Runnable {
 
 
         menuFrame.dispose();
-        deleteCourseFrame = new JFrame("Delete Course");
+        deleteCourseFrame = new JFrame("Delete Course"); //adds button
         Container content = deleteCourseFrame.getContentPane();
         content.setLayout(new GridBagLayout());
 
@@ -333,7 +328,7 @@ public class Teacher implements Runnable {
         }
 
 
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;
         c.ipadx = 50;
@@ -358,7 +353,7 @@ public class Teacher implements Runnable {
         });
         deleteCoursePanel.add(enterButton, c);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -386,7 +381,7 @@ public class Teacher implements Runnable {
     }
 
     public void newCreateQuiz() throws IOException {
-        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         writer.write(name);
         writer.println();
@@ -406,7 +401,7 @@ public class Teacher implements Runnable {
 
 
         menuFrame.dispose();
-        createQuizFrame = new JFrame("Create Quiz");
+        createQuizFrame = new JFrame("Create Quiz"); //adds button
         Container content = createQuizFrame.getContentPane();
         content.setLayout(new GridBagLayout());
 
@@ -441,7 +436,7 @@ public class Teacher implements Runnable {
         }
 
 
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;
         c.ipadx = 50;
@@ -476,7 +471,7 @@ public class Teacher implements Runnable {
         c.gridy = 1;
         createQuizPanel2.add(quizText, c);
 
-        JButton enterButton2 = new JButton("Enter");
+        JButton enterButton2 = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 5;
         c.weightx = 0.0;
@@ -491,7 +486,8 @@ public class Teacher implements Runnable {
                     writer.println();
                     writer.flush();
                     createQuizFrame.dispose();
-                    int option = JOptionPane.showConfirmDialog(null, "Do you want to import a file?",
+                    int option = JOptionPane.showConfirmDialog(null,
+                            "Do you want to import a file?",
                             "Create Quiz", JOptionPane.YES_NO_OPTION);
                     writer.write("" + option);
                     writer.println();
@@ -499,7 +495,8 @@ public class Teacher implements Runnable {
                     if (option == JOptionPane.NO_OPTION) {
                         createQuizFrame.remove(createQuizPanel2);
                         createQuizFrame.dispose();
-                        int randomized = JOptionPane.showConfirmDialog(null, "Do you want the questions to be randomized?",
+                        int randomized = JOptionPane.showConfirmDialog(null,
+                                "Do you want the questions to be randomized?",
                                 "Create Quiz", JOptionPane.YES_NO_OPTION);
                         if (randomized == JOptionPane.YES_OPTION) {
                             writer.write("" + 0);
@@ -525,7 +522,7 @@ public class Teacher implements Runnable {
         });
         createQuizPanel2.add(enterButton2, c);
 
-        JButton cancelButton2 = new JButton("Cancel");
+        JButton cancelButton2 = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -567,7 +564,7 @@ public class Teacher implements Runnable {
         });
         createQuizPanel.add(enterButton, c);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -596,7 +593,7 @@ public class Teacher implements Runnable {
     }
 
     public void newEditQuiz() throws IOException {
-        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         writer.write(name);
         writer.println();
@@ -616,7 +613,7 @@ public class Teacher implements Runnable {
 
 
         menuFrame.dispose();
-        editQuizFrame = new JFrame("Edit Quiz");
+        editQuizFrame = new JFrame("Edit Quiz"); //adds button
         Container content = editQuizFrame.getContentPane();
         content.setLayout(new GridBagLayout());
 
@@ -651,7 +648,7 @@ public class Teacher implements Runnable {
         }
 
 
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;
         c.ipadx = 50;
@@ -675,7 +672,7 @@ public class Teacher implements Runnable {
         });
         editQuizPanel.add(enterButton, c);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -702,7 +699,7 @@ public class Teacher implements Runnable {
     }
 
     public void newDeleteQuiz() throws IOException {
-        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
         writer.write(name);
         writer.println();
@@ -722,7 +719,7 @@ public class Teacher implements Runnable {
 
 
         menuFrame.dispose();
-        deleteQuizFrame = new JFrame("Delete Quiz");
+        deleteQuizFrame = new JFrame("Delete Quiz"); //adds button
         Container content = deleteQuizFrame.getContentPane();
         content.setLayout(new GridBagLayout());
 
@@ -757,7 +754,7 @@ public class Teacher implements Runnable {
         }
 
 
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;
         c.ipadx = 50;
@@ -782,7 +779,7 @@ public class Teacher implements Runnable {
         });
         deleteQuizPanel.add(enterButton, c);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.NONE;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -810,7 +807,7 @@ public class Teacher implements Runnable {
 
     public void newViewSubmission() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             writer.write(name);
             writer.println();
@@ -865,7 +862,7 @@ public class Teacher implements Runnable {
             }
 
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             c.ipadx = 100;
@@ -890,7 +887,7 @@ public class Teacher implements Runnable {
             });
             viewSubmissionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             c.weightx = 0;
@@ -920,8 +917,8 @@ public class Teacher implements Runnable {
     }
 
     public void newGradeSubmission() {
-        try{
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+        try {
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             writer.write(name);
             writer.println();
@@ -976,7 +973,7 @@ public class Teacher implements Runnable {
             }
 
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             c.ipadx = 100;
@@ -1058,7 +1055,7 @@ public class Teacher implements Runnable {
         c.gridy = 1;
         fileNamePanel.add(fileText, c);
 
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Enter"); //adds button
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 5;
         c.weightx = 0.0;
@@ -1107,7 +1104,7 @@ public class Teacher implements Runnable {
         });
         fileNamePanel.add(enterButton, c);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancel"); //adds button
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipady = 5;      //make this component tall
         c.weightx = 0;
@@ -1179,7 +1176,7 @@ public class Teacher implements Runnable {
             c.gridy = 1;
             questionPanel.add(questionText, c);
 
-            JLabel answerAName = new JLabel("Enter answer choice A");
+            JLabel answerAName = new JLabel("Enter answer choice A"); //stores answer option
             c.fill = GridBagConstraints.NONE;
             c.ipady = 2;
             c.ipadx = 2;
@@ -1200,7 +1197,7 @@ public class Teacher implements Runnable {
             c.gridy = 3;
             questionPanel.add(answerAText, c);
 
-            JLabel answerBName = new JLabel("Enter answer choice B");
+            JLabel answerBName = new JLabel("Enter answer choice B"); //stores answer option
             c.fill = GridBagConstraints.NONE;
             c.ipady = 2;
             c.ipadx = 2;
@@ -1221,7 +1218,7 @@ public class Teacher implements Runnable {
             c.gridy = 5;
             questionPanel.add(answerBText, c);
 
-            JLabel answerCName = new JLabel("Enter answer choice C");
+            JLabel answerCName = new JLabel("Enter answer choice C"); //stores answer option
             c.fill = GridBagConstraints.NONE;
             c.ipady = 2;
             c.ipadx = 2;
@@ -1242,7 +1239,7 @@ public class Teacher implements Runnable {
             c.gridy = 7;
             questionPanel.add(answerCText, c);
 
-            JLabel answerDName = new JLabel("Enter answer choice D");
+            JLabel answerDName = new JLabel("Enter answer choice D"); //stores answer option
             c.fill = GridBagConstraints.NONE;
             c.ipady = 2;
             c.ipadx = 2;
@@ -1263,7 +1260,7 @@ public class Teacher implements Runnable {
             c.gridy = 9;
             questionPanel.add(answerDText, c);
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             c.weightx = 0.0;
@@ -1273,7 +1270,9 @@ public class Teacher implements Runnable {
 
             enterButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    if (!questionText.getText().equals("") && !answerAText.getText().equals("") && !answerBText.getText().equals("") && !answerCText.getText().equals("") && !answerDText.getText().equals("")) {
+                    if (!questionText.getText().equals("") &&
+                            !answerAText.getText().equals("") && !answerBText.getText().equals("") &&
+                            !answerCText.getText().equals("") && !answerDText.getText().equals("")) {
                         writer.write("Continue");
                         writer.println();
                         writer.flush();
@@ -1301,14 +1300,15 @@ public class Teacher implements Runnable {
                         createQuizQuestions();
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "One or more fields have not been filled out",
+                        JOptionPane.showMessageDialog(null,
+                                "One or more fields have not been filled out",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });
             questionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;      //make this component tall
             c.weightx = 0;
@@ -1338,7 +1338,7 @@ public class Teacher implements Runnable {
 
     public void askForQuiz() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             String line = bfr.readLine();
             DefaultListModel dlm = new DefaultListModel();
@@ -1387,7 +1387,7 @@ public class Teacher implements Runnable {
             }
 
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;
             c.ipadx = 50;
@@ -1411,7 +1411,7 @@ public class Teacher implements Runnable {
             });
             editQuizPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;
             c.weightx = 0;
@@ -1442,7 +1442,7 @@ public class Teacher implements Runnable {
 
     public void editQuizGui() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             writer.write("Continue");
             writer.println();
@@ -1503,7 +1503,7 @@ public class Teacher implements Runnable {
             c.gridy = 2;
             editQuizPanel.add(newText, c);
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             //c.ipadx = 50;
@@ -1534,7 +1534,7 @@ public class Teacher implements Runnable {
             });
             editQuizPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Done");
+            JButton cancelButton = new JButton("Done"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;      //make this component tall
             c.weightx = 0;
@@ -1565,7 +1565,7 @@ public class Teacher implements Runnable {
 
     public void askForQuiz2() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream())); //Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
             String line = bfr.readLine();
@@ -1613,7 +1613,7 @@ public class Teacher implements Runnable {
                 deleteQuizPanel.add(list, c);
             }
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             //c.ipadx = 50;
@@ -1640,7 +1640,7 @@ public class Teacher implements Runnable {
             });
             deleteQuizPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;      //make this component tall
             c.weightx = 0;
@@ -1671,7 +1671,7 @@ public class Teacher implements Runnable {
 
     public void askForCourse() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             String line = bfr.readLine();
             DefaultListModel dlm = new DefaultListModel();
@@ -1721,7 +1721,7 @@ public class Teacher implements Runnable {
             }
 
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;
             c.ipadx = 50;
@@ -1745,7 +1745,7 @@ public class Teacher implements Runnable {
             });
             viewSubmissionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;      //make this component tall
             c.weightx = 0;
@@ -1769,14 +1769,14 @@ public class Teacher implements Runnable {
             viewSubmissionFrame.setLocationRelativeTo(null);
             viewSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             viewSubmissionFrame.setVisible(true);
-        } catch(IOException e) {
+        } catch (IOException e) {
 
         }
     }
 
     public void askForQuiz3() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
             String line = bfr.readLine();
@@ -1824,7 +1824,7 @@ public class Teacher implements Runnable {
                 viewSubmissionPanel.add(list, c);
             }
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             //c.ipadx = 50;
@@ -1843,7 +1843,7 @@ public class Teacher implements Runnable {
                         writer.flush();
                         try {
                             String exists = bfr.readLine();
-                            if(exists.equals("Yes")){
+                            if (exists.equals("Yes")) {
                                 viewSubmissionFrame.remove(viewSubmissionPanel);
                                 viewSubmissionFrame.dispose();
                                 showSubmission();
@@ -1862,7 +1862,7 @@ public class Teacher implements Runnable {
             });
             viewSubmissionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;      //make this component tall
             c.weightx = 0;
@@ -1894,7 +1894,7 @@ public class Teacher implements Runnable {
 
     public void showSubmission() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
             String line = bfr.readLine();
@@ -1942,7 +1942,7 @@ public class Teacher implements Runnable {
                 viewSubmissionPanel.add(list, c);
             }
 
-            JButton cancelButton = new JButton("Done");
+            JButton cancelButton = new JButton("Done"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;
             c.ipadx = 50;
@@ -1972,9 +1972,10 @@ public class Teacher implements Runnable {
 
         }
     }
+
     public void askForCourse2() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             String line = bfr.readLine();
             DefaultListModel dlm = new DefaultListModel();
@@ -2024,7 +2025,7 @@ public class Teacher implements Runnable {
             }
 
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;
             c.ipadx = 50;
@@ -2048,7 +2049,7 @@ public class Teacher implements Runnable {
             });
             gradeSubmissionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.NONE;
             c.ipady = 5;
             c.weightx = 0;
@@ -2072,14 +2073,14 @@ public class Teacher implements Runnable {
             gradeSubmissionFrame.setLocationRelativeTo(null);
             gradeSubmissionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             gradeSubmissionFrame.setVisible(true);
-        } catch(IOException e) {
+        } catch (IOException e) {
 
         }
     }
 
     public void askForQuiz4() {
         try {
-            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
             String line = bfr.readLine();
@@ -2127,7 +2128,7 @@ public class Teacher implements Runnable {
                 gradeSubmissionPanel.add(list, c);
             }
 
-            JButton enterButton = new JButton("Enter");
+            JButton enterButton = new JButton("Enter"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             //c.ipadx = 50;
@@ -2146,9 +2147,9 @@ public class Teacher implements Runnable {
                         writer.flush();
                         try {
                             String exists = bfr.readLine();
-                            if(exists.equals("Yes")){
+                            if (exists.equals("Yes")) {
                                 String grade = reader.readLine();
-                                if(grade.equals("Graded")) {
+                                if (grade.equals("Graded")) {
                                     JOptionPane.showMessageDialog(null, "That quiz has been graded",
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                     gradeSubmissionFrame.dispose();
@@ -2175,7 +2176,7 @@ public class Teacher implements Runnable {
             });
             gradeSubmissionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("Cancel");
+            JButton cancelButton = new JButton("Cancel"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             c.weightx = 0;
@@ -2211,7 +2212,7 @@ public class Teacher implements Runnable {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
             String line = bfr.readLine();
-            if(line.equals("///")) {
+            if (line.equals("///")) {
                 createMenuGUI(socket);
                 return;
             }
@@ -2255,7 +2256,7 @@ public class Teacher implements Runnable {
             gradeSubmissionPanel.add(list, c);
 
 
-            JButton enterButton = new JButton("Yes");
+            JButton enterButton = new JButton("Yes"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             //c.ipadx = 50;
@@ -2276,7 +2277,7 @@ public class Teacher implements Runnable {
             });
             gradeSubmissionPanel.add(enterButton, c);
 
-            JButton cancelButton = new JButton("No");
+            JButton cancelButton = new JButton("No"); //adds button
             c.fill = GridBagConstraints.HORIZONTAL;
             c.ipady = 5;
             c.weightx = 0;
