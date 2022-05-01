@@ -75,7 +75,7 @@ public class ServerThread extends Thread {
                         pw2.println(teacherPassword);
                         pw.close();
                         pw2.close();
-                        return;
+                        run();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -124,7 +124,7 @@ public class ServerThread extends Thread {
                         pw2.println(studentPassword);
                         pw.close();
                         pw2.close();
-                        return;
+                        run();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -226,8 +226,10 @@ public class ServerThread extends Thread {
                                 writer.write("fail");
                                 writer.println();
                                 writer.flush();
+                                break;
                             }
                         }
+                        run();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -325,7 +327,9 @@ public class ServerThread extends Thread {
                                 writer.println();
                                 writer.flush();
                             }
+
                         }
+                        run();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -400,8 +404,10 @@ public class ServerThread extends Thread {
                                 writer.write("fail");
                                 writer.println();
                                 writer.flush();
+                                break;
                             }
                         }
+                        run();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -471,9 +477,10 @@ public class ServerThread extends Thread {
                                 writer.write("fail");
                                 writer.println();
                                 writer.flush();
+                                break;
                             }
                         }
-
+                        run();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1946,4 +1953,3 @@ public class ServerThread extends Thread {
         return 1;
     }
 }
-
