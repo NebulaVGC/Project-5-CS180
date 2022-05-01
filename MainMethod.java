@@ -21,9 +21,11 @@ public class MainMethod extends Run {
         try {
             Socket socket = new Socket("localhost", 4242); //SOCKET CONNECTION
             String username = runQuiz(socket); //USER CONNECTS
+            while(username.equals("")) {
+                username = runQuiz(socket);
+            }
             if (username.equals("end")) {
                 i++;
-            } else if (username.equals("")) {
             } else {
                 String[] splited = username.split(" ");
                 if (splited[0].equals("Teacher")) { //TEACHER IS LOGGED IN
