@@ -107,7 +107,7 @@ public class Run {
                             writer.write(teacherPassword);
                             writer.println();
                             writer.flush();
-                            return "";
+                            return "created account";
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -610,7 +610,7 @@ public class Run {
             } else if (result.equals("3. Edit existing account")) {
                 return 3;
             } else if (result.equals("4. Delete existing account")) {
-                return 3;
+                return 4;
             } else {
                 return 5;
             }
