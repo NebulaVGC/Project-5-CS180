@@ -4,12 +4,12 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 /**
- * Project 04 -- Student
+ * Project 05 -- Student
  * <p>
  * This class is the student object for the quiz taking system.
  *
  * @author Matt Zlatinksi, Victor Dollosso L09
- * @version April 11, 2022
+ * @version May 1, 2022
  */
 
 public class Student {
@@ -17,7 +17,7 @@ public class Student {
     private String userName;
 
     public Student(String userName, Socket socket) { //creates a new student obj with the username from login
-        this.userName = userName;
+        this.userName = userName; //username of user currently logged in
         this.socket = socket;
     }
 
@@ -26,26 +26,29 @@ public class Student {
      */
     public void runNewQuiz(PrintWriter writer, BufferedReader reader) throws IOException {
         String[] options = {"Active", "Import File"};
-        int quizType = JOptionPane.showOptionDialog(null, "Select how you would like to take the quiz",
-                "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, null);
-        int questionCounter = Integer.parseInt(reader.readLine());
+        int quizType = JOptionPane.showOptionDialog(null,
+                "Select how you would like to take the quiz",
+                "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                null, options, null);
+        int questionCounter = Integer.parseInt(reader.readLine()); //question count sent from server
         int currentQ = 0;
         String answer = "";
         ArrayList<String> answerList = new ArrayList<>();
-        ArrayList<String> copyQuizContents = new ArrayList<>();
+        ArrayList<String> copyQuizContents = new ArrayList<>(); //will store a copy of the original quiz file
         copyQuizContents.add(reader.readLine());
         if (quizType == 0) {
             while (currentQ < questionCounter) {
                 String Question = reader.readLine();
-                String A = reader.readLine();
-                String B = reader.readLine();
-                String C = reader.readLine();
-                String D = reader.readLine();
+                String A = reader.readLine(); //stores first answer option
+                String B = reader.readLine(); //stores second answer option
+                String C = reader.readLine(); //stores third answer option
+                String D = reader.readLine(); //stores fourth answer option
                 currentQ++;
                 String[] answerOptions = {"A", "B", "C", "D"};
                 answer = (String) JOptionPane.showInputDialog(null,
                         Question + "\n" + A + "\n" + B + "\n" + C + "\n" + D,
-                        "Question " + currentQ, JOptionPane.QUESTION_MESSAGE, null, answerOptions, answerOptions[0]);
+                        "Question " + currentQ, JOptionPane.QUESTION_MESSAGE,
+                        null, answerOptions, answerOptions[0]);
                 copyQuizContents.add(Question);
                 copyQuizContents.add(A);
                 copyQuizContents.add(B);
@@ -55,9 +58,10 @@ public class Student {
             }
             copyQuizContents.add(userName);
             for (int i = 0; i < answerList.size(); i++) {
-                copyQuizContents.add(answerList.get(i));
+                copyQuizContents.add(answerList.get(i)); //adds answer choices in order to the end of the file
             }
-            String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").format(Calendar.getInstance().getTime());
+            String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").
+                    format(Calendar.getInstance().getTime()); //creates timestamp
             copyQuizContents.add(timeStamp);
             String contentsSize = String.valueOf(copyQuizContents.size());
             writer.write(contentsSize);
@@ -82,20 +86,22 @@ public class Student {
             }
             copyQuizContents.add(userName);
             String fileName = JOptionPane.showInputDialog(null,
-                    "Enter the name of the file you would like to input", "File Input", JOptionPane.QUESTION_MESSAGE);
+                    "Enter the name of the file you would like to input",
+                    "File Input", JOptionPane.QUESTION_MESSAGE);
             BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
             String newLine = "";
             while ((newLine = bufferedReader.readLine()) != null) {
                 copyQuizContents.add(newLine);
             }
-            String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").format(Calendar.getInstance().getTime());
+            String timeStamp = new SimpleDateFormat("MM/dd/yyyy_HH:mm:ss").
+                    format(Calendar.getInstance().getTime());
             copyQuizContents.add(timeStamp);
             String contentsSize = String.valueOf(copyQuizContents.size());
             writer.write(contentsSize);
             writer.println();
             writer.flush();
         }
-        for (int i = 0; i < copyQuizContents.size(); i++) {
+        for (int i = 0; i < copyQuizContents.size(); i++) { //writes the contents of the final file to the server
             writer.write(copyQuizContents.get(i));
             writer.println();
             writer.flush();
@@ -112,7 +118,8 @@ public class Student {
         for (int i = 0; i < courseList.size(); i++) { //changes array list to array
             courseOptions[i] = courseList.get(i);
         }
-        courseName = (String) JOptionPane.showInputDialog(null, "Please select which course you would like to take?",
+        courseName = (String) JOptionPane.showInputDialog(null,
+                "Please select which course you would like to take?",
                 "Course Selection", JOptionPane.QUESTION_MESSAGE, null, courseOptions, courseOptions[0]);
         if (courseName.equals("-1")) {
             courseName = "end";
@@ -131,7 +138,8 @@ public class Student {
         for (int i = 0; i < quizOptions.length; i++) {
             quizOptions[i] = quizList.get(i);
         }
-        quizName = (String) JOptionPane.showInputDialog(null, "Please select which quiz you would like to take?",
+        quizName = (String) JOptionPane.showInputDialog(null,
+                "Please select which quiz you would like to take?",
                 "Quiz Selection", JOptionPane.QUESTION_MESSAGE, null, quizOptions, quizOptions[0]);
         if (quizName.equals("-1")) {
             quizName = "end";
@@ -162,7 +170,8 @@ public class Student {
                     writer.flush();
                     int listSize = Integer.parseInt(reader.readLine()); //reads size of teacher list
                     if (listSize == 0) {
-                        JOptionPane.showMessageDialog(null, "There are no existing teachers to choose from",
+                        JOptionPane.showMessageDialog(null,
+                                "There are no existing teachers to choose from",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else {
@@ -176,8 +185,10 @@ public class Student {
                         for (int i = 0; i < teacherList.size(); i++) {
                             teacherOptions[i] = teacherList.get(i); //list of teachers
                         }
-                        teacher = (String) JOptionPane.showInputDialog(null, "What is the username of your teacher?"
-                                , "Teacher Selection", JOptionPane.QUESTION_MESSAGE, null, teacherOptions, teacherOptions[0]);
+                        teacher = (String) JOptionPane.showInputDialog(null,
+                                "What is the username of your teacher?"
+                                , "Teacher Selection", JOptionPane.QUESTION_MESSAGE, null,
+                                teacherOptions, teacherOptions[0]);
                         if (teacher.equals("-1")) {
                             return;
                         }
@@ -185,9 +196,11 @@ public class Student {
                         writer.println();
                         writer.flush();
                         int coursesCounter = Integer.parseInt(reader.readLine());
+                        //receives number of courses from server
                         int currentCourse = 0;
-                        if (coursesCounter == 0) {
-                            JOptionPane.showMessageDialog(null, "Your teacher has not created any courses",
+                        if (coursesCounter == 0) { //if there are no created courses
+                            JOptionPane.showMessageDialog(null,
+                                    "Your teacher has not created any courses",
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
                             n++;
@@ -196,7 +209,8 @@ public class Student {
                                 currentCourse++;
                             }
 
-                            String course = student.pickCourse(coursesList, socket);//runs method to have student pick a course
+                            String course = student.pickCourse(coursesList, socket);
+                            //runs method to have student pick a course
                             writer.write(course); //writes course to server
                             writer.println();
                             writer.flush();
@@ -205,7 +219,8 @@ public class Student {
                             int currentQuiz = 0;
                             ArrayList<String> quizzesList = new ArrayList<>();
                             if (quizzesCounter == 0) {
-                                JOptionPane.showMessageDialog(null, "No quizzes exist in this course",
+                                JOptionPane.showMessageDialog(null,
+                                        "No quizzes exist in this course",
                                         "Error", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 while (currentQuiz < quizzesCounter) {
@@ -226,12 +241,13 @@ public class Student {
                                         //checks if quiz has already been taken. if not then runs the quiz
                                         student.runNewQuiz(writer, reader);
                                     } else {
-                                        String viewGrade = String.valueOf(JOptionPane.showConfirmDialog(null, "Would you like to view your quiz grade?",
+                                        String viewGrade = String.valueOf(JOptionPane.showConfirmDialog
+                                                (null, "Would you like to view your quiz grade?",
                                                 "QUIZ ALREADY TAKEN", JOptionPane.YES_NO_OPTION));
                                         if (viewGrade.equals("-1") || viewGrade.equals("1")) {
                                             return;
                                         }
-                                        writer.write(viewGrade);
+                                        writer.write(viewGrade); //tells the server to retrieve quiz results or not
                                         writer.println();
                                         writer.flush();
 
@@ -239,14 +255,16 @@ public class Student {
                                         int end = 0;
 
                                         if (gradeSize == 0) {
-                                            end = JOptionPane.showConfirmDialog(null, reader.readLine(), "Quiz Results", JOptionPane.OK_CANCEL_OPTION);
+                                            end = JOptionPane.showConfirmDialog(null,
+                                                    reader.readLine(), "Quiz Results", JOptionPane.OK_CANCEL_OPTION);
                                         } else {
                                             String grade = "";
-                                            for (int l = 0; l < gradeSize; l++) {
+                                            for (int l = 0; l < gradeSize; l++) { //formats info from server to string
                                                 grade = grade + reader.readLine() + "\n";
                                             }
                                             grade = grade.substring(0, grade.length() - 1);
-                                            end = JOptionPane.showConfirmDialog(null, grade, "Quiz Results", JOptionPane.OK_CANCEL_OPTION);
+                                            end = JOptionPane.showConfirmDialog(null, grade,
+                                                    "Quiz Results", JOptionPane.OK_CANCEL_OPTION);
                                         }
 
                                         if (end == -1 || end == JOptionPane.CANCEL_OPTION) {
