@@ -332,6 +332,152 @@ public class ServerThread extends Thread {
                     }
 
                 }
+            } else if (action.equals("delete")) {
+                k = 0;
+                String OldUsername = null;
+                String type = reader.readLine();
+                if (type.equals("teacher")) {
+                    try {
+                        while (k == 0) {
+                            OldUsername = reader.readLine();
+                            if (OldUsername == null) {
+                                break;
+                            }
+                            int status = checkTeacherUsername(OldUsername);
+                            if (status == 2) {
+                                writer.write("success");
+                                writer.println();
+                                writer.flush();
+                                k++;
+                            } else {
+                                writer.write("fail");
+                                writer.println();
+                                writer.flush();
+                            }
+                        }
+
+                        ArrayList<String> accountList = new ArrayList<>();
+                        ArrayList<String> passwordList = new ArrayList<>();
+
+                        String OldPassword = reader.readLine();
+                        if (OldPassword == null) {
+                            return;
+                        }
+
+                        File f = new File("TeacherAccount.txt");
+                        FileReader fr = new FileReader(f);
+                        BufferedReader bfr = new BufferedReader(fr);
+                        String line = bfr.readLine();
+                        usernameStatus = 1;
+                        while (line != null) {
+                            accountList.add(line);
+                            line = bfr.readLine();
+                        }
+                        bfr.close();
+
+                        File f2 = new File("TeacherPassword.txt");
+                        FileReader fr2 = new FileReader(f2);
+                        BufferedReader bfr2 = new BufferedReader(fr2);
+                        String line2 = bfr2.readLine();
+
+                        while (line2 != null) {
+                            passwordList.add(line2);
+                            line2 = bfr2.readLine();
+                        }
+                        bfr2.close();
+
+                        int l = 0;
+                        while (l == 0) {
+                            if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+
+                                writer.write("success");
+                                writer.println();
+                                writer.flush();
+                                deleteTeacherInformation(OldUsername, OldPassword);
+                                break;
+
+                            } else {
+                                writer.write("fail");
+                                writer.println();
+                                writer.flush();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else if (type.equals("student")) {
+                    try {
+                        while (k == 0) {
+                            OldUsername = reader.readLine();
+                            if (OldUsername == null) {
+                                break;
+                            }
+                            int status = checkStudentUsername(OldUsername);
+                            if (status == 2) {
+                                writer.write("success");
+                                writer.println();
+                                writer.flush();
+                                k++;
+                            } else {
+                                writer.write("fail");
+                                writer.println();
+                                writer.flush();
+                            }
+                        }
+
+                        ArrayList<String> accountList = new ArrayList<>();
+                        ArrayList<String> passwordList = new ArrayList<>();
+
+                        String OldPassword = reader.readLine();
+                        if (OldPassword == null) {
+                            return;
+                        }
+
+                        File f = new File("StudentAccount.txt");
+                        FileReader fr = new FileReader(f);
+                        BufferedReader bfr = new BufferedReader(fr);
+                        String line = bfr.readLine();
+                        usernameStatus = 1;
+                        while (line != null) {
+                            accountList.add(line);
+                            line = bfr.readLine();
+                        }
+                        bfr.close();
+
+                        File f2 = new File("StudentPassword.txt");
+                        FileReader fr2 = new FileReader(f2);
+                        BufferedReader bfr2 = new BufferedReader(fr2);
+                        String line2 = bfr2.readLine();
+
+                        while (line2 != null) {
+                            passwordList.add(line2);
+                            line2 = bfr2.readLine();
+                        }
+                        bfr2.close();
+
+                        int l = 0;
+                        while (l == 0) {
+                            if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+                                writer.write("success");
+                                writer.println();
+                                writer.flush();
+                                deleteStudentInformation(OldUsername, OldPassword);
+                                break;
+
+                            } else {
+                                writer.write("fail");
+                                writer.println();
+                                writer.flush();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             } else if (action.equals("login")) {
                 k = 0;
                 String OldUsername = null;
@@ -922,6 +1068,115 @@ public class ServerThread extends Thread {
         }
         return status;
     }
+
+    public static int deleteTeacherInformation(String username1, String password1) {
+        ArrayList<String> accountList = new ArrayList<>();
+        ArrayList<String> passwordList = new ArrayList<>();
+        int status = 0;
+        try {
+            File f = new File("TeacherAccount.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            while (line != null) {
+                accountList.add(line);
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            File f2 = new File("TeacherPassword.txt");
+            FileReader fr2 = new FileReader(f2);
+            BufferedReader bfr2 = new BufferedReader(fr2);
+            String line2 = bfr2.readLine();
+
+            while (line2 != null) {
+                passwordList.add(line2);
+                line2 = bfr2.readLine();
+            }
+            bfr2.close();
+
+            accountList.remove(username1);
+            passwordList.remove(password1);
+
+            File teacherAccountFile = new File("TeacherAccount.txt");
+            FileOutputStream fos = new FileOutputStream(teacherAccountFile,
+                    false);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw.println(accountList.get(i));
+            }
+            pw.close();
+
+            File teacherPasswordFile = new File("TeacherPassword.txt");
+            FileOutputStream fos2 = new FileOutputStream(teacherPasswordFile,
+                    false);
+            PrintWriter pw2 = new PrintWriter(fos2);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw2.println(passwordList.get(i));
+            }
+            pw2.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
+    public static int deleteStudentInformation(String username1, String password1) {
+        ArrayList<String> accountList = new ArrayList<>();
+        ArrayList<String> passwordList = new ArrayList<>();
+        int status = 0;
+        try {
+            File f = new File("StudentAccount.txt");
+            FileReader fr = new FileReader(f);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            while (line != null) {
+                accountList.add(line);
+                line = bfr.readLine();
+            }
+            bfr.close();
+
+            File f2 = new File("StudentPassword.txt");
+            FileReader fr2 = new FileReader(f2);
+            BufferedReader bfr2 = new BufferedReader(fr2);
+            String line2 = bfr2.readLine();
+
+            while (line2 != null) {
+                passwordList.add(line2);
+                line2 = bfr2.readLine();
+            }
+            bfr2.close();
+
+            accountList.remove(username1);
+            passwordList.remove(password1);
+
+            File studentAccountFile = new File("StudentAccount.txt");
+            FileOutputStream fos = new FileOutputStream(studentAccountFile,
+                    false);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw.println(accountList.get(i));
+            }
+            pw.close();
+
+            File studentPasswordFile = new File("StudentPassword.txt");
+            FileOutputStream fos2 = new FileOutputStream(studentPasswordFile,
+                    false);
+            PrintWriter pw2 = new PrintWriter(fos2);
+            for (int i = 0; i < accountList.size(); i++) {
+                pw2.println(passwordList.get(i));
+            }
+            pw2.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
 
     private static void createCourse(BufferedReader newReader, PrintWriter newWriter) {
         try {
