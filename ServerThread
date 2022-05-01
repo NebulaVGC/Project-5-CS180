@@ -698,17 +698,30 @@ public class ServerThread extends Thread {
 
 
                                                                     if (lastLine.substring(lastLine.length() - 1).equals("%")) {
+                                                                        ArrayList<String> gradeList1 = new ArrayList<>();
                                                                         ArrayList<String> gradeList = new ArrayList<>();
                                                                         while (nextLine1 != null) {
-                                                                            gradeList.add(nextLine1);
+                                                                            gradeList1.add(nextLine1);
                                                                             nextLine1 = gradeSetter.readLine();
                                                                         }
                                                                         gradeSetter.close();
+                                                                        for (int j = 1; j < gradeList1.size() - 2; j++) {
+                                                                            String problem = gradeList1.get(j);
+                                                                            problem = problem.substring(2);
+                                                                            if (problem.equalsIgnoreCase("correct")) {
+                                                                                problem = (j) + ". " + problem + " 1/1";
+                                                                            } else {
+                                                                                problem = (j) + ". " + problem + " 0/1";
+                                                                            }
+                                                                            gradeList.add(problem);
+                                                                        }
+                                                                        gradeList.add(gradeList1.get(gradeList1.size() - 1));
                                                                         String size = String.valueOf(gradeList.size());
                                                                         writer.write(size);
                                                                         writer.println();
                                                                         writer.flush();
                                                                         for (int j = 0; j < gradeList.size(); j++) {
+                                                                            System.out.println(gradeList.get(j));
                                                                             writer.write(gradeList.get(j));
                                                                             writer.println();
                                                                             writer.flush();
@@ -1678,3 +1691,4 @@ public class ServerThread extends Thread {
         return 1;
     }
 }
+
