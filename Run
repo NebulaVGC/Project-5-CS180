@@ -107,7 +107,7 @@ public class Run {
                             writer.write(teacherPassword);
                             writer.println();
                             writer.flush();
-                            return "created account";
+                            return "";
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -176,6 +176,7 @@ public class Run {
                                 writer.write("teacher");
                                 writer.println();
                                 writer.flush();
+                                int u = 0;
                                 while (u == 0) {
                                     while (i == 0) {
                                         String teacherLoginUsername = checkTeacherOldName();
