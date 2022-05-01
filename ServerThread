@@ -14,6 +14,7 @@ public class ServerThread extends Thread {
     ArrayList<String> studentPasswordStore = new ArrayList<>();
 
     int usernameStatus = 0;
+
     public ServerThread(Socket socket) {
         this.socket = socket;
     }
@@ -75,7 +76,7 @@ public class ServerThread extends Thread {
                         pw2.println(teacherPassword);
                         pw.close();
                         pw2.close();
-                        run();
+                        return;
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -124,7 +125,7 @@ public class ServerThread extends Thread {
                         pw2.println(studentPassword);
                         pw.close();
                         pw2.close();
-                        run();
+                        return;
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -137,100 +138,102 @@ public class ServerThread extends Thread {
                 String type = reader.readLine();
                 if (type.equals("teacher")) {
                     try {
-                        while (k == 0) {
-                            OldUsername = reader.readLine();
-                            if (OldUsername == null) {
-                                break;
+                        int u = 0;
+                        while (u == 0) {
+                            while (k == 0) {
+                                OldUsername = reader.readLine();
+                                if (OldUsername == null) {
+                                    break;
+                                }
+                                int status = checkTeacherUsername(OldUsername);
+                                if (status == 2) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k++;
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                }
                             }
-                            int status = checkTeacherUsername(OldUsername);
-                            if (status == 2) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                k++;
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
+
+                            ArrayList<String> accountList = new ArrayList<>();
+                            ArrayList<String> passwordList = new ArrayList<>();
+
+                            String OldPassword = reader.readLine();
+                            if (OldPassword == null) {
+                                return;
                             }
-                        }
 
-                        ArrayList<String> accountList = new ArrayList<>();
-                        ArrayList<String> passwordList = new ArrayList<>();
+                            File f = new File("TeacherAccount.txt");
+                            FileReader fr = new FileReader(f);
+                            BufferedReader bfr = new BufferedReader(fr);
+                            String line = bfr.readLine();
+                            usernameStatus = 1;
+                            while (line != null) {
+                                accountList.add(line);
+                                line = bfr.readLine();
+                            }
+                            bfr.close();
 
-                        String OldPassword = reader.readLine();
-                        if (OldPassword == null) {
-                            return;
-                        }
+                            File f2 = new File("TeacherPassword.txt");
+                            FileReader fr2 = new FileReader(f2);
+                            BufferedReader bfr2 = new BufferedReader(fr2);
+                            String line2 = bfr2.readLine();
 
-                        File f = new File("TeacherAccount.txt");
-                        FileReader fr = new FileReader(f);
-                        BufferedReader bfr = new BufferedReader(fr);
-                        String line = bfr.readLine();
-                        usernameStatus = 1;
-                        while (line != null) {
-                            accountList.add(line);
-                            line = bfr.readLine();
-                        }
-                        bfr.close();
+                            while (line2 != null) {
+                                passwordList.add(line2);
+                                line2 = bfr2.readLine();
+                            }
+                            bfr2.close();
 
-                        File f2 = new File("TeacherPassword.txt");
-                        FileReader fr2 = new FileReader(f2);
-                        BufferedReader bfr2 = new BufferedReader(fr2);
-                        String line2 = bfr2.readLine();
+                            int l = 0;
+                            while (l == 0) {
+                                if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k = 0;
+                                    String newUsername = null;
+                                    while (k == 0) {
+                                        newUsername = reader.readLine();
+                                        if (newUsername == null) {
+                                            break;
+                                        }
 
-                        while (line2 != null) {
-                            passwordList.add(line2);
-                            line2 = bfr2.readLine();
-                        }
-                        bfr2.close();
+                                        int check = checkTeacherUsername(newUsername);
 
-                        int l = 0;
-                        while (l == 0) {
-                            if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                k = 0;
-                                String newUsername = null;
-                                while (k == 0) {
-                                    newUsername = reader.readLine();
-                                    if (newUsername == null) {
+                                        if (check == 1) {
+                                            writer.write("success");
+                                            writer.println();
+                                            writer.flush();
+                                            k++;
+                                        } else {
+                                            writer.write("fail");
+                                            writer.println();
+                                            writer.flush();
+                                        }
+                                    }
+
+                                    String newPassword = reader.readLine();
+                                    if (newPassword == null) {
                                         break;
                                     }
 
-                                    int check = checkTeacherUsername(newUsername);
-
-                                    if (check == 1) {
-                                        writer.write("success");
-                                        writer.println();
-                                        writer.flush();
-                                        k++;
-                                    } else {
-                                        writer.write("fail");
-                                        writer.println();
-                                        writer.flush();
-                                    }
-                                }
-
-                                String newPassword = reader.readLine();
-                                if (newPassword == null) {
+                                    editTeacherInformation(OldUsername, OldPassword, newUsername, newPassword);
+                                    u++;
                                     break;
+
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                    l++;
+                                    k = 0;
                                 }
-
-                                editTeacherInformation(OldUsername, OldPassword, newUsername, newPassword);
-                                l++;
-                                break;
-
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
-                                break;
                             }
                         }
-                        run();
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -238,99 +241,101 @@ public class ServerThread extends Thread {
 
                 } else if (type.equals("student")) {
                     try {
-                        while (k == 0) {
-                            OldUsername = reader.readLine();
-                            if (OldUsername == null) {
-                                break;
-                            }
-                            int status = checkStudentUsername(OldUsername);
-                            if (status == 2) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                k++;
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
-                            }
-                        }
-
-                        ArrayList<String> accountList = new ArrayList<>();
-                        ArrayList<String> passwordList = new ArrayList<>();
-
-                        String OldPassword = reader.readLine();
-                        if (OldPassword == null) {
-                            return;
-                        }
-
-                        File f = new File("StudentAccount.txt");
-                        FileReader fr = new FileReader(f);
-                        BufferedReader bfr = new BufferedReader(fr);
-                        String line = bfr.readLine();
-                        usernameStatus = 1;
-                        while (line != null) {
-                            accountList.add(line);
-                            line = bfr.readLine();
-                        }
-                        bfr.close();
-
-                        File f2 = new File("StudentPassword.txt");
-                        FileReader fr2 = new FileReader(f2);
-                        BufferedReader bfr2 = new BufferedReader(fr2);
-                        String line2 = bfr2.readLine();
-
-                        while (line2 != null) {
-                            passwordList.add(line2);
-                            line2 = bfr2.readLine();
-                        }
-                        bfr2.close();
-
-                        int l = 0;
-                        while (l == 0) {
-                            if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                k = 0;
-                                String newUsername = null;
-                                while (k == 0) {
-                                    newUsername = reader.readLine();
-                                    if (newUsername == null) {
-                                        break;
-                                    }
-                                    int check = checkStudentUsername(newUsername);
-
-                                    if (check == 1) {
-                                        writer.write("success");
-                                        writer.println();
-                                        writer.flush();
-                                        k++;
-                                    } else {
-                                        writer.write("fail");
-                                        writer.println();
-                                        writer.flush();
-                                    }
-                                }
-
-                                String newPassword = reader.readLine();
-                                if (newPassword == null) {
+                        int u = 0;
+                        while (u == 0) {
+                            while (k == 0) {
+                                OldUsername = reader.readLine();
+                                if (OldUsername == null) {
                                     break;
                                 }
-
-                                editStudentInformation(OldUsername, OldPassword, newUsername, newPassword);
-                                l++;
-                                break;
-
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
+                                int status = checkStudentUsername(OldUsername);
+                                if (status == 2) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k++;
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                }
                             }
 
-                        }
-                        run();
+                            ArrayList<String> accountList = new ArrayList<>();
+                            ArrayList<String> passwordList = new ArrayList<>();
 
+                            String OldPassword = reader.readLine();
+                            if (OldPassword == null) {
+                                return;
+                            }
+
+                            File f = new File("StudentAccount.txt");
+                            FileReader fr = new FileReader(f);
+                            BufferedReader bfr = new BufferedReader(fr);
+                            String line = bfr.readLine();
+                            usernameStatus = 1;
+                            while (line != null) {
+                                accountList.add(line);
+                                line = bfr.readLine();
+                            }
+                            bfr.close();
+
+                            File f2 = new File("StudentPassword.txt");
+                            FileReader fr2 = new FileReader(f2);
+                            BufferedReader bfr2 = new BufferedReader(fr2);
+                            String line2 = bfr2.readLine();
+
+                            while (line2 != null) {
+                                passwordList.add(line2);
+                                line2 = bfr2.readLine();
+                            }
+                            bfr2.close();
+
+                            int l = 0;
+                            while (l == 0) {
+                                if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k = 0;
+                                    String newUsername = null;
+                                    while (k == 0) {
+                                        newUsername = reader.readLine();
+                                        if (newUsername == null) {
+                                            break;
+                                        }
+                                        int check = checkStudentUsername(newUsername);
+
+                                        if (check == 1) {
+                                            writer.write("success");
+                                            writer.println();
+                                            writer.flush();
+                                            k++;
+                                        } else {
+                                            writer.write("fail");
+                                            writer.println();
+                                            writer.flush();
+                                        }
+                                    }
+
+                                    String newPassword = reader.readLine();
+                                    if (newPassword == null) {
+                                        break;
+                                    }
+
+                                    editStudentInformation(OldUsername, OldPassword, newUsername, newPassword);
+                                    u++;
+                                    break;
+
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                    l++;
+                                    k = 0;
+                                }
+                            }
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -342,73 +347,76 @@ public class ServerThread extends Thread {
                 String type = reader.readLine();
                 if (type.equals("teacher")) {
                     try {
-                        while (k == 0) {
-                            OldUsername = reader.readLine();
-                            if (OldUsername == null) {
+                        int u = 0;
+                        while (u == 0) {
+                            while (k == 0) {
+                                OldUsername = reader.readLine();
+                                if (OldUsername == null) {
+                                    break;
+                                }
+                                int status = checkTeacherUsername(OldUsername);
+                                if (status == 2) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k++;
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                }
+                            }
+
+                            ArrayList<String> accountList = new ArrayList<>();
+                            ArrayList<String> passwordList = new ArrayList<>();
+
+                            String OldPassword = reader.readLine();
+                            if (OldPassword == null) {
                                 break;
                             }
-                            int status = checkTeacherUsername(OldUsername);
-                            if (status == 2) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                k++;
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
+
+                            File f = new File("TeacherAccount.txt");
+                            FileReader fr = new FileReader(f);
+                            BufferedReader bfr = new BufferedReader(fr);
+                            String line = bfr.readLine();
+                            usernameStatus = 1;
+                            while (line != null) {
+                                accountList.add(line);
+                                line = bfr.readLine();
+                            }
+                            bfr.close();
+
+                            File f2 = new File("TeacherPassword.txt");
+                            FileReader fr2 = new FileReader(f2);
+                            BufferedReader bfr2 = new BufferedReader(fr2);
+                            String line2 = bfr2.readLine();
+
+                            while (line2 != null) {
+                                passwordList.add(line2);
+                                line2 = bfr2.readLine();
+                            }
+                            bfr2.close();
+
+                            int l = 0;
+                            while (l == 0) {
+                                if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    deleteTeacherInformation(OldUsername, OldPassword);
+                                    u++;
+                                    break;
+
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                    l++;
+                                    k = 0;
+                                }
                             }
                         }
-
-                        ArrayList<String> accountList = new ArrayList<>();
-                        ArrayList<String> passwordList = new ArrayList<>();
-
-                        String OldPassword = reader.readLine();
-                        if (OldPassword == null) {
-                            return;
-                        }
-
-                        File f = new File("TeacherAccount.txt");
-                        FileReader fr = new FileReader(f);
-                        BufferedReader bfr = new BufferedReader(fr);
-                        String line = bfr.readLine();
-                        usernameStatus = 1;
-                        while (line != null) {
-                            accountList.add(line);
-                            line = bfr.readLine();
-                        }
-                        bfr.close();
-
-                        File f2 = new File("TeacherPassword.txt");
-                        FileReader fr2 = new FileReader(f2);
-                        BufferedReader bfr2 = new BufferedReader(fr2);
-                        String line2 = bfr2.readLine();
-
-                        while (line2 != null) {
-                            passwordList.add(line2);
-                            line2 = bfr2.readLine();
-                        }
-                        bfr2.close();
-
-                        int l = 0;
-                        while (l == 0) {
-                            if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
-
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                deleteTeacherInformation(OldUsername, OldPassword);
-                                break;
-
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
-                                break;
-                            }
-                        }
-                        run();
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -416,71 +424,75 @@ public class ServerThread extends Thread {
 
                 } else if (type.equals("student")) {
                     try {
-                        while (k == 0) {
-                            OldUsername = reader.readLine();
-                            if (OldUsername == null) {
+                        int u = 0;
+                        while (u == 0) {
+                            while (k == 0) {
+                                OldUsername = reader.readLine();
+                                if (OldUsername == null) {
+                                    break;
+                                }
+                                int status = checkStudentUsername(OldUsername);
+                                if (status == 2) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    k++;
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                }
+                            }
+
+                            ArrayList<String> accountList = new ArrayList<>();
+                            ArrayList<String> passwordList = new ArrayList<>();
+
+                            String OldPassword = reader.readLine();
+                            if (OldPassword == null) {
                                 break;
                             }
-                            int status = checkStudentUsername(OldUsername);
-                            if (status == 2) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                k++;
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
+
+                            File f = new File("StudentAccount.txt");
+                            FileReader fr = new FileReader(f);
+                            BufferedReader bfr = new BufferedReader(fr);
+                            String line = bfr.readLine();
+                            usernameStatus = 1;
+                            while (line != null) {
+                                accountList.add(line);
+                                line = bfr.readLine();
+                            }
+                            bfr.close();
+
+                            File f2 = new File("StudentPassword.txt");
+                            FileReader fr2 = new FileReader(f2);
+                            BufferedReader bfr2 = new BufferedReader(fr2);
+                            String line2 = bfr2.readLine();
+
+                            while (line2 != null) {
+                                passwordList.add(line2);
+                                line2 = bfr2.readLine();
+                            }
+                            bfr2.close();
+
+                            int l = 0;
+                            while (l == 0) {
+                                if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+                                    writer.write("success");
+                                    writer.println();
+                                    writer.flush();
+                                    deleteStudentInformation(OldUsername, OldPassword);
+                                    u++;
+                                    break;
+
+                                } else {
+                                    writer.write("fail");
+                                    writer.println();
+                                    writer.flush();
+                                    l++;
+                                    k = 0;
+                                }
                             }
                         }
-
-                        ArrayList<String> accountList = new ArrayList<>();
-                        ArrayList<String> passwordList = new ArrayList<>();
-
-                        String OldPassword = reader.readLine();
-                        if (OldPassword == null) {
-                            return;
-                        }
-
-                        File f = new File("StudentAccount.txt");
-                        FileReader fr = new FileReader(f);
-                        BufferedReader bfr = new BufferedReader(fr);
-                        String line = bfr.readLine();
-                        usernameStatus = 1;
-                        while (line != null) {
-                            accountList.add(line);
-                            line = bfr.readLine();
-                        }
-                        bfr.close();
-
-                        File f2 = new File("StudentPassword.txt");
-                        FileReader fr2 = new FileReader(f2);
-                        BufferedReader bfr2 = new BufferedReader(fr2);
-                        String line2 = bfr2.readLine();
-
-                        while (line2 != null) {
-                            passwordList.add(line2);
-                            line2 = bfr2.readLine();
-                        }
-                        bfr2.close();
-
-                        int l = 0;
-                        while (l == 0) {
-                            if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
-                                writer.write("success");
-                                writer.println();
-                                writer.flush();
-                                deleteStudentInformation(OldUsername, OldPassword);
-                                break;
-
-                            } else {
-                                writer.write("fail");
-                                writer.println();
-                                writer.flush();
-                                break;
-                            }
-                        }
-                        run();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -544,6 +556,7 @@ public class ServerThread extends Thread {
                             int l = 0;
                             while (l == 0) {
                                 if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
+
                                     writer.write("success");
                                     writer.println();
                                     writer.flush();
@@ -596,7 +609,6 @@ public class ServerThread extends Thread {
                         while (u == 0) {
                             while (k == 0) {
                                 OldUsername = reader.readLine();
-                                System.out.println(OldUsername);
                                 if (OldUsername == null) {
                                     break;
                                 }
@@ -874,7 +886,6 @@ public class ServerThread extends Thread {
                                                                         writer.println();
                                                                         writer.flush();
                                                                         for (int j = 0; j < gradeList.size(); j++) {
-                                                                            System.out.println(gradeList.get(j));
                                                                             writer.write(gradeList.get(j));
                                                                             writer.println();
                                                                             writer.flush();
@@ -922,6 +933,7 @@ public class ServerThread extends Thread {
             //e.printStackTrace();
         }
     }
+
     private static void checkFile() {
         File tAccount = new File("TeacherAccount.txt");
         try {
@@ -992,8 +1004,9 @@ public class ServerThread extends Thread {
             }
             bfr2.close();
 
-            accountList.set(accountList.indexOf(editUsername), newUsername);
-            passwordList.set(passwordList.indexOf(editPassword), newPassword);
+            int value = accountList.indexOf(editUsername);
+            accountList.set(value, newUsername);
+            passwordList.set(value, newPassword);
 
             File teacherAccountFile = new File("TeacherAccount.txt");
             FileOutputStream fos = new FileOutputStream(teacherAccountFile,
@@ -1001,6 +1014,7 @@ public class ServerThread extends Thread {
             PrintWriter pw = new PrintWriter(fos);
             for (int i = 0; i < accountList.size(); i++) {
                 pw.println(accountList.get(i));
+                System.out.println();accountList.get(i);
             }
             pw.close();
 
@@ -1010,6 +1024,7 @@ public class ServerThread extends Thread {
             PrintWriter pw2 = new PrintWriter(fos2);
             for (int i = 0; i < accountList.size(); i++) {
                 pw2.println(passwordList.get(i));
+                System.out.println();accountList.get(i);
             }
             pw2.close();
 
@@ -1048,8 +1063,9 @@ public class ServerThread extends Thread {
             }
             bfr2.close();
 
-            accountList.set(accountList.indexOf(editUsername), newUsername);
-            passwordList.set(passwordList.indexOf(editPassword), newPassword);
+            int value = accountList.indexOf(editUsername);
+            accountList.set(value, newUsername);
+            passwordList.set(value, newPassword);
 
             File studentAccountFile = new File("StudentAccount.txt");
             FileOutputStream fos = new FileOutputStream(studentAccountFile,
@@ -1764,7 +1780,7 @@ public class ServerThread extends Thread {
 
                     String yesOrNo = newReader.readLine();
                     correct.add(yesOrNo);
-                    if(yesOrNo.equals("Yes")) {
+                    if (yesOrNo.equals("Yes")) {
                         numCorrect++;
                     }
 
@@ -1804,8 +1820,7 @@ public class ServerThread extends Thread {
                 pw.close();
             }
 
-        }catch(IOException e){
-
+        } catch (IOException e) {
 
 
         }
@@ -1953,3 +1968,4 @@ public class ServerThread extends Thread {
         return 1;
     }
 }
+
