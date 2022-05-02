@@ -31,9 +31,9 @@ public class ServerThread extends Thread {
 
             if (action == null) {
                 return;
-            } else if (action.equals("create")) {
+            } else if (action.equals("create")) { // either teacher or student creating account
                 String type = reader.readLine();
-                if (type.equals("teacher")) {
+                if (type.equals("teacher")) { //  teacher creating account
                     while (k == 0) {
                         username1 = reader.readLine();
 
@@ -82,7 +82,7 @@ public class ServerThread extends Thread {
                         e.printStackTrace();
                     }
 
-                } else if (type.equals("student")) {
+                } else if (type.equals("student")) { // student creating account
                     while (k == 0) {
                         username1 = reader.readLine();
 
@@ -132,11 +132,11 @@ public class ServerThread extends Thread {
                     }
 
                 }
-            } else if (action.equals("edit")) {
+            } else if (action.equals("edit")) { // either teacher or student edit account
                 k = 0;
                 String OldUsername = null;
                 String type = reader.readLine();
-                if (type.equals("teacher")) {
+                if (type.equals("teacher")) { // teacher editing account
                     try {
                         int u = 0;
                         while (u == 0) {
@@ -201,7 +201,6 @@ public class ServerThread extends Thread {
                                         if (newUsername == null) {
                                             break;
                                         }
-
                                         int check = checkTeacherUsername(newUsername);
 
                                         if (check == 1) {
@@ -239,7 +238,7 @@ public class ServerThread extends Thread {
                     }
 
 
-                } else if (type.equals("student")) {
+                } else if (type.equals("student")) { // student editing account
                     try {
                         int u = 0;
                         while (u == 0) {
@@ -341,11 +340,11 @@ public class ServerThread extends Thread {
                     }
 
                 }
-            } else if (action.equals("delete")) {
+            } else if (action.equals("delete")) { // either teacher or student deleting account
                 k = 0;
                 String OldUsername = null;
                 String type = reader.readLine();
-                if (type.equals("teacher")) {
+                if (type.equals("teacher")) { // teacher deleting account
                     try {
                         int u = 0;
                         while (u == 0) {
@@ -400,7 +399,6 @@ public class ServerThread extends Thread {
                             int l = 0;
                             while (l == 0) {
                                 if (passwordList.get(accountList.indexOf(OldUsername)).equals(OldPassword)) {
-
                                     writer.write("success");
                                     writer.println();
                                     writer.flush();
@@ -422,7 +420,7 @@ public class ServerThread extends Thread {
                     }
 
 
-                } else if (type.equals("student")) {
+                } else if (type.equals("student")) { // student deleting account
                     try {
                         int u = 0;
                         while (u == 0) {
@@ -497,11 +495,11 @@ public class ServerThread extends Thread {
                         e.printStackTrace();
                     }
                 }
-            } else if (action.equals("login")) {
+            } else if (action.equals("login")) { // either teacher or student login 
                 k = 0;
                 String OldUsername = null;
                 String type = reader.readLine();
-                if (type.equals("teacher")) {
+                if (type.equals("teacher")) { // teacher login
                     try {
                         int u = 0;
                         while (u == 0) {
@@ -603,7 +601,7 @@ public class ServerThread extends Thread {
                     }
 
 
-                } else if (type.equals("student")) {
+                } else if (type.equals("student")) { // student login
                     try {
                         int u = 0;
                         while (u == 0) {
@@ -1014,7 +1012,6 @@ public class ServerThread extends Thread {
             PrintWriter pw = new PrintWriter(fos);
             for (int i = 0; i < accountList.size(); i++) {
                 pw.println(accountList.get(i));
-                System.out.println();accountList.get(i);
             }
             pw.close();
 
@@ -1024,7 +1021,6 @@ public class ServerThread extends Thread {
             PrintWriter pw2 = new PrintWriter(fos2);
             for (int i = 0; i < accountList.size(); i++) {
                 pw2.println(passwordList.get(i));
-                System.out.println();accountList.get(i);
             }
             pw2.close();
 
