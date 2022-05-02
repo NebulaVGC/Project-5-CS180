@@ -13,7 +13,7 @@ import java.net.Socket;
  * @author Chase Thompsion, Kacey Atkins L09
  * @version March 8, 2022
  */
-public class Teacher implements Runnable {
+public class Teacher {
     private final String name;      //The teachers name
     private JButton createCourseButton; //button to create course
     private JButton deleteCourseButton; //button to delete course
@@ -33,9 +33,9 @@ public class Teacher implements Runnable {
     private JFrame viewSubmissionFrame; //creates frame to view a submission
     private JFrame gradeSubmissionFrame; //creates frame to grade a submission
 
-    private Socket socket;
-    private BufferedReader reader;
-    private PrintWriter writer;
+    private Socket socket;      //Socket used to connect to server
+    private BufferedReader reader;  //Reader used to read from server
+    private PrintWriter writer;     //Writer used to write to server
 
     /**
      * Constructor for Teacher. THe constructor creates a new empty file that is used to hold the courses
@@ -46,10 +46,6 @@ public class Teacher implements Runnable {
         this.name = name;
     }
 
-    public void run() {
-        createMenuGUI(new Socket());
-
-    }
 
     ActionListener actionListener = new ActionListener() { //reads what button was selected
         @Override
@@ -135,6 +131,11 @@ public class Teacher implements Runnable {
         }
     };
 
+    /**
+     * The main menu for the teacher that the user is brought back to after finishing things
+     *
+     * @param socket The socket used to connect to the server
+     */
     public void createMenuGUI(Socket socket) {
         if (this.socket == null) {
             this.socket = socket;
@@ -149,6 +150,7 @@ public class Teacher implements Runnable {
         Container content = menuFrame.getContentPane();
         content.setLayout(new BorderLayout());
 
+        //Creates and adds the respective buttons to the panel
         createCourseButton = new JButton("Create Course");
         createCourseButton.addActionListener(actionListener);
         deleteCourseButton = new JButton("Delete Course");
@@ -186,6 +188,9 @@ public class Teacher implements Runnable {
 
     }
 
+    /**
+     * The method to create a course as a teacher
+     */
     public void newCreateCourse() {
         menuFrame.dispose();
         createCourseFrame = new JFrame("Create Course");
@@ -272,6 +277,9 @@ public class Teacher implements Runnable {
         createCourseFrame.setVisible(true);
     }
 
+    /**
+     * The method to delete a course as a teacher
+     */
     public void newDeleteCourse() throws IOException {
         BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -380,6 +388,9 @@ public class Teacher implements Runnable {
 
     }
 
+    /**
+     * The method to create a quiz as a teacher
+     */
     public void newCreateQuiz() throws IOException {
         BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -592,6 +603,9 @@ public class Teacher implements Runnable {
 
     }
 
+    /**
+     * The method to edit a quiz as a teacher
+     */
     public void newEditQuiz() throws IOException {
         BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -697,7 +711,9 @@ public class Teacher implements Runnable {
         editQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         editQuizFrame.setVisible(true);
     }
-
+    /**
+     * The method to delete a quiz as a teacher
+     */
     public void newDeleteQuiz() throws IOException {
         BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
         PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -804,7 +820,9 @@ public class Teacher implements Runnable {
         deleteQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         deleteQuizFrame.setVisible(true);
     }
-
+    /**
+     * The method to view a student submission as a teacher
+     */
     public void newViewSubmission() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -915,7 +933,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to grade a student submission as a teacher
+     */
     public void newGradeSubmission() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -1026,7 +1046,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to create the GUI to ask for an import file
+     */
     public void askForImport() {
         Container content = createQuizFrame.getContentPane();
         content.setLayout(new GridBagLayout());
@@ -1130,7 +1152,9 @@ public class Teacher implements Runnable {
         createQuizFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createQuizFrame.setVisible(true);
     }
-
+    /**
+     * The method to create the GUI to create quiz questions
+     */
     public void createQuizQuestions() {
 
         int option = JOptionPane.showConfirmDialog(null, "Do you want to add a question?",
@@ -1335,7 +1359,9 @@ public class Teacher implements Runnable {
             createQuizFrame.setVisible(true);
         }
     }
-
+    /**
+     * The method to create a GUI to ask for the quiz
+     */
     public void askForQuiz() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -1440,6 +1466,9 @@ public class Teacher implements Runnable {
         }
     }
 
+    /**
+     * The method to create the edit quiz GUI
+     */
     public void editQuizGui() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -1563,6 +1592,9 @@ public class Teacher implements Runnable {
         }
     }
 
+    /**
+     * The method to create a GUI to ask for a quiz
+     */
     public void askForQuiz2() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream())); //Reads from server
@@ -1668,7 +1700,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to create the GUI to ask for a course
+     */
     public void askForCourse() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -1773,7 +1807,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to create the GUI to ask for a quiz
+     */
     public void askForQuiz3() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -1892,6 +1928,9 @@ public class Teacher implements Runnable {
         }
     }
 
+    /**
+     * The method to create a GUI to show the submission
+     */
     public void showSubmission() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -1972,7 +2011,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to create a GUI to ask for the course
+     */
     public void askForCourse2() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -2077,7 +2118,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to create a GUI to ask for a quiz
+     */
     public void askForQuiz4() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Reads from server
@@ -2205,7 +2248,9 @@ public class Teacher implements Runnable {
 
         }
     }
-
+    /**
+     * The method to create a GUI to grade the submission
+     */
     public void gradeSubmission() {
         try {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));    //Reads from server
