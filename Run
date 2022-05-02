@@ -28,6 +28,7 @@ public class Run {
         int w = 0;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //import reader and writer
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
             int usernameStatus;
@@ -44,7 +45,7 @@ public class Run {
                 welcomeChoice = showWelcomeMessageDialog();
                 try {
                     if (welcomeChoice == 10) {
-                        return "end";
+                        return "end"; // end program
                     } else {
                         welcome++; //breaks out of loop
                     }
@@ -52,7 +53,7 @@ public class Run {
                     e.printStackTrace();
                 }
             }
-            if (welcomeChoice == 1) {
+            if (welcomeChoice == 1) { // teacher
                 while (login[0] == 0) {
                     account = 0;
                     usernameStatus = 0;
@@ -61,7 +62,7 @@ public class Run {
                         proceed = accountPrompt();
                         try {
                             if (proceed == 5) {
-                                return "end";
+                                return "end"; //end program
                             } else if (proceed != 1 && proceed != 2 && proceed != 3 && proceed != 4) {
                                 //throws error if account choice is invalid option
                                 break;
@@ -73,7 +74,7 @@ public class Run {
                         }
                     }
 
-                    if (proceed == 1) {
+                    if (proceed == 1) { // teacher creating account
                         int i = 0;
                         writer.write("create");
                         writer.println();
@@ -83,15 +84,15 @@ public class Run {
                         writer.flush();
                         while (i == 0) {
 
-                            username1 = makeTeacherUsername();
+                            username1 = makeTeacherUsername(); // checking teacher username
                             if (username1.equals("fail")) {
-                                return "end";
+                                return "end"; //end program
                             }
                             writer.write(username1);
                             writer.println();
                             writer.flush();
 
-                            String status = reader.readLine();
+                            String status = reader.readLine(); // checking teacher username
                             if (status.equals("success")) {
                                 i++;
                             } else {
@@ -99,9 +100,9 @@ public class Run {
                             }
                         }
                         try {
-                            String teacherPassword = makePassword();
+                            String teacherPassword = makePassword(); // checking teacher password
                             if (teacherPassword.equals("fail")) {
-                                return "end";
+                                return "end"; //end program
                             }
 
                             writer.write(teacherPassword);
@@ -111,7 +112,7 @@ public class Run {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (proceed == 2) { //if teacher wants to login to existing account
+                    } else if (proceed == 2) { // teacher wants to log in to existing account
                         while (usernameStatus == 0) {
                             try {
                                 int i = 0;
@@ -125,15 +126,16 @@ public class Run {
                                 while (u == 0) {
                                     while (i == 0) {
                                         String teacherLoginUsername = checkTeacherOldName();
+                                        // checking teacher username
                                         if (teacherLoginUsername.equals("fail")) {
-                                            return "end";
+                                            return "end"; //end program
                                         }
                                         writer.write(teacherLoginUsername);
                                         writer.println();
                                         writer.flush();
                                         String status = reader.readLine();
 
-                                        if (status.equals("success")) {
+                                        if (status.equals("success")) { // checking teacher username
                                             i++;
                                         } else if (status.equals("fail")) {
                                             usernameDoesNotExist();
@@ -143,15 +145,16 @@ public class Run {
                                     String editPassword = null;
 
                                     String teacherLoginPassword = checkTeacherOldPassword();
+                                    // checking teacher password
                                     if (teacherLoginPassword.equals("fail")) {
-                                        return "end";
+                                        return "end"; //end program
                                     }
                                     writer.write(teacherLoginPassword);
                                     writer.println();
                                     writer.flush();
 
                                     String status = reader.readLine();
-                                    if (status.equals("success")) {
+                                    if (status.equals("success")) { // checking teacher information matches record
                                         //run teacher
                                         return "Teacher " + reader.readLine();
                                     } else {
@@ -169,7 +172,6 @@ public class Run {
                         while (usernameStatus == 0) {
                             try {
                                 int i = 0;
-                                String editUsername = null;
                                 writer.write("edit");
                                 writer.println();
                                 writer.flush();
@@ -180,15 +182,16 @@ public class Run {
                                 while (u == 0) {
                                     while (i == 0) {
                                         String teacherLoginUsername = checkTeacherOldName();
+                                        // checking teacher username
                                         if (teacherLoginUsername.equals("fail")) {
-                                            return "end";
+                                            return "end"; //end program
                                         }
                                         writer.write(teacherLoginUsername);
                                         writer.println();
                                         writer.flush();
                                         String status = reader.readLine();
 
-                                        if (status.equals("success")) {
+                                        if (status.equals("success")) { // checking teacher username
                                             i++;
                                         } else if (status.equals("fail")) {
                                             usernameDoesNotExist();
@@ -197,9 +200,9 @@ public class Run {
 
                                     String editPassword = null;
 
-                                    editPassword = checkTeacherOldPassword();
+                                    editPassword = checkTeacherOldPassword(); // checking teacher password
                                     if (editPassword.equals("fail")) {
-                                        return "end";
+                                        return "end"; //end program
                                     }
                                     writer.write(editPassword);
                                     writer.println();
@@ -210,15 +213,16 @@ public class Run {
                                         i = 0;
                                         while (i == 0) {
                                             String teacherUsername = makeTeacherUsername();
+                                            // ask for new teacher username
                                             if (teacherUsername.equals("fail")) {
-                                                return "end";
+                                                return "end"; //end program
                                             }
                                             writer.write(teacherUsername);
                                             writer.println();
                                             writer.flush();
 
                                             status = reader.readLine();
-                                            if (status.equals("success")) {
+                                            if (status.equals("success")) { // checking teacher username
                                                 i++;
                                             } else {
                                                 usernameExist();
@@ -226,9 +230,9 @@ public class Run {
                                         }
 
                                         try {
-                                            String teacherPassword = makePassword();
+                                            String teacherPassword = makePassword();// checking teacher password
                                             if (teacherPassword.equals("fail")) {
-                                                return "end";
+                                                return "end"; //end program
                                             }
                                             writer.write(teacherPassword);
                                             writer.println();
@@ -248,7 +252,7 @@ public class Run {
                                 e.printStackTrace();
                             }
                         }
-                    } else if (proceed == 4) {
+                    } else if (proceed == 4) { // teacher deleting account
                         while (usernameStatus == 0) {
                             try {
                                 int i = 0;
@@ -262,15 +266,16 @@ public class Run {
                                 while (u == 0) {
                                     while (i == 0) {
                                         String teacherLoginUsername = checkTeacherOldName();
+                                        // checking teacher username
                                         if (teacherLoginUsername.equals("fail")) {
-                                            return "end";
+                                            return "end"; //end program
                                         }
                                         writer.write(teacherLoginUsername);
                                         writer.println();
                                         writer.flush();
                                         String status = reader.readLine();
 
-                                        if (status.equals("success")) {
+                                        if (status.equals("success")) { // checking teacher username
                                             i++;
                                         } else if (status.equals("fail")) {
                                             usernameDoesNotExist();
@@ -280,14 +285,15 @@ public class Run {
                                     String editPassword = null;
 
                                     String teacherLoginPassword = checkTeacherOldPassword();
+                                    // checking teacher password
                                     if (teacherLoginPassword.equals("fail")) {
-                                        return "end";
+                                        return "end"; //end program
                                     }
                                     writer.write(teacherLoginPassword);
                                     writer.println();
                                     writer.flush();
 
-                                    String status = reader.readLine();
+                                    String status = reader.readLine(); // checking teacher password
                                     if (status.equals("success")) {
                                         return "";
 
@@ -305,7 +311,7 @@ public class Run {
                 }
                 writer.close();
                 reader.close();
-            } else if (welcomeChoice == 2) { //student login
+            } else if (welcomeChoice == 2) { //student
                 while (login[0] == 0) {
                     account = 0;
                     usernameStatus = 0;
@@ -313,10 +319,10 @@ public class Run {
                     while (account == 0) {
                         proceed = accountPrompt();
                         try {
-                            if (proceed == 4) {
-                                return "end";
+                            if (proceed == 5) {
+                                return "end"; //end program
                             }
-                            if (proceed != 1 && proceed != 2 && proceed != 3) {
+                            if (proceed != 1 && proceed != 2 && proceed != 3 && proceed != 4) {
                                 //throws error if account choice is invalid option
                                 break;
                             } else {
@@ -326,7 +332,7 @@ public class Run {
                             e.printStackTrace();
                         }
                     }
-                    if (proceed == 1) {
+                    if (proceed == 1) { // student creating account
                         int i = 0;
                         writer.write("create");
                         writer.println();
@@ -336,15 +342,15 @@ public class Run {
                         writer.flush();
                         while (i == 0) {
 
-                            username1 = makeStudentUsername();
+                            username1 = makeStudentUsername();  // checking student username
                             if (username1.equals("fail")) {
-                                return "end";
+                                return "end"; //end program
                             }
                             writer.write(username1);
                             writer.println();
                             writer.flush();
 
-                            String status = reader.readLine();
+                            String status = reader.readLine(); // checking student username
                             if (status.equals("success")) {
                                 i++;
                             } else {
@@ -352,9 +358,9 @@ public class Run {
                             }
                         }
                         try {
-                            String studentPassword = makePassword();
+                            String studentPassword = makePassword(); // checking student password
                             if (studentPassword.equals("fail")) {
-                                return "end";
+                                return "end"; //end program
                             }
 
                             writer.write(studentPassword);
@@ -364,7 +370,7 @@ public class Run {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (proceed == 2) { //student login
+                    } else if (proceed == 2) { // student wants to log in to existing account
                         while (usernameStatus == 0) {
                             try {
                                 int i = 0;
@@ -378,15 +384,16 @@ public class Run {
                                 while (u == 0) {
                                     while (i == 0) {
                                         String studentLoginUsername = checkStudentOldName();
+                                        // checking student username
                                         if (studentLoginUsername.equals("fail")) {
-                                            return "end";
+                                            return "end"; //end program
                                         }
                                         writer.write(studentLoginUsername);
                                         writer.println();
                                         writer.flush();
                                         String status = reader.readLine();
 
-                                        if (status.equals("success")) {
+                                        if (status.equals("success")) { // checking student username
                                             i++;
                                         } else {
                                             usernameDoesNotExist();
@@ -396,15 +403,16 @@ public class Run {
                                     String editPassword = null;
 
                                     String studentLoginPassword = checkStudentOldPassword();
+                                    // checking student username
                                     if (studentLoginPassword.equals("fail")) {
-                                        return "end";
+                                        return "end"; //end program
                                     }
                                     writer.write(studentLoginPassword);
                                     writer.println();
                                     writer.flush();
 
                                     String status = reader.readLine();
-                                    if (status.equals("success")) {
+                                    if (status.equals("success")) { // checking student information matches record
                                         //run student
                                         return "Student " + reader.readLine();
                                     } else {
@@ -417,7 +425,7 @@ public class Run {
                                 e.printStackTrace();
                             }
                         }
-                    } else if (proceed == 3) { //if teacher wants to edit account
+                    } else if (proceed == 3) { //if student wants to edit account
                         while (usernameStatus == 0) {
                             try {
                                 int i = 0;
@@ -431,26 +439,27 @@ public class Run {
                                 while (u == 0) {
                                     while (i == 0) {
                                         String studentLoginUsername = checkStudentOldName();
+                                        // checking student username
                                         if (studentLoginUsername.equals("fail")) {
-                                            return "end";
+                                            return "end"; //end program
                                         }
                                         writer.write(studentLoginUsername);
                                         writer.println();
                                         writer.flush();
                                         String status = reader.readLine();
 
-                                        if (status.equals("success")) {
+                                        if (status.equals("success")) { // checking teacher username
                                             i++;
-                                        } else {
+                                        } else if (status.equals("fail")) {
                                             usernameDoesNotExist();
                                         }
                                     }
 
                                     String editPassword = null;
 
-                                    editPassword = checkStudentOldPassword();
+                                    editPassword = checkStudentOldPassword(); // checking teacher password
                                     if (editPassword.equals("fail")) {
-                                        return "end";
+                                        return "end"; //end program
                                     }
                                     writer.write(editPassword);
                                     writer.println();
@@ -461,15 +470,16 @@ public class Run {
                                         i = 0;
                                         while (i == 0) {
                                             String studentUsername = makeStudentUsername();
+                                            //  ask for new student username
                                             if (studentUsername.equals("fail")) {
-                                                return "end";
+                                                return "end"; //end program
                                             }
                                             writer.write(studentUsername);
                                             writer.println();
                                             writer.flush();
 
                                             status = reader.readLine();
-                                            if (status.equals("success")) {
+                                            if (status.equals("success")) { // checking teacher username
                                                 i++;
                                             } else {
                                                 usernameExist();
@@ -478,9 +488,9 @@ public class Run {
 
 
                                         try {
-                                            String studentPassword = makePassword();
+                                            String studentPassword = makePassword(); // checking student password
                                             if (studentPassword.equals("fail")) {
-                                                return "end";
+                                                return "end"; //end program
                                             }
                                             writer.write(studentPassword);
                                             writer.println();
@@ -492,6 +502,7 @@ public class Run {
 
                                     } else {
                                         informationMismatch();
+                                        i = 0;
                                     }
                                 }
 
@@ -500,7 +511,7 @@ public class Run {
 
                             }
                         }
-                    } else if (proceed == 4) {
+                    } else if (proceed == 4) { // student deleting account
                         while (usernameStatus == 0) {
                             try {
                                 int i = 0;
@@ -514,35 +525,36 @@ public class Run {
                                 while (u == 0) {
                                     while (i == 0) {
                                         String studentLoginUsername = checkStudentOldName();
+                                        // checking student username
                                         if (studentLoginUsername.equals("fail")) {
-                                            return "end";
+                                            return "end";//end program 
                                         }
                                         writer.write(studentLoginUsername);
                                         writer.println();
                                         writer.flush();
                                         String status = reader.readLine();
 
-                                        if (status.equals("success")) {
+                                        if (status.equals("success")) { // checking student username
                                             i++;
                                         } else {
                                             usernameDoesNotExist();
                                         }
                                     }
 
-                                    String password1 = null;
+                                    String editPassword = null;
 
-                                    password1 = checkTeacherOldPassword();
-                                    if (password1.equals("fail")) {
-                                        return "end";
+                                    String studentLoginPassword = checkStudentOldPassword();
+                                    // checking student password
+                                    if (studentLoginPassword.equals("fail")) {
+                                        return "end"; //end program
                                     }
-                                    writer.write(password1);
+                                    writer.write(studentLoginPassword);
                                     writer.println();
                                     writer.flush();
 
-                                    String status = reader.readLine();
+                                    String status = reader.readLine(); // checking teacher password
                                     if (status.equals("success")) {
-                                        break;
-
+                                        return "";
                                     } else {
                                         informationMismatch();
                                         i = 0;
