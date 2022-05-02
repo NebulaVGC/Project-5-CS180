@@ -1,9 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  * Project 05 -- MainMethod
@@ -21,7 +16,7 @@ public class MainMethod extends Run {
         try {
             Socket socket = new Socket("localhost", 4242); //SOCKET CONNECTION
             String username = runQuiz(socket); //USER CONNECTS
-            while(username.equals("")) {
+            while (username.equals("")) {
                 username = runQuiz(socket);
             }
             if (username.equals("end")) {
