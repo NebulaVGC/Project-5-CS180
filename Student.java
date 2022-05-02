@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 /**
  * Project 05 -- Student
  * <p>
@@ -243,7 +244,7 @@ public class Student {
                                     } else {
                                         String viewGrade = String.valueOf(JOptionPane.showConfirmDialog
                                                 (null, "Would you like to view your quiz grade?",
-                                                "QUIZ ALREADY TAKEN", JOptionPane.YES_NO_OPTION));
+                                                        "QUIZ ALREADY TAKEN", JOptionPane.YES_NO_OPTION));
                                         if (viewGrade.equals("-1") || viewGrade.equals("1")) {
                                             return;
                                         }
