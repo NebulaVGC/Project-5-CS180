@@ -8,8 +8,7 @@ User selects the "1. Make a new account" in the dropdown menu, then select "OK" 
 User type in username "Kevin" in the text box, then select "OK" button.
 User type in password "123" in the text box, then select "OK" button.
 
-Expected result: Four different files named StudentAccount.txt, StudentPassword.txt, 
-TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin" printed, 
+Expected result: Two different files named StudentAccount.txt, StudentPassword.txt. In the StudentAccount.txt, there should be "Kevin" printed, 
 and in the StudentPassword.txt, there should be "123" printed.
 
 Test Status: Passed. 
@@ -36,7 +35,7 @@ Steps:
 User launches MainMethod.
 User selects the "Student" button.
 User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
-User type in username "KevCin" in the text box, then select "OK" button.
+User type in username "Kevin" in the text box, then select "OK" button.
 Error message shown "This Username already exist", then select "OK" button.
 User type in username "Charlie" in the text box, then select "OK" button.
 User type in password "123" in the text box, then select "OK" button.
@@ -95,6 +94,7 @@ Error message shown "This Username does not exist", then select "OK" button.
 User type in username "Frank" in the text box, then select "OK" button.
 User type in password "123" in the text box, then select "OK" button.
 Error message shown "password does not match", then select "OK" button.
+User type in username "Frank" in the text box, then select "OK" button.
 User type in password "FL23" in the text box, then select "OK" button.
 User type in username "FrankLinLin" in the text box, then select "OK" button.
 User type in password "lemon" in the text box, then select "OK" button.
@@ -106,3 +106,253 @@ and in the StudentPassword.txt, there should be "234\nlemon" printed.
 
 Test Status: Passed.
 
+Test 7: Student Sky making an account
+
+Steps:
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
+User type in username "Sky" in the text box, then select "OK" button.
+User type in password "1234" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf\nSky" printed,
+and in the StudentPassword.txt, there should be "123\n5256\n1234" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrankLinLin" printed,
+and in the StudentPassword.txt, there should be "234\nlemon" printed.
+
+Test Status: Passed.
+
+Test 8: Student Sky deleting account
+
+Steps:
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "4. Delete existing account" in the dropdown menu, then select "OK" button.
+User type in username "Sky" in the text box, then select "OK" button.
+User type in password "1234" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrankLinLin" printed,
+and in the StudentPassword.txt, there should be "234\nlemon" printed.
+
+Test Status: Passed.
+
+Test 9: Teacher Sky making an account
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "1. Make a new account" in the dropdown menu, then select "OK" button.
+User type in username "Sky" in the text box, then select "OK" button.
+User type in password "1234" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrankLinLin\nSky" printed,
+and in the StudentPassword.txt, there should be "234\nlemon\n1234" printed.
+
+Test Status: Passed.
+
+Test 10: Teacher Sky deleting account
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "4. Delete existing account" in the dropdown menu, then select "OK" button.
+User type in username "Sky" in the text box, then select "OK" button.
+User type in password "1234" in the text box, then select "OK" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt, there should be "Cloud9\nFrankLinLin" printed,
+and in the StudentPassword.txt, there should be "234\nlemon" printed.
+
+Test Status: Passed.
+
+Test 11: Teacher Cloud9 creating course, delete course, create quiz, edit quiz
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "2. Login with existing account" in the dropdown menu, then select "OK" button.
+User type in username "Cloud9" in the text box, then select "OK" button.
+User type in password "234" in the text box, then select "OK" button.
+User selects the "Create Course" button.
+User type in "Math" then select "Enter" button.
+Message shown "Course Added Successfully", then select "OK" button.
+User selects the "Create Course" button.
+User type in "Art" then select "Enter" button.
+Message shown "Course Added Successfully", then select "OK" button.
+User selects the "Create Course" button.
+User type in "History" then select "Enter" button.
+Message shown "Course Added Successfully", then select "OK" button.
+User selects the "Delete Course" button.
+User select "Math" then select "Enter" button.
+Message shown "Course Deleted Successfully", then select "OK" button.
+User selects the "Create Quiz" button.
+User select "History" then select "Enter" button.
+User type in "Quiz 1" then select "Enter" button.
+Message shown "Do you want to import a file?", then select "No" button.
+Message shown "Do you want the questions to be randomized?", then select "Yes" button.
+Message shown "Do you want to add a question?", then select "Yes" button.
+User type in "What happened on July 4, 1776?" in the first box.
+User type in "Nothing" in the next box.
+User type in "Independence Day" in the next box.
+User type in "D-Day" in the next box.
+User type in "American Revolution ended" in the next box. Then user select "Enter" button.
+Message shown "Do you want to add a question?", then select "No" button.
+Message shown "Quiz Created Successfully", then select "OK" button.
+User selects the "Edit Quiz" button.
+User select "History" then select "Enter" button.
+User select "Quiz 1" then select "Enter" button.
+User select line 3, then type in "A. Nothing At All", then select "Done" button.
+User selects the "Exit" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt, 
+there should be "Cloud9\nFrankLinLin" printed, and in the StudentPassword.txt, there should be "234\nlemon" printed. 
+One empty file named "Cloud9_Art.txt", one file named "Cloud9_Courses.txt" with "Art\nHistory" in it,
+one file named "Cloud9_History.txt" with "Quiz 1" in it, 
+one file named "Cloud9_History_Quiz 1.txt" with "
+True
+What happened on July 4, 1776?
+A. Independence Day
+B. D-Day
+C. Nothing At All
+D. American Revolution ended" in it.
+
+Test Status: Passed.
+
+Test 12: Student Kevin take quiz, attempted to view grade
+
+Steps:
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "2. Login with existing account" in the dropdown menu, then select "OK" button.
+User type in username "Kevin" in the text box, then select "OK" button.
+User type in password "123" in the text box, then select "OK" button.
+User selects the "Cloud9" in the dropdown menu, then select "OK" button.
+User selects the "History" in the dropdown menu, then select "OK" button.
+User selects the "Quiz 1" in the dropdown menu, then select "OK" button.
+User selects the "Active" button.
+User selects the "B" in the dropdown menu, then select "OK" button.
+ser selects the "Cloud9" in the dropdown menu, then select "OK" button.
+User selects the "History" in the dropdown menu, then select "OK" button.
+User selects the "Quiz 1" in the dropdown menu, then select "OK" button.
+Message shown "Would you like to view your quiz grade", then select "Yes" button.
+Message shown "Grade not yet entered", then select "Cancel" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt,
+there should be "Cloud9\nFrankLinLin" printed, and in the StudentPassword.txt, there should be "234\nlemon" printed.
+One empty file named "Cloud9_Art.txt", one file named "Cloud9_Courses.txt" with "Art\nHistory" in it,
+one file named "Cloud9_History.txt" with "Quiz 1" in it,
+one file named "Cloud9_History_Quiz 1.txt" with "
+True
+What happened on July 4, 1776?
+A. Independence Day
+B. D-Day
+C. Nothing At All
+D. American Revolution ended" in it. 
+One file named "Kevin_Cloud9_History_Quiz 1.txt" with "
+True
+What happened on July 4, 1776?
+A. Nothing At All
+B. Independence Day
+C. D-Day
+D. American Revolution ended
+Kevin
+B
+05/02/2022_00:52:53" in it,
+
+Test Status: Passed.
+
+Test 13: Teacher Cloud9 grading quiz
+
+Steps:
+User launches MainMethod.
+User selects the "Teacher" button.
+User selects the "2. Login with existing account" in the dropdown menu, then select "OK" button.
+User type in username "Cloud9" in the text box, then select "OK" button.
+User type in password "234" in the text box, then select "OK" button.
+User selects the "View Student Submission" button.
+User select "Kevin" then select "Enter" button.
+User select "History" then select "Enter" button.
+User select "Quiz 1" then select "Enter" button.
+User select "Done" button.
+User selects the "Grade Student Submission" button.
+User select "Kevin" then select "Enter" button.
+User select "History" then select "Enter" button.
+User select "Quiz 1" then select "Enter" button.
+User select "Yes" button.
+User select "Exit" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt,
+there should be "Cloud9\nFrankLinLin" printed, and in the StudentPassword.txt, there should be "234\nlemon" printed.
+One empty file named "Cloud9_Art.txt", one file named "Cloud9_Courses.txt" with "Art\nHistory" in it,
+one file named "Cloud9_History.txt" with "Quiz 1" in it,
+one file named "Cloud9_History_Quiz 1.txt" with "
+True
+What happened on July 4, 1776?
+A. Independence Day
+B. D-Day
+C. Nothing At All
+D. American Revolution ended" in it.
+One file named "Kevin_Cloud9_History_Quiz 1.txt" with "
+What happened on July 4, 1776?
+A. Nothing At All
+B. Independence Day
+C. D-Day
+D. American Revolution ended
+Kevin
+B Correct
+05/02/2022_00:52:53
+100.0%" in it,
+
+Test Status: Passed.
+
+Test 12: Student Kevin view grade
+
+Steps:
+User launches MainMethod.
+User selects the "Student" button.
+User selects the "2. Login with existing account" in the dropdown menu, then select "OK" button.
+User type in username "Kevin" in the text box, then select "OK" button.
+User type in password "123" in the text box, then select "OK" button.
+User selects the "Cloud9" in the dropdown menu, then select "OK" button.
+User selects the "History" in the dropdown menu, then select "OK" button.
+User selects the "Quiz 1" in the dropdown menu, then select "OK" button.
+Message shown "Would you like to view your quiz grade", then select "Yes" button.
+Message shown with Quiz results, user then select "OK" button.
+User selects the "Cancel" button.
+
+Expected result: Four different files named StudentAccount.txt, StudentPassword.txt,
+TeacherAccount.txt, and TeacherPassword.txt. In the StudentAccount.txt, there should be "Kevin\nWhitewolf" printed,
+and in the StudentPassword.txt, there should be "123\n5256" printed. In the TeacherAccount.txt,
+there should be "Cloud9\nFrankLinLin" printed, and in the StudentPassword.txt, there should be "234\nlemon" printed.
+One empty file named "Cloud9_Art.txt", one file named "Cloud9_Courses.txt" with "Art\nHistory" in it,
+one file named "Cloud9_History.txt" with "Quiz 1" in it,
+one file named "Cloud9_History_Quiz 1.txt" with "
+True
+What happened on July 4, 1776?
+A. Independence Day
+B. D-Day
+C. Nothing At All
+D. American Revolution ended" in it.
+One file named "Kevin_Cloud9_History_Quiz 1.txt" with "
+What happened on July 4, 1776?
+A. Nothing At All
+B. Independence Day
+C. D-Day
+D. American Revolution ended
+Kevin
+B Correct
+05/02/2022_00:52:53
+100.0%" in it,
+
+Test Status: Passed.
