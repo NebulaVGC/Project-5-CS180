@@ -1,10 +1,6 @@
-import javax.swing.*;
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * Project 5
@@ -22,7 +18,7 @@ public class MainServer {
         ServerSocket serverSocket = null;
         System.out.println("Server Listening......"); //SHOWS THAT SERVER IS WAITING FOR CONNECTION
         try {
-            serverSocket = new ServerSocket(4242); 
+            serverSocket = new ServerSocket(4242);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,7 +36,7 @@ public class MainServer {
             } catch (Exception e) { //CATCHES AND DISPLAYS ANY ERROR
                 e.printStackTrace();
                 System.out.println("Connection Error");
-                
+
             }
         }
     }
