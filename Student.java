@@ -32,7 +32,7 @@ public class Student {
                 "Quiz Type", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
                 null, options, null);
         int questionCounter = Integer.parseInt(reader.readLine()); //question count sent from server
-        int currentQ = 0;
+        int currentQ = 0;//current question
         String answer = "";
         ArrayList<String> answerList = new ArrayList<>();
         ArrayList<String> copyQuizContents = new ArrayList<>(); //will store a copy of the original quiz file
