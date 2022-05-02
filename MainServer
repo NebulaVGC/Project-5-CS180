@@ -1,18 +1,14 @@
-import javax.swing.*;
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
- * CHALLENGE 11
+ * Project 5
  * <p>
- * Create a button pressing game
+ * Main server for running
  *
  * @author Shih Kuan Chou, CS 180 - L09
- * @version Apr 1, 2022
+ * @version May 1, 2022
  */
 
 public class MainServer {
@@ -20,7 +16,7 @@ public class MainServer {
     public static void main(String[] args) {
         Socket socket = null;
         ServerSocket serverSocket = null;
-        System.out.println("Server Listening......");
+        System.out.println("Server Listening......"); //SHOWS THAT SERVER IS WAITING FOR CONNECTION
         try {
             serverSocket = new ServerSocket(4242);
 
@@ -32,15 +28,14 @@ public class MainServer {
 
         while (true) {
             try {
-                socket = serverSocket.accept();
-                System.out.println("Connection Established");
+                socket = serverSocket.accept(); //SERVER SOCKET IS WAITING FOR A CONNECTION
+                System.out.println("Connection Established"); //SHOWS THAT SOCKET IS CONNECTED TO SERVER
                 ServerThread st = new ServerThread(socket);
                 st.start();
 
-            } catch (Exception e) {
+            } catch (Exception e) { //CATCHES AND DISPLAYS ANY ERROR
                 e.printStackTrace();
                 System.out.println("Connection Error");
-
 
             }
         }
