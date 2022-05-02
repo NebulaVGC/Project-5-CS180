@@ -17,9 +17,7 @@ Run "ManMethod" as many times as you want
 
 Teacher.java:
 ---------------------------
-When the teacher logs in with the correct username and password, they are provided with an interface. They have 8 different options. They can create a quiz, edit a quiz, delete a quiz, grade a quiz, view a student’s submission, create a new course, delete a course, and an exit option. If the teacher enters anything besides 1-8, they are prompted to enter a new number. 
-	
-Almost every time the teacher is asked for input, input validation will occur. Meaning that if the teacher enters anything that doesn’t fit the options presented, they will receive an error and ask to try again. Or if the teacher enters a course, student, or quiz that does not exist, they will receive an error and ask to try again. Also, almost every prompt the teacher gets to enter something, they will also have the option to back out by pressing the letter that the prompt says. Most of the time it is N, but sometimes it is E. 
+When the teacher logs in with the correct username and password, they are provided with an interface. They have 8 different options. They can create a quiz, edit a quiz, delete a quiz, grade a quiz, view a student’s submission, create a new course, delete a course, and an exit option. They can also maximize or minimize the screen and can press the X button at the top anytime to close the program.
 
 When the teacher object is created, a new, empty file is created that will hold the courses the teacher creates. In order to actually get anything done with the teacher class, a course must be created first. When a course is successfully created, this empty file will now contain the new courses’ name. A new file will also be created which holds the quizzes within that course, which will be empty when first created. With a new course created, the teacher has several more options. They have two new options, creating a quiz and deleting a course. 
 
